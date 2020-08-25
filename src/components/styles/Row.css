@@ -1,0 +1,17 @@
+.ui-row {
+    display: grid;
+    grid-auto-columns: max-content;
+    grid-auto-flow: column;
+    grid-gap: 10px;
+}
+
+.ui-row.flex {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.ui-row.flex .ui-section {
+    flex-grow: 1;
+    flex-basis: 512px;
+}
