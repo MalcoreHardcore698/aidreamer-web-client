@@ -34,8 +34,17 @@
     color: var(--color-graylite);
 }
 
+.ui-navigation .block a svg path,
+.ui-navigation .block button svg path {
+    fill: var(--color-graylite) !important;
+}
+
 .ui-navigation .block a.active {
     color: var(--color-accent);
+}
+
+.ui-navigation .block a.active svg path {
+    fill: var(--color-accent) !important;
 }
 
 .ui-navigation .block a img {
@@ -44,10 +53,8 @@
     object-fit: contain;
 }
 
-.ui-navigation .block a:nth-child(2) img {
-    width: 30px;
-    height: 30px;
-    object-fit: contain;
+.ui-navigation .block a:nth-child(2) {
+    font-size: 2rem;
 }
 
 .ui-navigation .block a:first-child {

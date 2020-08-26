@@ -45,7 +45,16 @@ export default ({ showModal }) => {
                     manage: false
                 }}>
                     {achievements.map((achievement, key) =>
-                        <Achievement key={key} achievement={achievement} />    
+                        <Achievement key={key} options={{
+                            achievement,
+                            handler: () => showModal([
+                                {
+                                    path: '/',
+                                    title: 'Achievement',
+                                    component: () => <EntryContent />
+                                }
+                            ])
+                        }} />    
                     )}
                 </Section>
             </aside>
@@ -121,7 +130,7 @@ export default ({ showModal }) => {
                             handlerDelete: () => showModal([
                                 {
                                     path: '/',
-                                    title: 'Delete Article',
+                                    title: 'Edit Article',
                                     component: () => <EntryContent />
                                 }
                             ])

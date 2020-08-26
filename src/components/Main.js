@@ -8,7 +8,7 @@ import Message from './ui/Message'
 import Modal from './ui/Modal'
 
 import ImageAvatar from '../assets/images/avatar.png'
-import ImageLogo from '../assets/images/logo.svg'
+import SVGLogo from '../assets/images/logo'
 
 import routes from '../routes'
 import '../assets/styles/App.css'
@@ -20,7 +20,7 @@ const links = [
     },
     {
         path: '/',
-        component: <img src={ImageLogo} alt="Logo" />
+        component: SVGLogo
     },
     {
         path: '/navigator',

@@ -20,7 +20,7 @@ export default ({ options }) => {
 
     const renderLinks = () => {
         return links.map((link, key) =>
-            <NavLink key={key} to={link.path}>
+            <NavLink key={key} exact to={link.path}>
                 {link.component}
             </NavLink>)
     }

@@ -8,22 +8,21 @@
 import React from 'react'
 import '../styles/List.css'
 
-export default ({ options }) => {
-    const {
-        type,
-        items
-    } = options
+export default (props) => {
+    const Children = props.children
 
-    const classes = [
-        'ui-list',
-        type
-    ]
+    const {
+        list,
+        handler
+    } = props.options || {}
 
     return (
-        <ul className={classes.join(' ')}>
-            {items.map((item, key) =>
-                <li key={key} {...item.props}>{item.content}</li>    
+        <div className="ui-list" onClick={handler}>
+            {list.map(item =>
+                <div className="ui-item">
+                    <Children item={item} />
+                </div>
             )}
-        </ul>
+        </div>
     )
 }

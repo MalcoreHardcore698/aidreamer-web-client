@@ -11,7 +11,7 @@
     cursor: pointer;
 }
 
-.ui-entry:hover {
+.ui-entry:not(.editable):hover {
     opacity: .75;
 }
 

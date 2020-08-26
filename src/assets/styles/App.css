@@ -54,6 +54,23 @@
     --transition: all .15s ease;
 }
 
+html, body {
+    scrollbar-color: transparent;
+    scrollbar-width: none;
+}
+
+html::-webkit-scrollbar,
+html::-webkit-scrollbar-track,
+body::-webkit-scrollbar,
+body::-webkit-scrollbar-track {
+    width: 0;
+}
+
+html::-webkit-scrollbar-button,
+body::-webkit-scrollbar-button {
+    display: none;
+}
+
 body {
     background: var(--color-body-background);
 }
@@ -90,7 +107,8 @@ main.home {
 
 main.profile,
 main.navigator,
-main.tours {
+main.tours,
+main.chats {
     grid-template-columns: var(--w-aside) 1fr var(--w-aside);
 }
 
@@ -109,6 +127,11 @@ main aside > .ui-toggler > .toggle {
     flex-grow: 1;
 }
 
+.ui-section.my-tours > .content > .ui-entry,
+main.tours .ui-section > .content > .ui-entry {
+    flex-basis: auto;
+}
+
 .ui-navigation {
     position: fixed;
     left: 0;
@@ -120,14 +143,23 @@ main aside > .ui-toggler > .toggle {
     z-index: var(--z-ninetynine);
 }
 
-@media only screen and (max-width: 1280px) {
-    main.profile {
-        grid-template-columns: 1fr !important;
-    }
+.ui-navigation a {
+    transition: var(--transition);
 }
 
-@media only screen and (max-width: 798px) {
+.ui-navigation a:hover {
+    opacity: .75;
+}
+
+@media only screen and (max-width: 1299px) {
+    main,
+    .ui-navigation {
+        width: calc(100% - 30px);
+        padding: 25px 15px;
+    }
+
     main {
         grid-template-columns: 1fr !important;
+        padding-bottom: 180px;
     }
 }

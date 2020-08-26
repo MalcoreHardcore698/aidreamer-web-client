@@ -2,8 +2,11 @@
     display: grid;
     grid-template-columns: 32px 1fr 32px;
     align-content: center;
+    grid-gap: 10px;
 
     color: var(--color-graydark);
+    padding: 10px;
+    font-weight: 600;
 }
 
 .ui-participant .avatar img {
@@ -17,11 +20,11 @@
     align-self: center;
 }
 
+.ui-participant .avatar,
 .ui-participant .score {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: rgba(0, 0, 0, .045);
-    width: 10px;
-    height: 10px;
+    justify-self: center;
+    align-self: center;
 }

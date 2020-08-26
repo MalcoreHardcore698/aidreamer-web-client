@@ -8,13 +8,19 @@ import Message from './ui/Message'
 import Button from './ui/Button'
 import Search from './ui/Search'
 import Entry from './ui/Entry'
-import Match from './ui/Match'
+import List from './ui/List'
+import Unit from './ui/Unit'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFilter } from '@fortawesome/free-solid-svg-icons'
 import targets from '../stores/targets'
 import hubs from '../stores/hubs'
 import tours from '../stores/tours'
 import matches from '../stores/matches'
+import members from '../stores/members'
+
+import ImageTeamAstralis from '../assets/images/astralis.png'
+import ImageTeamVirtus from '../assets/images/virtus.png'
+import ImageTeamSpirit from '../assets/images/spirit.png'
 import ImageTourPoster from '../assets/images/poster.png'
 
 const MatchContent = () => {
@@ -53,16 +59,27 @@ export default ({ showModal }) => {
 
                 <Search />
 
-                {matches.map((match, key) =>
-                    <Match key={key} options={{
-                        match, handler: () => showModal([
+                {matches.map(match =>
+                    <List options={{
+                        list: match.participants,
+                        handler: () => showModal([
                             {
                                 path: '/',
                                 title: 'Match',
                                 component: () => <MatchContent />
                             }
                         ])
-                    }} />
+                    }}>
+                        {({ item }) => (
+                            <React.Fragment>
+                                <p className="avatar">
+                                    <img src={item.avatar} alt="User" />
+                                </p>
+                                <p className="name">{item.name}</p>
+                                <p className="score">{item.score}</p>
+                            </React.Fragment>
+                        )}
+                    </List>
                 )}
             </aside>
 
@@ -115,17 +132,41 @@ export default ({ showModal }) => {
                 <Section options={{
                     name: 'team-ranking',
                     title: 'Team Ranking',
+                    subtitle: 3,
                     manage: false
                 }}>
-                    
+                    <List options={{ list: [
+                        { image: ImageTeamAstralis, name: 'Cloud9' },
+                        { image: ImageTeamVirtus, name: 'Vurtus.pro' },
+                        { image: ImageTeamSpirit, name: 'Spirit' }
+                    ] }}>
+                        {({ item }) => (
+                            <React.Fragment>
+                                <p className="avatar">
+                                    <img src={item.image} alt="User" />
+                                </p>
+                                <p className="name">{item.name}</p>
+                            </React.Fragment>
+                        )}
+                    </List>
                 </Section>
 
                 <Section options={{
                     name: 'player-ranking',
                     title: 'Player Ranking',
+                    subtitle: 5,
                     manage: false
                 }}>
-                    
+                    <List options={{ list: members }}>
+                        {({ item }) => (
+                            <React.Fragment>
+                                <p className="avatar">
+                                    <img src={item.avatar} alt="User" />
+                                </p>
+                                <p className="name">{item.name}</p>
+                            </React.Fragment>
+                        )}
+                    </List>
                 </Section>
 
                 <Section options={{
@@ -135,7 +176,11 @@ export default ({ showModal }) => {
                 }}>
                     <Search filter />
 
-                    <Message text="No Content" padding />
+                    {[
+                        { img: ImageTeamAstralis, name: 'Cloud9', legend: '73 wins' },
+                        { img: ImageTeamVirtus, name: 'Vurtus.pro', legend: '45 wins' },
+                        { img: ImageTeamSpirit, name: 'Spirit', legend: '13 wins' }
+                    ].map(unit => <Unit options={{ unit }} />)}
                 </Section>
             </aside>
         </main>

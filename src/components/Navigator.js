@@ -45,19 +45,22 @@ export default ({ showModal }) => {
 
                 {offers.map((offer, key) =>
                     <Entry key={key} options={{
+                        editable: true,
                         capacious: false,
-                        userBar: {
-                            name: 'noctua',
-                            status: 'online',
-                            avatar: ImageAvatar
-                        },
                         statusBar: [
                             { lite: 'May, 16', dark: '14:15 AM' }
                         ],
-                        handler: () => showModal([
+                        handlerEdit: () => showModal([
                             {
                                 path: '/',
-                                title: 'Offer',
+                                title: 'Edit Offer',
+                                component: () => <OfferContent />
+                            }
+                        ]),
+                        handlerDelete: () => showModal([
+                            {
+                                path: '/',
+                                title: 'Delete Offer',
                                 component: () => <OfferContent />
                             }
                         ])

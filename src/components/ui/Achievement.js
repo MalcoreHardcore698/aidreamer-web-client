@@ -2,9 +2,14 @@ import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import '../styles/Achievement.css'
 
-export default ({ achievement }) => {
+export default ({ options }) => {
+    const {
+        achievement,
+        handler
+    } = options || {}
+
     return (
-        <div className="ui-achievement">
+        <div className="ui-achievement" onClick={handler}>
             <div className="icon">
                 <FontAwesomeIcon icon={achievement.icon} />
             </div>

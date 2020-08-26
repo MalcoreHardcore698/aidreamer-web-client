@@ -1,6 +1,5 @@
 import React from 'react'
 import Row from './ui/Row'
-import Column from './ui/Column'
 import Container from './ui/Container'
 import Message from './ui/Message'
 import Headline from './ui/Headline'
@@ -47,21 +46,25 @@ export default ({ showModal }) => {
 
                 {news.map((newsOne, key) =>
                     <Entry key={key} options={{
+                        editable: true,
                         capacious: false,
-                        userBar: {
-                            name: newsOne.author,
-                            status: 'online',
-                            avatar: ImageAvatar
-                        },
+                        manageOffset: true,
                         statusBar: [
                             { lite: 'Comments', dark: '47' },
                             { lite: 'Views', dark: '13,541' },
                             { lite: 'May, 16', dark: '14:15 AM' }
                         ],
-                        handler: () => showModal([
+                        handlerEdit: () => showModal([
                             {
                                 path: '/',
-                                title: 'Article',
+                                title: 'Edit Article',
+                                component: () => <EntryContent />
+                            }
+                        ]),
+                        handlerDelete: () => showModal([
+                            {
+                                path: '/',
+                                title: 'Edit Article',
                                 component: () => <EntryContent />
                             }
                         ])
@@ -76,12 +79,12 @@ export default ({ showModal }) => {
             <aside>
                 <Toggler options={{ type: 'auto', targets: hubs.map((hub, key) => ({
                     type: hub.type,
-                    value: <Column key={key}>
+                    value: <Row key={key}>
                                 <div className="icon">
                                     <FontAwesomeIcon icon={hub.icon} />
                                 </div>
                                 <p>{hub.title}</p>
-                            </Column>
+                            </Row>
                         }))
                     }}
                 />

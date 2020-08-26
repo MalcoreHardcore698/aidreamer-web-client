@@ -10,7 +10,7 @@
     background: var(--color-statusbar-background);
 }
 
-.ui-counter-badge.oval {
+.ui-counter-badge.circle {
     padding: 0 5px;
     height: 25px;
     border-radius: 25rem;
