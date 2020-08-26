@@ -3,8 +3,8 @@ import Message from './ui/Message'
 
 export default () => {
     return (
-        <div className="chats">
+        <main className="chats">
             <Message text="Chats" padding />
-        </div>
+        </main>
     )
 }

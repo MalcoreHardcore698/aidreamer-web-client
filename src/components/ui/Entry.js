@@ -11,14 +11,15 @@ import { faPen, faTrash } from '@fortawesome/free-solid-svg-icons'
 import Message from './Message'
 import Button from './Button'
 import Row from './Row'
+import '../styles/Entry.css'
 
-const Manage = ({ manageOffset }) => {
+const Manage = ({ manageOffset, handlerEdit, handlerDelete }) => {
     return (
         <Row className="manage" style={{ top: (manageOffset) ? 277 : 15 }}>
-            <Button options={{ type: 'icon' }}>
+            <Button options={{ type: 'icon', handler: handlerEdit }}>
                 <FontAwesomeIcon icon={faPen} />
             </Button>
-            <Button options={{ type: 'icon' }}>
+            <Button options={{ type: 'icon', handler: handlerDelete }}>
                 <FontAwesomeIcon icon={faTrash} />
             </Button>
         </Row>
@@ -33,14 +34,19 @@ export default (props) => {
         editable,
         manageOffset=false,
         userBar,
-        statusBar
+        statusBar,
+        classNames,
+        handler=() => {},
+        handlerEdit=() => {},
+        handlerDelete=() => {}
     } = props.options || {}
 
     const classes = [
         'ui-entry',
         (editable) ? 'editable' : '',
         (capacious) ? 'capacious' : '',
-        (userBar) ? '' : 'no-user-bar'
+        (userBar) ? '' : 'no-user-bar',
+        classNames
     ]
 
     const renderUserBar = () => {
@@ -65,7 +71,11 @@ export default (props) => {
                     ? <Message text="No Content" />
                     : <React.Fragment>
                         <div className="content">{Children}</div>
-                        {(editable) && <Manage manageOffset={manageOffset} />}
+                        {(editable) && <Manage
+                            manageOffset={manageOffset}
+                            handlerEdit={handlerEdit}
+                            handlerDelete={handlerDelete}
+                        />}
                     </React.Fragment>
                 }
             </div>
@@ -89,7 +99,7 @@ export default (props) => {
     }
     
     return (
-        <div className={classes.join(' ')}>
+        <div className={classes.join(' ')} onClick={handler}>
             {renderUserBar()}
             {renderContent()}
             {renderStatusBar()}

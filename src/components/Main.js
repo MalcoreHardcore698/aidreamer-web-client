@@ -81,13 +81,15 @@ export default () => {
                 ]
             }} />
 
-            <main>
-                <Switch>
-                    {routes.map(props =>
-                        <Route {...props} />    
-                    )}
-                </Switch>
-            </main>
+            <Switch>
+                {routes.map((props, key) =>
+                    <Route
+                        {...props}
+                        key={key}
+                        component={() => props.component({ showModal })}
+                    />
+                )}
+            </Switch>
     
             <Modal options={{
                 routes: state,

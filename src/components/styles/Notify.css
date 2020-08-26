@@ -1,8 +1,40 @@
 .ui-notify {
 	display: grid;
 	grid-template-columns: 48px 1fr;
+	grid-template-rows: 48px;
+	grid-gap: 10px;
 	align-content: center;
 	width: 320px;
+}
+
+.ui-notify .icon,
+.ui-notify .icon img {
+	width: 100%;
+	height: 100%;
+}
+
+.ui-notify .icon {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+    background: white;
+    box-shadow: var(--bx-main);
+    border-radius: var(--br-main);
+    border: var(--border-main);
+}
+
+.ui-notify .icon img {
+	object-fit: cover;
+	width: 28px;
+	height: 28px;
+	border-radius: 50%;
+}
+
+.ui-notify .message {
+	padding-top: 10px;
+	font-weight: 600;
+	color: var(--color-text);
 }
 
 .ui-notify.admin {

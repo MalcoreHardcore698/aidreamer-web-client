@@ -22,6 +22,8 @@ export default ({ options }) => {
         type
     ]
 
+    console.log(targets)
+
     const [current, setCurrent] = useState(targets[0]?.type)
     const handlerState = (target) => {
         setCurrent(target)

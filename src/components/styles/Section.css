@@ -1,7 +1,6 @@
 .ui-section {
     display: flex;
     flex-direction: column;
-    padding: var(--padding-content) 0;
 }
 
 .ui-section .headline {

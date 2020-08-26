@@ -10,31 +10,31 @@ export default [
     {
         exact: true,
         path: '/',
-        component: () => <Home />
+        component: ({ showModal }) => <Home showModal={showModal} />
     },
     {
         exact: true,
         path: '/auth',
-        component: () => <Auth />
+        component: ({ showModal }) => <Auth showModal={showModal} />
     },
     {
         exact: true,
         path: '/profile',
-        component: () => <Profile />
+        component: ({ showModal }) => <Profile showModal={showModal} />
     },
     {
         exact: true,
         path: '/navigator',
-        component: () => <Navigator />
+        component: ({ showModal }) => <Navigator showModal={showModal} />
     },
     {
         exact: true,
         path: '/tours',
-        component: () => <Tours />
+        component: ({ showModal }) => <Tours showModal={showModal} />
     },
     {
         exact: true,
         path: '/chats',
-        component: () => <Chats />
+        component: ({ showModal }) => <Chats showModal={showModal} />
     }
 ]

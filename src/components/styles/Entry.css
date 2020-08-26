@@ -4,6 +4,15 @@
     box-shadow: var(--bs-entry);
     border-radius: var(--br-main);
     overflow: hidden;
+    transition: var(--transition);
+}
+
+.ui-entry:not(.editable) {
+    cursor: pointer;
+}
+
+.ui-entry:hover {
+    opacity: .75;
 }
 
 .ui-entry.capacious {

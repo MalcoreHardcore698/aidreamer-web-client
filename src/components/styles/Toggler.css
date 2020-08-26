@@ -49,13 +49,22 @@
 }
 
 .ui-toggler .toggle p {
-    padding: 0 15px;
+    padding: 0 5px;
 }
 
 .ui-toggler .toggle .icon {
     height: 48px;
     font-size: 2rem;
     margin-bottom: 5px;
+}
+
+.ui-toggler .toggle .ui-row {
+    grid-gap: 5px;
+}
+
+.ui-toggler .toggle .ui-row .icon {
+    height: auto;
+    font-size: initial;
 }
 
 .ui-toggler .toggle .icon img {

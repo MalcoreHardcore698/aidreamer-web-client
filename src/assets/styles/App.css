@@ -3,7 +3,10 @@
     --br-main: 8px;
     --bs-main: 0px 0px 2px rgba(97, 63, 161, 0.06);
     --border-main: 1px solid #EDEFF4;
+    --line-height: 1.25;
     --height-main: 40px;
+    --w-aside: 340px;
+    --grid-gap: 20px;
 
     --font-weight-section-title: bold;
     --padding-content: 15px;
@@ -69,10 +72,41 @@ a, a:link, a:visited, a:hover, a:active, a:focus {
     text-decoration: none;
 }
 
-.app,
+main,
 .ui-navigation {
     width: 90%;
-    margin: 45px 5% 20px 5%;
+    padding: 35px 5%;
+}
+
+main {
+    display: grid;
+    grid-gap: var(--grid-gap);
+    padding-bottom: 180px;
+}
+
+main.home {
+    grid-template-columns: var(--w-aside) 1fr;
+}
+
+main.profile,
+main.navigator,
+main.tours {
+    grid-template-columns: var(--w-aside) 1fr var(--w-aside);
+}
+
+main aside {
+    display: flex;
+    flex-direction: column;
+    grid-gap: var(--grid-gap);
+}
+
+main aside > .ui-toggler {
+    width: 100%;
+    max-width: 100%;
+}
+
+main aside > .ui-toggler > .toggle {
+    flex-grow: 1;
 }
 
 .ui-navigation {
@@ -81,6 +115,19 @@ a, a:link, a:visited, a:hover, a:active, a:focus {
     bottom: 0;
 }
 
-main {
-    
+.ui-navigation {
+    background: linear-gradient(180deg, rgba(196, 196, 196, 0) 0%, rgba(94, 63, 161, 0.47) 100%);
+    z-index: var(--z-ninetynine);
+}
+
+@media only screen and (max-width: 1280px) {
+    main.profile {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+@media only screen and (max-width: 798px) {
+    main {
+        grid-template-columns: 1fr !important;
+    }
 }
