@@ -32,23 +32,6 @@ export function userReducer(state = {}, action) {
     }
 }
 
-export function modalReducer(state = {}, action) {
-    switch (action.type) {
-        case C.OPEN_MODAL:
-            return {
-                key: action.payload.key,
-                content: action.payload.content
-            }
-        case C.CLOSE_MODAL:
-            return {
-                key: null,
-                content: null
-            }
-        default:
-            return state
-    }
-}
-
 export function documentReducer(state={}, { type, payload }) {
     switch (type) {
         case C.SET_DOCUMENT:
@@ -78,7 +61,6 @@ export function tableReducer(state=[], { type, payload }) {
 
 export const reducers = combineReducers({
     user: userReducer,
-    modal: modalReducer,
     document: documentReducer,
     documents: documentsReducer,
     table: tableReducer

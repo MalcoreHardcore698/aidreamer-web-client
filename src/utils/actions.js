@@ -80,21 +80,3 @@ export function setDataTable(table) {
         }
     }
 }
-
-export function openModal(key, content) {
-    return {
-        type: C.OPEN_MODAL,
-        payload: {
-            key, content
-        }
-    }
-}
-
-export function closeModal(key) {
-    return {
-        type: C.CLOSE_MODAL,
-        payload: {
-            key
-        }
-    }
-}

@@ -9,8 +9,5 @@ export default {
     ADD_OFFER: 'ADD_OFFER',
 
     ADD_CHAT: 'ADD_CHAT',
-    CLOSE_CHAT: 'CLOSE_CHAT',
-
-    OPEN_MODAL: 'OPEN_MODAL',
-    CLOSE_MODAL: 'CLOSE_MODAL'
+    CLOSE_CHAT: 'CLOSE_CHAT'
 }

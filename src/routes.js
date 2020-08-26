@@ -1,6 +1,5 @@
 import React from 'react'
 import Home from './components/Home'
-import Auth from './components/Auth'
 import Profile from './components/Profile'
 import Navigator from './components/Navigator'
 import Tours from './components/Tours'
@@ -11,11 +10,6 @@ export default [
         exact: true,
         path: '/',
         component: ({ showModal }) => <Home showModal={showModal} />
-    },
-    {
-        exact: true,
-        path: '/auth',
-        component: ({ showModal }) => <Auth showModal={showModal} />
     },
     {
         exact: true,

@@ -4,23 +4,24 @@ import { Provider } from 'react-redux'
 import { ApolloClient } from 'apollo-client'
 import { InMemoryCache } from 'apollo-cache-inmemory'
 import { ApolloProvider } from '@apollo/react-hooks'
-
 import { split, HttpLink } from '@apollo/client'
 import { getMainDefinition } from '@apollo/client/utilities'
 import { WebSocketLink } from '@apollo/client/link/ws'
-
-import App from './components/App'
-
 import * as serviceWorker from './serviceWorker'
 import storeFactory from './storeFactory'
+import App from './components/App'
+import { config } from './utils/config'
 import './index.css'
 
+const api = config.get('api')
+const apiWs = config.get('apiWs')
+
 const httpLink = new HttpLink({
-  uri: 'http://localhost:5000/graphql',
+  uri: `${api}/graphql`,
 })
 
 const wsLink = new WebSocketLink({
-  uri: 'ws://localhost:5000/graphql',
+  uri: `${apiWs}/graphql`,
   options: {
     reconnect: true
   }

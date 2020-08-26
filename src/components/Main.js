@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
-import { Switch, Route } from 'react-router-dom'
+import { Switch, Route, Redirect } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCompass, faPaperPlane, faTrophy, faBell, faCog } from '@fortawesome/free-solid-svg-icons'
 import Navigation from './ui/Navigation'
 import Container from './ui/Container'
 import Message from './ui/Message'
 import Modal from './ui/Modal'
+import Auth from '../components/Auth'
 
 import ImageAvatar from '../assets/images/avatar.png'
 import SVGLogo from '../assets/images/logo'
@@ -44,7 +45,7 @@ const InfoImage = () => {
     )
 }
 
-export default () => {
+export default ({ isAuthenticated }) => {
     const [state, setModal] = useState()
   
     const showModal = (state) => setModal(state)
@@ -62,7 +63,7 @@ export default () => {
 
     return (
         <React.Fragment>
-            <Navigation options={{
+            {(isAuthenticated) && <Navigation options={{
                 links, buttons: [
                     getButton(showModal, [
                         {
@@ -79,17 +80,27 @@ export default () => {
                         }
                     ], faCog)
                 ]
-            }} />
+            }} />}
 
             <Switch>
-                {routes.map((props, key) =>
+                {(isAuthenticated) ? routes.map((props, key) =>
                     <Route
                         {...props}
                         key={key}
                         component={() => props.component({ showModal })}
                     />
-                )}
+                ) :
+                    <Route
+                        exact
+                        path="/auth"
+                        component={({ showModal }) =>
+                            <Auth showModal={showModal} />
+                        }
+                    />
+                }
+                <Redirect to={(isAuthenticated) ? '/' : '/auth'} />
             </Switch>
+            
     
             <Modal options={{
                 routes: state,

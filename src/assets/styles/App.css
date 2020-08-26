@@ -127,6 +127,51 @@ main aside > .ui-toggler > .toggle {
     flex-grow: 1;
 }
 
+main.auth {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 12%;
+}
+
+main.auth form {
+    position: relative;
+    z-index: var(--z-ninetynine);
+
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    grid-gap: 15px;
+    width: 280px;
+
+    background: var(--color-entry);
+    box-shadow: var(--bs-entry);
+    border-radius: var(--br-main);
+    padding: var(--padding-content);
+}
+
+main.auth form > .ui-input,
+main.auth form > .ui-button {
+    flex-grow: 1;
+}
+
+main.auth form .logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+main.auth form .logo svg {
+    width: 128px;
+    height: 128px;
+    margin: 25px 25%;
+}
+
+main.auth form .logo svg path {
+    fill: var(--color-accent);
+}
+
 .ui-section.my-tours > .content > .ui-entry,
 main.tours .ui-section > .content > .ui-entry {
     flex-basis: auto;
@@ -183,6 +228,25 @@ main.tours .ui-section > .content > .ui-entry {
 
 .ui-chat form .ui-input {
     flex-grow: 100;
+}
+
+.tsparticles-canvas-el {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+}
+
+main.auth::before {
+    content: '';
+    position: fixed;
+    z-index: var(--z-primary);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, #9c27b0b0, #00968880);
 }
 
 @media only screen and (max-width: 1299px) {
