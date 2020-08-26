@@ -59,10 +59,10 @@ export default ({ showModal }) => {
 
                 <Search />
 
-                {matches.map(match =>
-                    <List options={{
+                {matches.map((match, key) =>
+                    <List key={key} options={{
                         list: match.participants,
-                        handler: () => showModal([
+                        handlerList: () => showModal([
                             {
                                 path: '/',
                                 title: 'Match',
@@ -135,11 +135,20 @@ export default ({ showModal }) => {
                     subtitle: 3,
                     manage: false
                 }}>
-                    <List options={{ list: [
-                        { image: ImageTeamAstralis, name: 'Cloud9' },
-                        { image: ImageTeamVirtus, name: 'Vurtus.pro' },
-                        { image: ImageTeamSpirit, name: 'Spirit' }
-                    ] }}>
+                    <List options={{
+                        list: [
+                            { image: ImageTeamAstralis, name: 'Cloud9' },
+                            { image: ImageTeamVirtus, name: 'Vurtus.pro' },
+                            { image: ImageTeamSpirit, name: 'Spirit' }
+                        ],
+                        handler: () => showModal([
+                            {
+                                path: '/',
+                                title: 'Team Profile',
+                                component: () => <MatchContent />
+                            }
+                        ])
+                    }}>
                         {({ item }) => (
                             <React.Fragment>
                                 <p className="avatar">
@@ -157,7 +166,16 @@ export default ({ showModal }) => {
                     subtitle: 5,
                     manage: false
                 }}>
-                    <List options={{ list: members }}>
+                    <List options={{
+                        list: members,
+                        handler: () => showModal([
+                            {
+                                path: '/',
+                                title: 'Player Profile',
+                                component: () => <MatchContent />
+                            }
+                        ])
+                    }}>
                         {({ item }) => (
                             <React.Fragment>
                                 <p className="avatar">
@@ -180,7 +198,16 @@ export default ({ showModal }) => {
                         { img: ImageTeamAstralis, name: 'Cloud9', legend: '73 wins' },
                         { img: ImageTeamVirtus, name: 'Vurtus.pro', legend: '45 wins' },
                         { img: ImageTeamSpirit, name: 'Spirit', legend: '13 wins' }
-                    ].map(unit => <Unit options={{ unit }} />)}
+                    ].map((unit, key) => <Unit key={key} options={{
+                        unit,
+                        handler: () => showModal([
+                            {
+                                path: '/',
+                                title: 'Team Profile',
+                                component: () => <MatchContent />
+                            }
+                        ])
+                    }} />)}
                 </Section>
             </aside>
         </main>

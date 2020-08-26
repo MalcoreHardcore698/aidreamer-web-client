@@ -73,3 +73,11 @@
     padding: 25px;
     flex-grow: 1;
 }
+
+.ui-section.chats > .content {
+    height: calc(100vh - 280px);
+}
+
+.ui-section.chats > .ui-message p {
+    height: 100%;
+}

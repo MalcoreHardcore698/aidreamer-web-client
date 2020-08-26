@@ -151,6 +151,40 @@ main.tours .ui-section > .content > .ui-entry {
     opacity: .75;
 }
 
+.ui-chat {
+    display: flex;
+    flex-direction: column;
+
+    background: white;
+    box-shadow: var(--bx-main);
+    border-radius: var(--br-main);
+    border: var(--border-main);
+
+    width: 100%;
+    height: calc(100vh - 280px);
+
+    overflow: hidden;
+}
+
+.ui-chat .messages {
+    flex-grow: 100;
+    padding: var(--padding-content);
+}
+
+.ui-chat .messages .ui-message {
+    height: 100%;
+}
+
+.ui-chat form {
+    padding: var(--padding-content);
+    background: var(--color-statusbar-background);
+    border-block-start: var(--border-main);
+}
+
+.ui-chat form .ui-input {
+    flex-grow: 100;
+}
+
 @media only screen and (max-width: 1299px) {
     main,
     .ui-navigation {

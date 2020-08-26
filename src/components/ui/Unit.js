@@ -4,11 +4,12 @@ import '../styles/Unit.css'
 
 export default ({ options }) => {
     const {
-        unit
+        unit,
+        handler
     } = options || {}
 
     return (
-        <div className="ui-unit">
+        <div className="ui-unit" onClick={handler}>
             <div className="image">
                 <img src={unit.img} alt={unit.name} />
             </div>

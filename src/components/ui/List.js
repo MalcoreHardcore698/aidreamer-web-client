@@ -13,13 +13,21 @@ export default (props) => {
 
     const {
         list,
-        handler
+        handler,
+        handlerList
     } = props.options || {}
 
     return (
-        <div className="ui-list" onClick={handler}>
-            {list.map(item =>
-                <div className="ui-item">
+        <div
+            className={`ui-list${(handlerList) ? ' clickable' : ''}`}
+            onClick={handlerList}
+        >
+            {list.map((item, key) =>
+                <div
+                    key={key}
+                    className="ui-item"
+                    onClick={handler}
+                >
                     <Children item={item} />
                 </div>
             )}
