@@ -8,6 +8,7 @@ import Message from './ui/Message'
 import Button from './ui/Button'
 import Search from './ui/Search'
 import Entry from './ui/Entry'
+import Match from './ui/Match'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFilter } from '@fortawesome/free-solid-svg-icons'
 import targets from '../stores/targets'
@@ -29,14 +30,6 @@ const TourContent = () => {
         <Container>
             <Message text="No Content" padding />
         </Container>
-    )
-}
-
-const Match = () => {
-    return (
-        <div className="ui-match">
-            <p>Match</p>
-        </div>
     )
 }
 

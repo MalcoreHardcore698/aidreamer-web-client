@@ -1,0 +1,27 @@
+.ui-participant {
+    display: grid;
+    grid-template-columns: 32px 1fr 32px;
+    align-content: center;
+
+    color: var(--color-graydark);
+}
+
+.ui-participant .avatar img {
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+}
+
+.ui-participant .name {
+    display: flex;
+    align-self: center;
+}
+
+.ui-participant .score {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, .045);
+    width: 10px;
+    height: 10px;
+}

@@ -1,0 +1,16 @@
+.ui-match {
+    display: flex;
+    flex-direction: column;
+
+    background: white;
+    box-shadow: var(--bx-main);
+    border-radius: var(--br-main);
+    border: var(--border-main);
+    padding: var(--padding-content);
+    
+    transition: var(--transition);
+}
+
+.ui-match:hover {
+    opacity: .75;
+}
