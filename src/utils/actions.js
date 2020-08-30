@@ -1,19 +1,10 @@
 import C from './types'
 
-export function authenticateUser(auth) {
-    if (auth) localStorage.setItem('user', JSON.stringify(auth.id))
-
+export function setUser(user) {
     return {
-        type: C.USER_AUTH,
-        payload: auth
-    }
-}
-
-export function preferencesUser(preferences) {
-    return {
-        type: C.USER_PREFERENCES,
+        type: C.SET_USER,
         payload: {
-            preferences
+            user
         }
     }
 }

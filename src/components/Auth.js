@@ -1,113 +1,193 @@
-import React, { useState } from 'react'
-// import { useQuery } from '@apollo/react-hooks'
+import React, { useState, useEffect, useContext } from 'react'
+import { useDispatch } from 'react-redux'
+import { useMutation } from '@apollo/react-hooks'
+import { AuthContext } from './AuthContext'
 import Input from './ui/Input'
 import Button from './ui/Button'
+import Divider from './ui/Divider'
+import Alert from './ui/Alert'
 import ImageLogo from '../assets/images/logo.js'
-import Particles from 'react-tsparticles'
+import { LOGIN, REGISTER } from '../utils/queries'
+import { setUser } from '../utils/actions'
+
+const Login = ({ setLoading, setError }) => {
+    const auth = useContext(AuthContext)
+    const dispatch = useDispatch()
+
+    const [ onLogin, { loading } ] = useMutation(LOGIN)
+
+    const [name, setName] = useState('')
+    const [password, setPassword] = useState('')
+
+    useEffect(() => {
+        setLoading(loading)
+    }, [loading, setLoading])
+
+    return (
+        <React.Fragment>
+            <Input options={{
+                type: 'text',
+                value: name,
+                placeholder: 'Enter name',
+                onChange: (e) => {
+                    setName(e.target.value)
+                }
+            }} />
+            <Input options={{
+                type: 'password',
+                value: password,
+                placeholder: 'Enter Password',
+                onChange: (e) => {
+                    setPassword(e.target.value)
+                }
+            }} />
+            <Button options={{
+                type: 'inactive',
+                handler: () => {
+                    onLogin({
+                        variables: {
+                            name, password
+                        }
+                    })
+                    .then(data => {
+                        const user = data.data.login
+                        auth.login(user.token, user.id)
+                        dispatch(setUser(user))
+                    })
+                    .catch(err => {
+                        const msg = err.message.split(': ')[1]
+                        setError(msg)
+                    })
+
+                    setName('')
+                    setPassword('')
+                }
+            }}>
+                <p>Sign In</p>
+            </Button>
+        </React.Fragment>
+    )
+}
+
+const Register = ({ setLoading, setError }) => {
+    const auth = useContext(AuthContext)
+    const dispatch = useDispatch()
+
+    const [ onRegister, { loading } ] = useMutation(REGISTER)
+
+    const [name, setName] = useState('')
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [confirmPassword, setConfirmPassword] = useState('')
+
+    useEffect(() => {
+        setLoading(loading)
+    }, [loading, setLoading])
+
+    return (
+        <React.Fragment>
+            <Input options={{
+                type: 'text',
+                value: name,
+                placeholder: 'Enter name',
+                onChange: (e) => {
+                    setName(e.target.value)
+                }
+            }} />
+            <Input options={{
+                type: 'email',
+                value: email,
+                placeholder: 'Enter email',
+                onChange: (e) => {
+                    setEmail(e.target.value)
+                }
+            }} />
+            <Input options={{
+                type: 'password',
+                value: password,
+                placeholder: 'Enter password',
+                onChange: (e) => {
+                    setPassword(e.target.value)
+                }
+            }} />
+            <Input options={{
+                type: 'password',
+                value: confirmPassword,
+                placeholder: 'Enter confirm password',
+                onChange: (e) => {
+                    setConfirmPassword(e.target.value)
+                }
+            }} />
+            <Button options={{
+                type: 'inactive',
+                handler: () => {
+                    if (!name && !email && !password && !confirmPassword)
+                        return null
+
+                    onRegister({
+                        variables: {
+                            name, email,
+                            password, confirmPassword
+                        }
+                    })
+                    .then(data => {
+                        const user = data.data.register
+                        auth.login(user.token, user.id)
+                        dispatch(setUser(user))
+                    })
+                    .catch(err => {
+                        const msg = err.message.split(': ')[1]
+                        setError(msg)
+                    })
+
+                    setName('')
+                    setEmail('')
+                    setPassword('')
+                    setConfirmPassword('')
+                }
+            }}>
+                <p>Sign Up</p>
+            </Button>
+        </React.Fragment>
+    )
+}
 
 export default () => {
-    // const { loading, error, data } = useQuery()
-    const [login, setLogin] = useState('')
-    const [password, setPassword] = useState('')
+    const [authMethod, setAuthMethod] = useState('login')
+
+    const [loading, setLoading] = useState('')
+    const [error, setError] = useState('')
 
     return (
         <main className="auth">
-            <form>
+            {(error) && <Alert type="error" message={error} />}
+            <form className={`${(loading) ? 'loading' : 'form'}`}>
                 <div className="logo">
                     {ImageLogo}
                 </div>
 
-                <Input options={{
-                    type: 'text',
-                    value: login,
-                    placeholder: 'Enter Login',
-                    onChange: (e) => {
-                        setLogin(e.target.value)
-                    }
-                }} />
-                <Input options={{
-                    type: 'password',
-                    value: password,
-                    placeholder: 'Enter Password',
-                    onChange: (e) => {
-                        setPassword(e.target.value)
-                    }
-                }} />
+                {(authMethod === 'login')
+                    ? <Login setLoading={setLoading} setError={setError} />
+                    : <Register setLoading={setLoading} setError={setError} />
+                }
+
+                <Divider distance={15} horizontal />
+
                 <Button options={{
-                    type: 'inactive',
+                    type: 'inactive clear',
                     handler: () => {
-                        console.log({
-                            login, password
-                        })
-                        setLogin('')
-                        setPassword('')
+                        if (authMethod === 'login')
+                            setAuthMethod('register')
+                        else
+                            setAuthMethod('login')
                     }
                 }}>
-                    <p>Sign In</p>
+                    {(authMethod === 'login')
+                        ? <p>New to AidReamer? Sign up now</p>
+                        : <p>Already have an account?</p>
+                    }
                 </Button>
             </form>
-            <Particles
-                id="tsparticles"
-                options={{
-                    "particles": {
-                        "number": {
-                          "value": 10,
-                          "density": {
-                            "enable": true,
-                            "value_area": 800
-                          }
-                        },
-                        "color": {
-                          "value": "#5E3FA1",
-                        },
-                        "shape": {
-                          "type": "circle",
-                          "stroke": {
-                            "width": 45,
-                            "color": "#5E3FA1"
-                          },
-                          "polygon": {
-                            "nb_sides": 6
-                          },
-                        },
-                        "opacity": {
-                          "value": .045,
-                          "random": true,
-                          "anim": {
-                            "enable": false,
-                            "speed": 0.1,
-                            "opacity_min": .01,
-                            "sync": false
-                          }
-                        },
-                        "size": {
-                          "value": 175,
-                          "random": true,
-                          "anim": {
-                            "enable": true,
-                            "speed": .5,
-                            "size_min": 0.45,
-                            "sync": false
-                          }
-                        },
-                        "move": {
-                          "enable": true,
-                          "speed": 2,
-                          "direction": "none",
-                          "random": true,
-                          "straight": true,
-                          "out_mode": "out",
-                          "bounce": true,
-                          "attract": {
-                            "enable": true,
-                            "rotateX": 600,
-                            "rotateY": 1200
-                          }
-                        }
-                      },
-                      "retina_detect": true
-                }}
-            />
         </main>
     )
 }

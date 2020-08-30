@@ -9,6 +9,9 @@
     border-radius: var(--br-main);
     background: transparent;
     box-shadow: var(--bs-entry);
+    font-weight: 600;
+    font-size: 14px;
+    font-family: 'Roboto', sans-serif;
     cursor: pointer;
     color: var(--color-graylite);
     transition: var(--transition);
@@ -18,9 +21,13 @@
     width: var(--height-main);
 }
 
-.ui-button:not(.disabled):not([disabled]):hover {
+.ui-button:not(.disabled):not(.clear):not([disabled]):hover {
     color: var(--color-graydark);
     border: 1px solid var(--color-graydark);
+}
+
+.ui-button.clear:hover {
+    color: var(--color-graydark);
 }
 
 .ui-button.active,
@@ -71,6 +78,12 @@
 
 .ui-button.mbs15 {
     margin-block-start: 15px;
+}
+
+.ui-button.clear {
+    height: auto;
+    border: none;
+    background: none;
 }
 
 .react-ripples {

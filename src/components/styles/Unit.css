@@ -6,7 +6,12 @@
 
     font-weight: 600;
     cursor: pointer;
+    border-radius: 10px;
     transition: var(--transition);
+}
+
+.ui-unit.active {
+    background: var(--color-text);
 }
 
 .ui-unit:hover {
@@ -48,8 +53,19 @@
     color: var(--color-graylite);
 }
 
+.ui-unit.active .content .name ,
+.ui-unit.active .content .legend {
+    color: white;
+}
+
 .ui-unit .ui-counter-badge {
     display: flex;
     justify-content: center;
     justify-self: end;
+    margin-inline-end: 10px;
+}
+
+.ui-unit.active .ui-counter-badge {
+    background: white !important;
+    color: var(--color-accent) !important;
 }

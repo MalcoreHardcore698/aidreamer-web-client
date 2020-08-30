@@ -151,6 +151,31 @@ main.auth form {
     padding: var(--padding-content);
 }
 
+
+main.auth form::before {
+    content: '';
+    display: none;
+    position: absolute;
+    z-index: var(--z-ninetynine);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    border-radius: var(--br-main);
+    backdrop-filter: blur(0);
+    opacity: 0;
+
+    transition: var(--transition);
+}
+
+main.auth form.loading::before {
+    display: flex;
+    opacity: 1;
+
+    backdrop-filter: blur(5px);
+}
+
 main.auth form > .ui-input,
 main.auth form > .ui-button {
     flex-grow: 1;
@@ -170,6 +195,10 @@ main.auth form .logo svg {
 
 main.auth form .logo svg path {
     fill: var(--color-accent);
+}
+
+main.auth .ui-alert {
+    width: 280px;
 }
 
 .ui-section.my-tours > .content > .ui-entry,
@@ -236,17 +265,6 @@ main.tours .ui-section > .content > .ui-entry {
     left: 0;
     width: 100%;
     height: 100vh;
-}
-
-main.auth::before {
-    content: '';
-    position: fixed;
-    z-index: var(--z-primary);
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(45deg, #9c27b0b0, #00968880);
 }
 
 @media only screen and (max-width: 1299px) {

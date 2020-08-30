@@ -3,15 +3,9 @@ import C from './types'
 
 export function userReducer(state = {}, action) {
     switch (action.type) {
-        case C.USER_AUTH:
-            return (!action.payload) ? null : ({
-                ...state,
-                ...action.payload
-            })
-        case C.USER_PREFERENCES:
+        case C.SET_USER:
             return {
-                ...state,
-                preferences: action.payload.preferences
+                ...action.payload.user
             }
         case C.ADD_CHAT:
             return {

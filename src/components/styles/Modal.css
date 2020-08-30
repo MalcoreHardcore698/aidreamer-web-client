@@ -30,11 +30,16 @@
     position: relative;
     left: 0;
     right: 0;
+    width: 60%;
     background: white;
     border: var(--border-main);
     border-radius: var(--br-main);
     box-shadow: var(--bs-main);
     z-index: var(--z-one-hundred-one);
+}
+
+.ui-modal .wrapper .content > p {
+    margin-block-start: 10px;
 }
 
 .ui-modal .wrapper.slideOutLeft {
@@ -72,6 +77,18 @@
     text-align: center;
     margin: 0;
     padding: 15px 85px;
+}
+
+.ui-modal .wrapper .ui-entry {
+    cursor: default;
+}
+
+.ui-modal .wrapper .ui-entry:hover {
+    opacity: 1;
+}
+
+.ui-modal .wrapper .ui-entry .content-wrapper {
+    padding: 0 0 var(--padding-content) 0;
 }
 
 @keyframes slideOutLeft {
@@ -115,5 +132,18 @@
     to {
         left: 0;
         opacity: 1;
+    }
+}
+
+@media only screen and (max-width: 998px) {
+    .ui-modal .wrapper {
+        max-width: 100%;
+        width: 80%;
+    }
+}
+
+@media only screen and (max-width: 768px) {
+    .ui-modal .wrapper {
+        width: calc(100% - 30px);
     }
 }

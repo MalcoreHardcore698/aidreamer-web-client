@@ -5,11 +5,12 @@ import '../styles/Unit.css'
 export default ({ options }) => {
     const {
         unit,
+        active,
         handler
     } = options || {}
 
     return (
-        <div className="ui-unit" onClick={handler}>
+        <div className={`ui-unit${(unit?.id === active?.id) ? ' active' : ''}`} onClick={handler}>
             <div className="image">
                 <img src={unit.img} alt={unit.name} />
             </div>

@@ -1,12 +1,16 @@
 .ui-input {
     height: var(--height-main);
     outline: none;
-    color: var(--color-graylite);
     border: 1px solid var(--color-graylite);
     border-radius: var(--br-main);
     background: transparent;
     padding: 0 15px;
+
     font-weight: 600;
+    font-size: 14px;
+    font-family: 'Roboto', sans-serif;
+    color: var(--color-text);
+
     cursor: text;
     transition: var(--transition);
 }
@@ -21,6 +25,6 @@
     border: 1px solid var(--color-accent);
 }
 
-.ui-input:focus::placeholder , .ui-input:active::placeholder {
+.ui-input:focus::placeholder, .ui-input:active::placeholder {
     color: var(--color-accent);
 }

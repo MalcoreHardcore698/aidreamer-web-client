@@ -81,3 +81,7 @@
 .ui-section.chats > .ui-message p {
     height: 100%;
 }
+
+.ui-section.my-articles .content > .ui-button {
+    width: 100%;
+}

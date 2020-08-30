@@ -9,26 +9,26 @@ export default [
     {
         exact: true,
         path: '/',
-        component: ({ showModal }) => <Home showModal={showModal} />
+        component: ({ showModal, hideModal }) => <Home showModal={showModal} hideModal={hideModal} />
     },
     {
         exact: true,
         path: '/profile',
-        component: ({ showModal }) => <Profile showModal={showModal} />
+        component: ({ showModal, hideModal }) => <Profile showModal={showModal} hideModal={hideModal} />
     },
     {
         exact: true,
         path: '/navigator',
-        component: ({ showModal }) => <Navigator showModal={showModal} />
+        component: ({ showModal, hideModal }) => <Navigator showModal={showModal} hideModal={hideModal} />
     },
     {
         exact: true,
         path: '/tours',
-        component: ({ showModal }) => <Tours showModal={showModal} />
+        component: ({ showModal, hideModal }) => <Tours showModal={showModal} hideModal={hideModal} />
     },
     {
         exact: true,
         path: '/chats',
-        component: ({ showModal }) => <Chats showModal={showModal} />
+        component: ({ showModal, hideModal }) => <Chats showModal={showModal} hideModal={hideModal} />
     }
 ]

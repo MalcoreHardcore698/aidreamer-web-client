@@ -67,7 +67,7 @@ export default () => {
 
                 {units.map((unit, key) =>
                     <Unit key={key} options={{
-                        unit,
+                        unit, active: chat,
                         handler: () => setChat(unit)
                     }} />
                 )}

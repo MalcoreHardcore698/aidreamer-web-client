@@ -1,18 +1,32 @@
 .ui-textarea {
-    height: var(--height-main);
+    height: 128px;
     outline: none;
-    color: var(--color-graylite);
     border: 1px solid var(--color-graylite);
     border-radius: var(--br-main);
     background: transparent;
     padding: 15px;
+
     font-weight: 600;
+    font-size: 14px;
+    font-family: 'Roboto', sans-serif;
+    color: var(--color-text);
+
     cursor: text;
-    font-family: inherit;
     transition: all .15s ease;
 }
 
 .ui-textarea::placeholder {
     color: var(--color-graylite);
-    font-family: inherit;
+    font-weight: 600;
+    font-size: 14px;
+    font-family: 'Roboto', sans-serif;
+}
+
+.ui-textarea:focus, .ui-textarea:active {
+    color: var(--color-accent);
+    border: 1px solid var(--color-accent);
+}
+
+.ui-textarea:focus::placeholder, .ui-textarea:active::placeholder {
+    color: var(--color-accent);
 }

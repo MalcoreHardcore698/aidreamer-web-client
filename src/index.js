@@ -4,9 +4,10 @@ import { Provider } from 'react-redux'
 import { ApolloClient } from 'apollo-client'
 import { InMemoryCache } from 'apollo-cache-inmemory'
 import { ApolloProvider } from '@apollo/react-hooks'
-import { split, HttpLink } from '@apollo/client'
+import { split } from '@apollo/client'
 import { getMainDefinition } from '@apollo/client/utilities'
 import { WebSocketLink } from '@apollo/client/link/ws'
+import { createUploadLink } from 'apollo-upload-client'
 import * as serviceWorker from './serviceWorker'
 import storeFactory from './storeFactory'
 import App from './components/App'
@@ -16,15 +17,15 @@ import './index.css'
 const api = config.get('api')
 const apiWs = config.get('apiWs')
 
-const httpLink = new HttpLink({
-  uri: `${api}/graphql`,
-})
-
 const wsLink = new WebSocketLink({
   uri: `${apiWs}/graphql`,
   options: {
     reconnect: true
   }
+})
+
+const uploadLink = createUploadLink({
+  uri: `${api}/graphql`
 })
 
 const splitLink = split(
@@ -36,7 +37,7 @@ const splitLink = split(
     );
   },
   wsLink,
-  httpLink,
+  uploadLink
 )
 
 const client = new ApolloClient({

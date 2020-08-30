@@ -1,5 +1,97 @@
 import gql from 'graphql-tag'
 
+export const LOGIN = gql`
+    mutation login(
+        $name: String!
+        $password: String!
+    ) {
+        login(
+            name: $name
+            password: $password
+        ) {
+            id
+            name
+            email
+            phone
+            role
+            balance
+            level
+            experience
+            avatar {
+                id
+                name
+                path
+            }
+            preferences {
+                id
+                title
+                color
+                slogan
+                icon {
+                    name
+                    path
+                }
+            }
+            chats {
+                chatId
+            }
+            token
+            isVerifiedEmail
+            isVerifiedPhone
+            isNotified
+        }
+    }
+`
+
+export const REGISTER = gql`
+    mutation register(
+        $name: String!
+        $email: String!
+        $password: String!
+        $confirmPassword: String!
+    ) {
+        register(
+            registerInput: {
+                name: $name
+                email: $email
+                password: $password
+                confirmPassword: $confirmPassword
+            }
+        ) {
+            id
+            name
+            email
+            phone
+            role
+            balance
+            level
+            experience
+            avatar {
+                id
+                name
+                path
+            }
+            preferences {
+                id
+                title
+                color
+                slogan
+                icon {
+                    name
+                    path
+                }
+            }
+            chats {
+                chatId
+            }
+            token
+            isVerifiedEmail
+            isVerifiedPhone
+            isNotified
+        }
+    }
+`
+
 export const GET_ALL_OFFERS = gql`
     query allOffers($status: Status!) {
         allOffers(status: $status) {
@@ -46,21 +138,160 @@ export const GET_ALL_HUBS = gql`
     }
 `
 
-export const GET_ALL_NEWS = gql`
-    query allNews($status: Status!) {
-        allNews(status: $status) {
+export const GET_USER_ARTICLES = gql`
+    query allUserNews($id: ID!) {
+        allUserNews(id: $id) {
             id
             title
+            description
             body
+            views
             image {
-                id
-                name
                 path
+            }
+            comments {
+                message
             }
             hub {
                 title
             }
-            datePublished
+            author {
+                name
+                avatar {
+                    path
+                }
+            }
+            createdAt
+        }
+    }
+`
+
+export const ADD_NEWS = gql`
+    mutation addNews(
+        $author: ID!
+        $title: String!
+        $description: String!
+        $body: String!
+        $hub: ID!
+        $image: Upload
+        $status: Status!
+    ) {
+        addNews(
+            author: $author
+            title: $title
+            description: $description
+            body: $body
+            hub: $hub
+            image: $image
+            status: $status
+        )
+    }
+`
+
+export const EDIT_NEWS = gql`
+    mutation editNews(
+        $id: ID!
+        $title: String
+        $description: String
+        $body: String
+        $hub: ID
+        $image: Upload
+    ) {
+        editNews(
+            id: $id
+            title: $title
+            description: $description
+            body: $body
+            hub: $hub
+            image: $image
+        )
+    }
+`
+
+export const GET_ALL_ARTICLES = gql`
+    query allNews($status: Status!) {
+        allNews(status: $status) {
+            id
+            title
+            description
+            body
+            views
+            image {
+                path
+            }
+            comments {
+                message
+            }
+            hub {
+                title
+            }
+            author {
+                name
+                avatar {
+                    path
+                }
+            }
+            createdAt
+        }
+    }
+`
+
+export const SUB_USER_ARTICLES = gql`
+    subscription userArticles(
+        $id: ID!
+    ) {
+        userArticles(
+            id: $id
+        ) {
+            id
+            title
+            description
+            body
+            views
+            image {
+                path
+            }
+            comments {
+                message
+            }
+            hub {
+                title
+            }
+            author {
+                name
+                avatar {
+                    path
+                }
+            }
+            createdAt
+        }
+    }
+`
+
+export const SUB_ARTICLES = gql`
+    subscription articles {
+        articles {
+            id
+            title
+            description
+            body
+            views
+            image {
+                path
+            }
+            comments {
+                message
+            }
+            hub {
+                title
+            }
+            author {
+                name
+                avatar {
+                    path
+                }
+            }
+            createdAt
         }
     }
 `
@@ -70,6 +301,7 @@ export const GET_NEWS = gql`
         getNews(id: $id) {
             id
             title
+            description
             body
             image {
                 id
@@ -82,8 +314,15 @@ export const GET_NEWS = gql`
             }
             source
             url
-            datePublished
         }
+    }
+`
+
+export const DELETE_ARTICLE = gql`
+    mutation deleteNews(
+        $id: [ID!]!
+    ) {
+        deleteNews(id: $id)
     }
 `
 
@@ -185,8 +424,6 @@ export const GET_USER = gql`
             chats {
                 chatId
             }
-            dateLastAuth
-            dateRegistration
             isVerifiedEmail
             isVerifiedPhone
             isNotified
