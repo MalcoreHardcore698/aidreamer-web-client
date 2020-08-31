@@ -17,23 +17,24 @@ import Entry from './ui/Entry'
 import AddArticle from './content/AddArticle'
 import EditArticle from './content/EditArticle'
 import ViewArticle from './content/ViewArticle'
-import DeleteEntry from './content/DeleteEntry'
+import DeleteEntries from './content/DeleteEntries'
 
 import targets from '../stores/targets'
-import hubs from '../stores/hubs'
 
 import { config } from '../utils/config'
 import {
+    GET_ALL_HUBS,
     GET_USER_ARTICLES,
     GET_ALL_ARTICLES,
-    DELETE_ARTICLE,
+    DELETE_ARTICLES,
+    SUB_ALL_HUBS,
     SUB_ARTICLES,
     SUB_USER_ARTICLES
 } from '../utils/queries'
 
 const api = config.get('api')
 
-export default ({ showModal, hideModal }) => {
+export default ({ showModal }) => {
     const state = useSelector(state => state)
 
     if (!state.user) return null
@@ -64,7 +65,7 @@ export default ({ showModal, hideModal }) => {
                             {
                                 path: '/',
                                 title: 'Add Article',
-                                component: ({ jump }) => <AddArticle jump={jump} hideModal={hideModal} />
+                                component: ({ jump, close }) => <AddArticle jump={jump} close={close} />
                             }
                         ])
                     }
@@ -75,37 +76,37 @@ export default ({ showModal, hideModal }) => {
                 <Query query={GET_USER_ARTICLES} variables={{ id: state.user.id }}>
                     {({ data, refetch }) =>
                         <Subscription query={SUB_USER_ARTICLES} variables={{ id: state.user.id }} refetch={refetch}>
-                            {({ subData }) => ((subData && subData.articles) || data.allUserNews).map((news, key) =>
+                            {({ subData }) => ((subData && subData.articles) || data.allUserArticles).map((article, key) =>
                                 <Entry key={key} options={{
                                     editable: true,
                                     capacious: false,
                                     manageOffset: true,
                                     statusBar: [
-                                        { lite: 'Comments', dark: news.comments.length || 0 },
-                                        { lite: 'Views', dark: news.views || 0 },
+                                        { lite: 'Comments', dark: article.comments.length || 0 },
+                                        { lite: 'Views', dark: article.views || 0 },
                                         {
-                                            lite: <Moment date={new Date(new Date().setTime(news.createdAt))} format="MMM, DD" />,
-                                            dark: <Moment date={new Date(new Date().setTime(news.createdAt))} format="h:m" />
+                                            lite: <Moment date={new Date(new Date().setTime(article.createdAt))} format="MMM, DD" />,
+                                            dark: <Moment date={new Date(new Date().setTime(article.createdAt))} format="h:m" />
                                         }
                                     ],
                                     handlerEdit: () => showModal([
                                         {
                                             path: '/',
                                             title: 'Edit Article',
-                                            component: () => <EditArticle news={news} hideModal={hideModal} />
+                                            component: ({ close }) => <EditArticle article={article} close={close} />
                                         }
                                     ]),
                                     handlerDelete: () => showModal([
                                         {
                                             path: '/',
                                             title: 'Delete Article',
-                                            component: () => <DeleteEntry entry={news} query={DELETE_ARTICLE} hideModal={hideModal} />
+                                            component: ({ close }) => <DeleteEntries entry={article} query={DELETE_ARTICLES} close={close} />
                                         }
                                     ])
                                 }}>
-                                    <img className="image" src={(news.image.path).replace('./', `${api}/`)} alt="Article" />
-                                    <h2 className="title">{news.title}</h2>
-                                    <p className="paragraph">{news.description}</p>
+                                    <img className="image" src={(article.image.path).replace('./', `${api}/`)} alt="Article" />
+                                    <h2 className="title">{article.title}</h2>
+                                    <p className="paragraph">{article.description}</p>
                                 </Entry>
                             )}
                         </Subscription>
@@ -114,54 +115,66 @@ export default ({ showModal, hideModal }) => {
             </aside>
 
             <aside>
-                <Toggler options={{ type: 'auto', targets: hubs.map((hub, key) => ({
-                    type: hub.type,
-                    value: <Row key={key}>
-                                <div className="icon">
-                                    <FontAwesomeIcon icon={hub.icon} />
-                                </div>
-                                <p>{hub.title}</p>
-                            </Row>
-                        }))
-                    }}
-                />
+                <Query query={GET_ALL_HUBS} variables={{ status: 'PUBLISHED' }}>
+                    {({ data, refetch }) => (data.allHubs.length > 1) && (
+                        <Subscription query={SUB_ALL_HUBS} variables={{ status: 'PUBLISHED' }} refetch={refetch}>
+                            {({ subData }) => (
+                                <Toggler options={{
+                                    type: 'auto',
+                                    targets: ((subData && subData.hubs) || data.allHubs).map((hub, key) => ({
+                                        type: hub.id,
+                                        value: (
+                                            <Row key={key}>
+                                                {(hub.icon && hub.icon.path) &&
+                                                <div className="icon">
+                                                    <img src={(hub.icon.path).replace('./', `${api}/`)} alt={hub.title} />
+                                                </div>}
+                                                <p>{hub.title}</p>
+                                            </Row>
+                                        )}))
+                                    }}
+                                />
+                            )}
+                        </Subscription>
+                    )}
+                </Query>
 
                 <Section options={{
-                    name: 'news',
-                    title: 'News',
+                    name: 'articles',
+                    title: 'Articles',
                     subtitle: 'All',
                     targets
                 }}>
                     <Query query={GET_ALL_ARTICLES} variables={{ status: 'PUBLISHED' }}>
                         {({ data, refetch }) =>
-                            <Subscription query={SUB_ARTICLES} refetch={refetch}>
-                                {({ subData }) => ((subData && subData.articles) || data.allNews).map((news, key) =>
+                            <Subscription query={SUB_ARTICLES} variables={{ status: 'PUBLISHED' }} refetch={refetch}>
+                                {({ subData }) => ((subData && subData.articles) || data.allArticles).map((article, key) =>
                                     <Entry key={key} options={{
                                         capacious: false,
                                         userBar: {
-                                            name: news.author.name,
-                                            status: news.author.status || 'Online',
-                                            avatar: news.author.avatar?.path
+                                            name: article.author.name,
+                                            status: article.author.status || 'Online',
+                                            avatar: article.author.avatar?.path
                                         },
                                         statusBar: [
-                                            { lite: 'Comments', dark: news.comments.length || 0 },
-                                            { lite: 'Views', dark: news.views || 0 },
+                                            { lite: 'Comments', dark: article.comments.length || 0 },
+                                            { lite: 'Views', dark: article.views || 0 },
                                             {
-                                                lite: <Moment date={new Date(new Date().setTime(news.createdAt))} format="MMM, DD" />,
-                                                dark: <Moment date={new Date(new Date().setTime(news.createdAt))} format="h:m" />
+                                                lite: <Moment date={new Date(new Date().setTime(article.createdAt))} format="MMM, DD" />,
+                                                dark: <Moment date={new Date(new Date().setTime(article.createdAt))} format="h:m" />
                                             }
                                         ],
                                         handler: () => showModal([
                                             {
                                                 path: '/',
-                                                title: news.title,
-                                                component: () => <ViewArticle news={news} />
+                                                title: article.title,
+                                                component: () => <ViewArticle article={article} />
                                             }
                                         ])
                                     }}>
-                                        <img className="image" src={(news.image.path).replace('./', `${api}/`)} alt="Article" />
-                                        <h2 className="title">{news.title}</h2>
-                                        <p className="paragraph">{news.description}</p>
+                                        <img className="image" src={(article.image.path).replace('./', `${api}/`)} alt="Article" />
+                                        <h2 className="title">{article.title}</h2>
+                                        <p className="paragraph">{article.description}</p>
                                     </Entry>
                                 )}
                             </Subscription>

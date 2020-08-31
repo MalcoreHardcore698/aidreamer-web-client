@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
+import Query from '../ui/Query'
 import Mutation from '../ui/Mutation'
 import Container from '../ui/Container'
 import Button from '../ui/Button'
@@ -7,9 +8,9 @@ import Input from '../ui/Input'
 import TextArea from '../ui/TextArea'
 import Select from '../ui/Select'
 import Dropzone from '../ui/Dropzone'
-import { ADD_NEWS } from '../../utils/queries'
+import { GET_ALL_HUBS, ADD_ARTICLE } from '../../utils/queries'
 
-export default ({ hideModal }) => {
+export default ({ status=false, close }) => {
     const state = useSelector(state => state)
     
     const [title, setTitle] = useState('')
@@ -17,6 +18,7 @@ export default ({ hideModal }) => {
     const [body, setBody] = useState('')
     const [hub, setHub] = useState('')
     const [image, setImage] = useState('')
+    const [_status, _setStatus] = useState('')
 
     return (
         <Container>
@@ -41,19 +43,36 @@ export default ({ hideModal }) => {
                 }
             }} />
 
-            <Select options={{
-                options: [{ value: '5f4ac735742b1043bc459b55', label: 'Valorant' }],
+            <Query query={GET_ALL_HUBS}>
+                {({ data }) => (
+                    <Select options={{
+                        options: data.allHubs.map(hub => ({
+                            value: hub.id,
+                            label: hub.title
+                        })),
+                        onChange: (e) => {
+                            setHub(e.value)
+                        }
+                    }} />
+                )}
+            </Query>
+
+            {(status) && <Select options={{
+                options: [
+                    { value: 'MODERATION', label: 'MODERATION' },
+                    { value: 'PUBLISHED', label: 'PUBLISHED' }
+                ],
                 onChange: (e) => {
-                    setHub(e.value)
+                    _setStatus(e.value)
                 }
-            }} />
+            }} />}
 
             <Dropzone options={{
                 name: 'image',
                 image, setImage
             }} />
 
-            <Mutation query={ADD_NEWS}>
+            <Mutation query={ADD_ARTICLE}>
                 {({ action }) => (
                     <Button options={{
                         type: 'inactive',
@@ -64,13 +83,12 @@ export default ({ hideModal }) => {
                                 hub, status: 'PUBLISHED'
                             }
 
-                            if (image) {
-                                variables.image = image
-                            }
+                            if (image) variables.image = image
+                            if (status) variables.status = _status
 
                             await action({ variables })
 
-                            hideModal()
+                            close()
                         }
                     }}>
                         <p>Add</p>

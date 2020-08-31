@@ -1,4 +1,6 @@
 import React from 'react'
+import Query from './ui/Query'
+import Subscription from './ui/Subscription'
 import Row from './ui/Row'
 import Container from './ui/Container'
 import Headline from './ui/Headline'
@@ -10,10 +12,16 @@ import Search from './ui/Search'
 import Entry from './ui/Entry'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFilter } from '@fortawesome/free-solid-svg-icons'
+import {
+    GET_ALL_HUBS,
+    SUB_ALL_HUBS
+} from '../utils/queries'
 import targets from '../stores/targets'
-import hubs from '../stores/hubs'
 import offers from '../stores/offers'
 import ImageAvatar from '../assets/images/avatar.png'
+import { config } from '../utils/config'
+
+const api = config.get('api')
 
 const OfferContent = () => {
     return (
@@ -71,17 +79,29 @@ export default ({ showModal }) => {
             </aside>
 
             <aside>
-                <Toggler options={{ type: 'auto', targets: hubs.map((hub, key) => ({
-                    type: hub.type,
-                    value: <Row key={key}>
-                                <div className="icon">
-                                    <FontAwesomeIcon icon={hub.icon} />
-                                </div>
-                                <p>{hub.title}</p>
-                            </Row>
-                        }))
-                    }}
-                />
+                <Query query={GET_ALL_HUBS} variables={{ status: 'PUBLISHED' }}>
+                    {({ data, refetch }) => (data.allHubs.length > 1) && (
+                        <Subscription query={SUB_ALL_HUBS} variables={{ status: 'PUBLISHED' }} refetch={refetch}>
+                            {({ subData }) => (
+                                <Toggler options={{
+                                    type: 'auto',
+                                    targets: ((subData && subData.hubs) || data.allHubs).map((hub, key) => ({
+                                        type: hub.id,
+                                        value: (
+                                            <Row key={key}>
+                                                {(hub.icon && hub.icon.path) &&
+                                                <div className="icon">
+                                                    <img src={(hub.icon.path).replace('./', `${api}/`)} alt={hub.title} />
+                                                </div>}
+                                                <p>{hub.title}</p>
+                                            </Row>
+                                        )}))
+                                    }}
+                                />
+                            )}
+                        </Subscription>
+                    )}
+                </Query>
 
                 <Section options={{
                     name: 'offers',

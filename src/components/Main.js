@@ -110,12 +110,29 @@ const AuthMain = () => {
 }
 
 const Content = () => {
+    const state = useSelector(state => state)
     const { isAuthenticated } = useContext(AuthContext)
 
+    const [closeByBackground, setClosedByBackground] = useState(true)
     const [content, setModal] = useState()
   
     const showModal = (content) => setModal(content)
     const hideModal = () => setModal(null)
+
+    useEffect(() => {
+        // CURRECT: ((state.user) && !state.user.avatar)
+        // TODO: When to ready Avatar Library and Admin Panel
+        if ((state.user) && !state.user.avatar) {
+            setClosedByBackground(false)
+            showModal([
+                {
+                    path: '/',
+                    title: 'Choose your Avatar',
+                    component: () => <InfoImage />
+                }
+            ])
+        }
+    }, [state.user])
 
     return (
         <React.Fragment>
@@ -159,6 +176,7 @@ const Content = () => {
             
             <Modal options={{
                 routes: content,
+                closeByBackground,
                 hideModal
             }} />
         </React.Fragment>

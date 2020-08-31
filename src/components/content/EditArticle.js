@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import Query from '../ui/Query'
 import Mutation from '../ui/Mutation'
 import Container from '../ui/Container'
 import Button from '../ui/Button'
@@ -6,14 +7,15 @@ import Input from '../ui/Input'
 import TextArea from '../ui/TextArea'
 import Select from '../ui/Select'
 import Dropzone from '../ui/Dropzone'
-import { EDIT_NEWS } from '../../utils/queries'
+import { GET_ALL_HUBS, EDIT_ARTICLE } from '../../utils/queries'
 
-export default ({ news, hideModal }) => {
-    const [title, setTitle] = useState(news.title)
-    const [description, setDescription] = useState(news.description)
-    const [body, setBody] = useState(news.body)
-    const [hub, setHub] = useState(news.hub)
+export default ({ status=false, article, close }) => {
+    const [title, setTitle] = useState(article.title)
+    const [description, setDescription] = useState(article.description)
+    const [body, setBody] = useState(article.body)
+    const [hub, setHub] = useState(article.hub.id)
     const [image, setImage] = useState('')
+    const [_status, _setStatus] = useState(article.status)
 
     return (
         <Container>
@@ -41,38 +43,55 @@ export default ({ news, hideModal }) => {
                 }
             }} />
 
-            <Select options={{
-                options: [{ value: '5f4ac735742b1043bc459b55', label: 'Valorant' }],
+            <Query query={GET_ALL_HUBS}>
+                {({ data }) => (
+                    <Select options={{
+                        defaultValue: { value: article.hub.id, label: article.hub.title },
+                        options: data.allHubs.map(hub => ({
+                            value: hub.id,
+                            label: hub.title
+                        })),
+                        onChange: (e) => {
+                            setHub(e.value)
+                        }
+                    }} />
+                )}
+            </Query>
+
+            {(status) && <Select options={{
+                defaultValue: { value: _status, label: _status },
+                options: [
+                    { value: 'MODERATION', label: 'MODERATION' },
+                    { value: 'PUBLISHED', label: 'PUBLISHED' }
+                ],
                 onChange: (e) => {
-                    setHub(e.value)
+                    _setStatus(e.value)
                 }
-            }} />
+            }} />}
 
             <Dropzone options={{
                 name: 'image',
                 image, setImage
             }} />
 
-            <Mutation query={EDIT_NEWS}>
+            <Mutation query={EDIT_ARTICLE}>
                 {({ action }) => (
                     <Button options={{
                         type: 'inactive',
                         handler: async () => {
                             const variables = {
-                                id: news.id,
+                                id: article.id,
                                 title, description,
                                 body, hub
                             }
 
-                            if (image) {
-                                variables.image = image
-                            }
+                            if (image) variables.image = image
+                            if (status) variables.status = _status
 
                             console.log(variables)
 
                             await action({ variables })
-
-                            hideModal()
+                            if (close) close()
                         }
                     }}>
                         <p>Apply</p>
