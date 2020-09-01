@@ -12,6 +12,7 @@ import Button from './ui/Button'
 import Search from './ui/Search'
 import Toggler from './ui/Toggler'
 import Section from './ui/Section'
+import Message from './ui/Message'
 import Entry from './ui/Entry'
 
 import AddArticle from './content/AddArticle'
@@ -76,39 +77,67 @@ export default ({ showModal }) => {
                 <Query query={GET_USER_ARTICLES} variables={{ id: state.user.id }}>
                     {({ data, refetch }) =>
                         <Subscription query={SUB_USER_ARTICLES} variables={{ id: state.user.id }} refetch={refetch}>
-                            {({ subData }) => ((subData && subData.articles) || data.allUserArticles).map((article, key) =>
-                                <Entry key={key} options={{
-                                    editable: true,
-                                    capacious: false,
-                                    manageOffset: true,
-                                    statusBar: [
-                                        { lite: 'Comments', dark: article.comments.length || 0 },
-                                        { lite: 'Views', dark: article.views || 0 },
-                                        {
-                                            lite: <Moment date={new Date(new Date().setTime(article.createdAt))} format="MMM, DD" />,
-                                            dark: <Moment date={new Date(new Date().setTime(article.createdAt))} format="h:m" />
-                                        }
-                                    ],
-                                    handlerEdit: () => showModal([
-                                        {
-                                            path: '/',
-                                            title: 'Edit Article',
-                                            component: ({ close }) => <EditArticle article={article} close={close} />
-                                        }
-                                    ]),
-                                    handlerDelete: () => showModal([
-                                        {
-                                            path: '/',
-                                            title: 'Delete Article',
-                                            component: ({ close }) => <DeleteEntries entry={article} query={DELETE_ARTICLES} close={close} />
-                                        }
-                                    ])
-                                }}>
-                                    <img className="image" src={(article.image.path).replace('./', `${api}/`)} alt="Article" />
-                                    <h2 className="title">{article.title}</h2>
-                                    <p className="paragraph">{article.description}</p>
-                                </Entry>
-                            )}
+                            {({ subData }) => {
+                                const articles = ((subData && subData.articles) || data.allUserArticles)
+
+                                if (articles.length === 0)
+                                    return <Message text="Empty" padding />
+
+                                return (
+                                    articles.map((article, key) => (
+                                        <Entry key={key} options={{
+                                            editable: true,
+                                            capacious: false,
+                                            manageOffset: true,
+                                            statusBar: [
+                                                { lite: 'Comments', dark: article.comments.length || 0 },
+                                                { lite: 'Views', dark: article.views || 0 },
+                                                {
+                                                    lite: <Moment date={new Date(new Date().setTime(article.createdAt))} format="MMM, DD" />,
+                                                    dark: <Moment date={new Date(new Date().setTime(article.createdAt))} format="h:m" />
+                                                }
+                                            ],
+                                            handlerEdit: () => showModal([
+                                                {
+                                                    path: '/',
+                                                    title: 'Edit Article',
+                                                    component: ({ close }) => <EditArticle article={article} close={close} />
+                                                }
+                                            ]),
+                                            handlerDelete: () => showModal([
+                                                {
+                                                    path: '/',
+                                                    title: 'Delete Article',
+                                                    component: ({ close }) => <DeleteEntries
+                                                        entry={article}
+                                                        query={DELETE_ARTICLES}
+                                                        handler={async (action, entry, docs) => {
+                                                            await action({
+                                                                variables: {
+                                                                    articles: (entry)
+                                                                        ? [{
+                                                                            id: entry.id,
+                                                                            author: entry.author.id
+                                                                        }]
+                                                                        : docs.map(doc => ({
+                                                                            id: doc.id,
+                                                                            author: doc.author.id
+                                                                        }))
+                                                                }
+                                                            })
+                                                        }}
+                                                        close={close}
+                                                    />
+                                                }
+                                            ])
+                                        }}>
+                                            <img className="image" src={(article.image.path).replace('./', `${api}/`)} alt="Article" />
+                                            <h2 className="title">{article.title}</h2>
+                                            <p className="paragraph">{article.description}</p>
+                                        </Entry>
+                                    )
+                                ))
+                            }}
                         </Subscription>
                     }
                 </Query>
@@ -148,35 +177,44 @@ export default ({ showModal }) => {
                     <Query query={GET_ALL_ARTICLES} variables={{ status: 'PUBLISHED' }}>
                         {({ data, refetch }) =>
                             <Subscription query={SUB_ARTICLES} variables={{ status: 'PUBLISHED' }} refetch={refetch}>
-                                {({ subData }) => ((subData && subData.articles) || data.allArticles).map((article, key) =>
-                                    <Entry key={key} options={{
-                                        capacious: false,
-                                        userBar: {
-                                            name: article.author.name,
-                                            status: article.author.status || 'Online',
-                                            avatar: article.author.avatar?.path
-                                        },
-                                        statusBar: [
-                                            { lite: 'Comments', dark: article.comments.length || 0 },
-                                            { lite: 'Views', dark: article.views || 0 },
-                                            {
-                                                lite: <Moment date={new Date(new Date().setTime(article.createdAt))} format="MMM, DD" />,
-                                                dark: <Moment date={new Date(new Date().setTime(article.createdAt))} format="h:m" />
-                                            }
-                                        ],
-                                        handler: () => showModal([
-                                            {
-                                                path: '/',
-                                                title: article.title,
-                                                component: () => <ViewArticle article={article} />
-                                            }
-                                        ])
-                                    }}>
-                                        <img className="image" src={(article.image.path).replace('./', `${api}/`)} alt="Article" />
-                                        <h2 className="title">{article.title}</h2>
-                                        <p className="paragraph">{article.description}</p>
-                                    </Entry>
-                                )}
+                                {({ subData }) => {
+                                    const articles = ((subData && subData.articles) || data.allArticles)
+
+                                    if (articles.length === 0)
+                                        return <Message text="Empty" padding />
+
+                                    return (
+                                        articles.map((article, key) => (
+                                            <Entry key={key} options={{
+                                                capacious: false,
+                                                userBar: {
+                                                    name: article.author.name,
+                                                    status: article.author.status || 'Online',
+                                                    avatar: article.author.avatar?.path
+                                                },
+                                                statusBar: [
+                                                    { lite: 'Comments', dark: article.comments.length || 0 },
+                                                    { lite: 'Views', dark: article.views || 0 },
+                                                    {
+                                                        lite: <Moment date={new Date(new Date().setTime(article.createdAt))} format="MMM, DD" />,
+                                                        dark: <Moment date={new Date(new Date().setTime(article.createdAt))} format="h:m" />
+                                                    }
+                                                ],
+                                                handler: () => showModal([
+                                                    {
+                                                        path: '/',
+                                                        title: article.title,
+                                                        component: () => <ViewArticle article={article} />
+                                                    }
+                                                ])
+                                            }}>
+                                                <img className="image" src={(article.image.path).replace('./', `${api}/`)} alt="Article" />
+                                                <h2 className="title">{article.title}</h2>
+                                                <p className="paragraph">{article.description}</p>
+                                            </Entry>
+                                        )
+                                    ))
+                                }}
                             </Subscription>
                         }
                     </Query>

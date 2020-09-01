@@ -6,7 +6,7 @@ import Container from '../ui/Container'
 import Message from '../ui/Message'
 import Button from '../ui/Button'
 
-export default ({ entry, query, close }) => {
+export default ({ entry, query, handler, close }) => {
     const state = useSelector(state => state)
     const docs = (entry) ? 'this' : state.documents.length
     const ents = (docs > 1 && !entry) ? 'entries' : 'entry'
@@ -30,19 +30,7 @@ export default ({ entry, query, close }) => {
                             state: 'inactive',
                             classNames: 'grow',
                             handler: async () => {
-                                await action({
-                                    variables: {
-                                        articles: (entry)
-                                            ? [{
-                                                id: entry.id,
-                                                author: entry.author.id
-                                            }]
-                                            : state.documents.map(doc => ({
-                                                id: doc.id,
-                                                author: doc.author.id
-                                            }))
-                                    }
-                                })
+                                await handler(action, entry, state.documents)
                                 close()
                             }
                         }}>

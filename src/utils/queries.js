@@ -235,6 +235,11 @@ export const GET_ALL_HUBS = gql`
             title
             description
             slogan
+            icon {
+                id
+                name
+                path
+            }
             color
             status
         }
@@ -248,6 +253,9 @@ export const SUB_ALL_HUBS = gql`
             title
             description
             slogan
+            icon {
+                path
+            }
             color
             countUsers
             countOffers
@@ -496,3 +504,131 @@ export const DELETE_ARTICLES = gql`
     }
 `
 // END ARTICLE
+
+// BEGIN OFFER
+export const GET_USER_OFFERS = gql`
+    query allUserOffers($id: ID!) {
+        allUserOffers(id: $id) {
+            id
+            title
+            message
+            user {
+                id
+                name
+            }
+            hub {
+                id
+                title
+            }
+            status
+            createdAt
+        }
+    }
+`
+
+export const SUB_USER_OFFERS = gql`
+    subscription userOffers($id: ID!) {
+        userOffers(id: $id) {
+            id
+            title
+            message
+            user {
+                id
+                name
+            }
+            hub {
+                id
+                title
+            }
+            status
+            createdAt
+        }
+    }
+`
+
+export const GET_ALL_OFFERS = gql`
+    query allOffers($status: Status) {
+        allOffers(status: $status) {
+            id
+            title
+            message
+            user {
+                id
+                name
+            }
+            hub {
+                id
+                title
+            }
+            status
+            createdAt
+        }
+    }
+`
+
+export const SUB_ALL_OFFERS = gql`
+    subscription offers($status: Status) {
+        offers(status: $status) {
+            id
+            title
+            message
+            user {
+                id
+                name
+            }
+            hub {
+                id
+                title
+            }
+            status
+            createdAt
+        }
+    }
+`
+
+export const ADD_OFFER = gql`
+    mutation addOffer(
+        $user: ID!
+        $hub: ID!
+        $title: String!
+        $message: String!
+        $status: Status!
+    ) {
+        addOffer(
+            user: $user
+            hub: $hub
+            title: $title
+            message: $message
+            status: $status
+        )
+    }
+`
+
+export const EDIT_OFFER = gql`
+    mutation editOffer(
+        $id: ID!
+        $user: ID
+        $hub: ID
+        $title: String
+        $message: String
+        $status: Status
+    ) {
+        editOffer(
+            id: $id
+            user: $user
+            hub: $hub
+            title: $title
+            message: $message
+            status: $status
+        )
+    }
+`
+
+export const DELETE_OFFERS = gql`
+    mutation deleteOffers(
+        $offers: [InputOffer]
+    ) {
+        deleteOffers(offers: $offers)
+    }
+`
+// END HUB

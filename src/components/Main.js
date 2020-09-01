@@ -3,7 +3,14 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useQuery } from '@apollo/react-hooks'
 import { Switch, Route, Redirect } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCompass, faPaperPlane, faTrophy, faBell, faCog } from '@fortawesome/free-solid-svg-icons'
+import {
+    faCompass,
+    faPaperPlane,
+    // eslint-disable-next-line 
+    faTrophy,
+    faBell,
+    faCog
+} from '@fortawesome/free-solid-svg-icons'
 import { AuthContext } from './AuthContext'
 import Navigation from './ui/Navigation'
 import Container from './ui/Container'
@@ -43,10 +50,12 @@ const links = [
         path: '/navigator',
         component: <FontAwesomeIcon icon={faCompass} />
     },
+    /*
     {
         path: '/tours',
         component: <FontAwesomeIcon icon={faTrophy} />
     },
+    */
     {
         path: '/chats',
         component: <FontAwesomeIcon icon={faPaperPlane} />
