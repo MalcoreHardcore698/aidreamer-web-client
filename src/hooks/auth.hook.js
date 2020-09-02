@@ -3,22 +3,19 @@ import { useState, useCallback, useEffect } from 'react'
 const storageName = 'g1w'
 
 export const useAuth = () => {
-  const [token, setToken] = useState(null)
+  const [sessionID, setSessionID] = useState('')
   const [ready, setReady] = useState(false)
-  const [userId, setUserId] = useState('')
 
-  const login = useCallback((sessionID) => {
-    if (sessionID) {
-      setToken(sessionID)
-      setUserId(sessionID)
+  const login = useCallback((sid) => {
+    if (sid) {
+      setSessionID(sid)
 
-      localStorage.setItem(storageName, JSON.stringify(sessionID))
+      localStorage.setItem(storageName, JSON.stringify(sid))
     }
   }, [])
 
   const logout = useCallback(() => {
-    setToken(null)
-    setUserId('')
+    setSessionID('')
     localStorage.removeItem(storageName)
   }, [])
 
@@ -31,5 +28,5 @@ export const useAuth = () => {
     }
   }, [login])
 
-  return { login, logout, token, userId, ready }
+  return { login, logout, sessionID, ready }
 }

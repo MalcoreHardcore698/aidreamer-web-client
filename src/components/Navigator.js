@@ -78,7 +78,7 @@ export default ({ showModal }) => {
                     {({ data, refetch }) =>
                         <Subscription query={SUB_USER_OFFERS} variables={{ id: state.user.id }} refetch={refetch}>
                             {({ subData }) => {
-                                const offers = ((subData && subData.offers) || data.allUserOffers)
+                                const offers = (subData && subData.offers) || (data && data.allUserOffers) || []
 
                                 if (offers.length === 0)
                                     return <Message text="Empty" padding />
@@ -145,7 +145,7 @@ export default ({ showModal }) => {
                             {({ subData }) => (
                                 <Toggler options={{
                                     type: 'auto',
-                                    targets: ((subData && subData.hubs) || data.allHubs).map((hub, key) => ({
+                                    targets: ((subData && subData.hubs) || (data && data.allHubs) || []).map((hub, key) => ({
                                         type: hub.id,
                                         value: (
                                             <Row key={key}>
@@ -173,7 +173,7 @@ export default ({ showModal }) => {
                         {({ data, refetch }) =>
                             <Subscription query={SUB_ALL_OFFERS} variables={{ status: 'PUBLISHED' }} refetch={refetch}>
                                 {({ subData }) => {
-                                    const offers = ((subData && subData.offers) || data.allOffers)
+                                    const offers = (subData && subData.offers) || (data && data.allOffers) || []
 
                                     if (offers.length === 0)
                                         return <Message text="Empty" padding />

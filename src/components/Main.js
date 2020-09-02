@@ -90,38 +90,6 @@ const SettingsContent = ({ hideModal }) => {
     )
 }
 
-const AuthMain = () => {
-    const state = useSelector(state => state)
-    const dispatch = useDispatch()
-
-    const { userId } = useContext(AuthContext)
-
-    const { data, loading, error } = useQuery(GET_USER, {
-            variables: {
-                sessionID: userId
-            }
-        }
-    )
-
-    console.log(userId)
-
-    useEffect(() => {
-        if (data && data.getUser) {
-            dispatch(setUser(data.getUser))
-        }
-    }, [data, dispatch])
-
-    if (loading && !state.user) {
-        return <p>Loading</p>
-    }
-
-    if (error) {
-        return <p>Error</p>
-    }
-
-    return <Content />
-}
-
 const Content = () => {
     const state = useSelector(state => state)
     const { isAuthenticated, logout } = useContext(AuthContext)
@@ -133,7 +101,6 @@ const Content = () => {
     const hideModal = () => setModal(null)
 
     useEffect(() => {
-        if (!state.user) return logout()
         // CURRECT: ((state.user) && !state.user.avatar)
         // TODO: When to ready Avatar Library and Admin Panel
         if ((state.user) && !state.user.avatar) {
@@ -198,8 +165,31 @@ const Content = () => {
 }
 
 export default () => {
-    const { isAuthenticated } = useContext(AuthContext)
+    const state = useSelector(state => state)
+    const dispatch = useDispatch()
 
-    if (isAuthenticated) return <AuthMain />
+    const { sessionID } = useContext(AuthContext)
+
+    const { data, loading, error } = useQuery(GET_USER, {
+            variables: {
+                sessionID
+            }
+        }
+    )
+
+    useEffect(() => {
+        if (data && data.getUser) {
+            dispatch(setUser(data.getUser))
+        }
+    }, [data, dispatch])
+
+    if (loading && !state.user) {
+        return <p>Loading</p>
+    }
+
+    if (error) {
+        return <p>Error</p>
+    }
+
     return <Content />
 }

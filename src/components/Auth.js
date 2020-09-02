@@ -51,7 +51,7 @@ const Login = ({ setLoading, setError }) => {
                     })
                     .then(data => {
                         const user = data.data.login
-                        auth.login(user.sessionID, user.id)
+                        auth.login(user.sessionID)
                         dispatch(setUser(user))
                     })
                     .catch(err => {
@@ -132,7 +132,7 @@ const Register = ({ setLoading, setError }) => {
                     })
                     .then(data => {
                         const user = data.data.register
-                        auth.login(user.sessionID, user.id)
+                        auth.login(user.sessionID)
                         dispatch(setUser(user))
                     })
                     .catch(err => {
