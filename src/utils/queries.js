@@ -14,7 +14,9 @@ export const LOGIN = gql`
             name
             email
             phone
-            role
+            role {
+                name
+            }
             balance
             level
             experience
@@ -36,10 +38,7 @@ export const LOGIN = gql`
             chats {
                 chatId
             }
-            token
-            isVerifiedEmail
-            isVerifiedPhone
-            isNotified
+            sessionID
         }
     }
 `
@@ -50,6 +49,9 @@ export const REGISTER = gql`
         $email: String!
         $password: String!
         $confirmPassword: String!
+        $phone: String
+        $role: ID
+        $avatar: ID
     ) {
         register(
             registerInput: {
@@ -57,13 +59,18 @@ export const REGISTER = gql`
                 email: $email
                 password: $password
                 confirmPassword: $confirmPassword
+                phone: $phone
+                role: $role
+                avatar: $avatar
             }
         ) {
             id
             name
             email
             phone
-            role
+            role {
+                name
+            }
             balance
             level
             experience
@@ -85,10 +92,7 @@ export const REGISTER = gql`
             chats {
                 chatId
             }
-            token
-            isVerifiedEmail
-            isVerifiedPhone
-            isNotified
+            sessionID
         }
     }
 `
@@ -100,7 +104,9 @@ export const GET_ALL_USERS = gql`
             name
             email
             phone
-            role
+            role {
+                name
+            }
             balance
             level
             experience
@@ -124,9 +130,6 @@ export const GET_ALL_USERS = gql`
             }
             updatedAt
             createdAt
-            isVerifiedEmail
-            isVerifiedPhone
-            isNotified
         }
     }
 `
@@ -138,7 +141,9 @@ export const SUB_ALL_USERS = gql`
             name
             email
             phone
-            role
+            role {
+                name
+            }
             balance
             level
             experience
@@ -160,22 +165,21 @@ export const SUB_ALL_USERS = gql`
             chats {
                 chatId
             }
-            isVerifiedEmail
-            isVerifiedPhone
-            isNotified
         }
     }
 `
 
 export const GET_USER = gql`
-    query getUser($id: ID!) {
-        getUser(id: $id) {
+    query getUser($sessionID: String!) {
+        getUser(sessionID: $sessionID) {
             id
             name
             password
             email
             phone
-            role
+            role {
+                name
+            }
             balance
             level
             experience
@@ -197,9 +201,6 @@ export const GET_USER = gql`
             chats {
                 chatId
             }
-            isVerifiedEmail
-            isVerifiedPhone
-            isNotified
         }
     }
 `

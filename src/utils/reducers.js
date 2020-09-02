@@ -4,9 +4,7 @@ import C from './types'
 export function userReducer(state = {}, action) {
     switch (action.type) {
         case C.SET_USER:
-            return {
-                ...action.payload.user
-            }
+            return action.payload.user
         case C.ADD_CHAT:
             return {
                 ...state,

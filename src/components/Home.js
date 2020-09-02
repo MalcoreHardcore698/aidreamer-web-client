@@ -78,7 +78,7 @@ export default ({ showModal }) => {
                     {({ data, refetch }) =>
                         <Subscription query={SUB_USER_ARTICLES} variables={{ id: state.user.id }} refetch={refetch}>
                             {({ subData }) => {
-                                const articles = ((subData && subData.articles) || data.allUserArticles)
+                                const articles = (subData && subData.articles) || (data && data.allUserArticles) || []
 
                                 if (articles.length === 0)
                                     return <Message text="Empty" padding />
@@ -145,12 +145,12 @@ export default ({ showModal }) => {
 
             <aside>
                 <Query query={GET_ALL_HUBS} variables={{ status: 'PUBLISHED' }}>
-                    {({ data, refetch }) => (data.allHubs.length > 1) && (
+                    {({ data, refetch }) => (data.allHubs && data.allHubs.length > 1) && (
                         <Subscription query={SUB_ALL_HUBS} variables={{ status: 'PUBLISHED' }} refetch={refetch}>
                             {({ subData }) => (
                                 <Toggler options={{
                                     type: 'auto',
-                                    targets: ((subData && subData.hubs) || data.allHubs).map((hub, key) => ({
+                                    targets: ((subData && subData.hubs) || (data && data.allHubs)).map((hub, key) => ({
                                         type: hub.id,
                                         value: (
                                             <Row key={key}>
@@ -178,7 +178,7 @@ export default ({ showModal }) => {
                         {({ data, refetch }) =>
                             <Subscription query={SUB_ARTICLES} variables={{ status: 'PUBLISHED' }} refetch={refetch}>
                                 {({ subData }) => {
-                                    const articles = ((subData && subData.articles) || data.allArticles)
+                                    const articles = (subData && subData.articles) || (data && data.allArticles) || []
 
                                     if (articles.length === 0)
                                         return <Message text="Empty" padding />

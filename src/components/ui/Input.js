@@ -13,6 +13,7 @@ export default ({ options }) => {
         type='text',
         value,
         placeholder='Write a message...',
+        autoComplete="Default text",
         onChange=() => {}
     } = options
 
@@ -27,6 +28,7 @@ export default ({ options }) => {
             className={classes.join(' ')}
             placeholder={placeholder}
             onChange={onChange}
+            autoComplete={autoComplete}
         />
     )
 }

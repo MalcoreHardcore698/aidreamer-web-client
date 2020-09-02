@@ -4,7 +4,7 @@ export function setUser(user) {
     return {
         type: C.SET_USER,
         payload: {
-            user
+            user: (user?.name) ? user : null
         }
     }
 }

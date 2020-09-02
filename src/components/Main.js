@@ -96,13 +96,17 @@ const AuthMain = () => {
 
     const { userId } = useContext(AuthContext)
 
-    const { data, loading, error } = useQuery(
-        GET_USER,
-        { variables: { id: userId } }
+    const { data, loading, error } = useQuery(GET_USER, {
+            variables: {
+                sessionID: userId
+            }
+        }
     )
 
+    console.log(userId)
+
     useEffect(() => {
-        if (data) {
+        if (data && data.getUser) {
             dispatch(setUser(data.getUser))
         }
     }, [data, dispatch])
@@ -120,7 +124,7 @@ const AuthMain = () => {
 
 const Content = () => {
     const state = useSelector(state => state)
-    const { isAuthenticated } = useContext(AuthContext)
+    const { isAuthenticated, logout } = useContext(AuthContext)
 
     const [closeByBackground, setClosedByBackground] = useState(true)
     const [content, setModal] = useState()
@@ -129,6 +133,7 @@ const Content = () => {
     const hideModal = () => setModal(null)
 
     useEffect(() => {
+        if (!state.user) return logout()
         // CURRECT: ((state.user) && !state.user.avatar)
         // TODO: When to ready Avatar Library and Admin Panel
         if ((state.user) && !state.user.avatar) {
@@ -141,7 +146,7 @@ const Content = () => {
                 }
             ])
         }
-    }, [state.user])
+    }, [state.user, logout])
 
     return (
         <React.Fragment>
