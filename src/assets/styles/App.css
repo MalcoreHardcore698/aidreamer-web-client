@@ -105,11 +105,17 @@ main.home {
     grid-template-columns: var(--w-aside) 1fr;
 }
 
+main.skeleton,
 main.profile,
 main.navigator,
 main.tours,
 main.chats {
     grid-template-columns: var(--w-aside) 1fr var(--w-aside);
+}
+
+main.skeleton {
+    height: calc(100vh - 90px);
+    margin-bottom: 90px;
 }
 
 main aside {
@@ -123,8 +129,14 @@ main aside > .ui-toggler {
     max-width: 100%;
 }
 
+main.skeleton aside .ui-container:last-child,
+main.skeleton aside .ui-row:last-child,
 main aside > .ui-toggler > .toggle {
     flex-grow: 1;
+}
+
+main.skeleton aside .ui-row:last-child .ui-skeleton {
+    flex-basis: 25%;
 }
 
 main.auth {

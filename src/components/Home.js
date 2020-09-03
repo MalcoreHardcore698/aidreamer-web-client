@@ -144,7 +144,7 @@ export default ({ showModal }) => {
             </aside>
 
             <aside>
-                <Query query={GET_ALL_HUBS} variables={{ status: 'PUBLISHED' }}>
+                <Query query={GET_ALL_HUBS} variables={{ status: 'PUBLISHED' }} pseudo={{ height: 45, count: 6 }}>
                     {({ data, refetch }) => (data.allHubs && data.allHubs.length > 1) && (
                         <Subscription query={SUB_ALL_HUBS} variables={{ status: 'PUBLISHED' }} refetch={refetch}>
                             {({ subData }) => (
@@ -174,7 +174,7 @@ export default ({ showModal }) => {
                     subtitle: 'All',
                     targets
                 }}>
-                    <Query query={GET_ALL_ARTICLES} variables={{ status: 'PUBLISHED' }}>
+                    <Query query={GET_ALL_ARTICLES} variables={{ status: 'PUBLISHED' }} pseudo={{ height: 256, count: 3 }}>
                         {({ data, refetch }) =>
                             <Subscription query={SUB_ARTICLES} variables={{ status: 'PUBLISHED' }} refetch={refetch}>
                                 {({ subData }) => {
@@ -212,8 +212,8 @@ export default ({ showModal }) => {
                                                 <h2 className="title">{article.title}</h2>
                                                 <p className="paragraph">{article.description}</p>
                                             </Entry>
-                                        )
-                                    ))
+                                        ))
+                                    )
                                 }}
                             </Subscription>
                         }

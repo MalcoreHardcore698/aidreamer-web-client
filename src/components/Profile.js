@@ -91,7 +91,7 @@ export default ({ showModal }) => {
             </aside>
 
             <aside>
-                <Query query={GET_ALL_HUBS} variables={{ status: 'PUBLISHED' }}>
+                <Query query={GET_ALL_HUBS} variables={{ status: 'PUBLISHED' }} pseudo={{ height: 45, count: 6 }}>
                     {({ data, refetch }) => (data.allHubs.length > 1) && (
                         <Subscription query={SUB_ALL_HUBS} variables={{ status: 'PUBLISHED' }} refetch={refetch}>
                             {({ subData }) => (
@@ -135,7 +135,7 @@ export default ({ showModal }) => {
                     }}>
                         <FontAwesomeIcon icon={faPlus} />
                     </Button>
-                    <Query query={GET_USER_OFFERS} variables={{ id: state.user.id }}>
+                    <Query query={GET_USER_OFFERS} variables={{ id: state.user.id }} pseudo={{ height: 256, count: 3 }}>
                         {({ data, refetch }) =>
                             <Subscription query={SUB_USER_OFFERS} variables={{ id: state.user.id }} refetch={refetch}>
                                 {({ subData }) => {
@@ -219,7 +219,7 @@ export default ({ showModal }) => {
                     }}>
                         <FontAwesomeIcon icon={faPlus} />
                     </Button>
-                    <Query query={GET_USER_ARTICLES} variables={{ id: state.user.id }}>
+                    <Query query={GET_USER_ARTICLES} variables={{ id: state.user.id }} pseudo={{ height: 256, count: 3 }}>
                         {({ data, refetch }) =>
                             <Subscription query={SUB_USER_ARTICLES} variables={{ id: state.user.id }} refetch={refetch}>
                                 {({ subData }) => {

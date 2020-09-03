@@ -64,6 +64,7 @@
     grid-gap: var(--padding-content);
 }
 
+.ui-section > .content > .ui-skeleton,
 .ui-section > .content > .ui-entry {
     flex-grow: 1;
     flex-basis: 320px;

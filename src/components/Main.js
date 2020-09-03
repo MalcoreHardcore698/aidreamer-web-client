@@ -17,6 +17,8 @@ import Container from './ui/Container'
 import Message from './ui/Message'
 import Button from './ui/Button'
 import Modal from './ui/Modal'
+import Row from './ui/Row'
+import Skeleton from './ui/Skeleton'
 import Auth from '../components/Auth'
 import { setUser } from '../utils/actions'
 import { GET_USER } from '../utils/queries'
@@ -101,8 +103,6 @@ const Content = () => {
     const hideModal = () => setModal(null)
 
     useEffect(() => {
-        // CURRECT: ((state.user) && !state.user.avatar)
-        // TODO: When to ready Avatar Library and Admin Panel
         if ((state.user) && !state.user.avatar) {
             setClosedByBackground(false)
             showModal([
@@ -177,7 +177,59 @@ const WithUser = () => {
     }, [data, dispatch])
 
     if (loading && !state.user) {
-        return <p>Loading</p>
+        return (
+            <main className="skeleton">
+                <aside>
+                    <Container>
+                        <Skeleton options={{ height: '85px' }} />
+                        <Skeleton options={{ height: '45px' }} />
+                    </Container>
+                    <Container>
+                        <Skeleton />
+                        <Skeleton />
+                        <Skeleton />
+                    </Container>
+                </aside>
+
+                
+                <aside>
+                    <Row type="flex">
+                        <Skeleton options={{ height: '45px' }} />
+                        <Skeleton options={{ height: '45px' }} />
+                        <Skeleton options={{ height: '45px' }} />
+                        <Skeleton options={{ height: '45px' }} />
+                        <Skeleton options={{ height: '45px' }} />
+                    </Row>
+                    <Row type="flex">
+                        <Skeleton />
+                        <Skeleton />
+                        <Skeleton />
+                        <Skeleton />
+                        <Skeleton />
+                        <Skeleton />
+                        <Skeleton />
+                        <Skeleton />
+                        <Skeleton />
+                        <Skeleton />
+                        <Skeleton />
+                        <Skeleton />
+                    </Row>
+                </aside>
+
+                
+                <aside>
+                    <Container>
+                        <Skeleton options={{ height: '85px' }} />
+                        <Skeleton options={{ height: '45px' }} />
+                    </Container>
+                    <Container>
+                        <Skeleton />
+                        <Skeleton />
+                        <Skeleton />
+                    </Container>
+                </aside>
+            </main>
+        )
     }
 
     if (error) {
