@@ -170,8 +170,8 @@ export const SUB_ALL_USERS = gql`
 `
 
 export const GET_USER = gql`
-    query getUser($sessionID: String!) {
-        getUser(sessionID: $sessionID) {
+    query getUser {
+        getUser {
             id
             name
             password

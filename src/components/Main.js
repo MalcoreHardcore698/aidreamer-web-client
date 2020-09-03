@@ -164,18 +164,11 @@ const Content = () => {
     )
 }
 
-export default () => {
+const WithUser = () => {
     const state = useSelector(state => state)
     const dispatch = useDispatch()
 
-    const { sessionID } = useContext(AuthContext)
-
-    const { data, loading, error } = useQuery(GET_USER, {
-            variables: {
-                sessionID
-            }
-        }
-    )
+    const { data, loading, error } = useQuery(GET_USER)
 
     useEffect(() => {
         if (data && data.getUser) {
@@ -190,6 +183,15 @@ export default () => {
     if (error) {
         return <p>Error</p>
     }
+
+    return <Content />
+}
+
+export default () => {
+    const { sessionID } = useContext(AuthContext)
+
+    if (sessionID)
+        return <WithUser />
 
     return <Content />
 }

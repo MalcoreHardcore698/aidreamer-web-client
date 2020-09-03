@@ -1,31 +1,33 @@
 import { useState, useCallback, useEffect } from 'react'
+import { setCookie, getCookie, clearCookie } from '../utils/functions'
+// import { v4 } from 'uuid'
 
-const storageName = 'g1w'
+const cookie = 'secret'
 
 export const useAuth = () => {
   const [sessionID, setSessionID] = useState('')
   const [ready, setReady] = useState(false)
 
-  const login = useCallback((sid) => {
-    if (sid) {
-      setSessionID(sid)
-
-      localStorage.setItem(storageName, JSON.stringify(sid))
+  const login = useCallback((value) => {
+    console.log(value)
+    if (value) {
+      setSessionID(value)
+      setCookie(cookie, value)
     }
   }, [])
 
   const logout = useCallback(() => {
     setSessionID('')
-    localStorage.removeItem(storageName)
+    clearCookie(cookie)
   }, [])
 
   useEffect(() => {
-    const data = JSON.parse(localStorage.getItem(storageName))
+    const session = getCookie(cookie)
 
-    if (data) {
-      login(data)
-      setReady(true)
-    }
+    if (session) setSessionID(session)
+    else login(session)
+
+    setReady(true)
   }, [login])
 
   return { login, logout, sessionID, ready }
