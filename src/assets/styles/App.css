@@ -62,12 +62,15 @@ html, body {
 html::-webkit-scrollbar,
 html::-webkit-scrollbar-track,
 body::-webkit-scrollbar,
-body::-webkit-scrollbar-track {
+body::-webkit-scrollbar-track,
+textarea::-webkit-scrollbar,
+textarea::-webkit-scrollbar-track {
     width: 0;
 }
 
 html::-webkit-scrollbar-button,
-body::-webkit-scrollbar-button {
+body::-webkit-scrollbar-button,
+textarea::-webkit-scrollbar-button {
     display: none;
 }
 
@@ -144,7 +147,7 @@ main.auth {
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    margin-top: 12%;
+    margin-top: 10%;
 }
 
 main.auth form {
@@ -277,6 +280,24 @@ main.tours .ui-section > .content > .ui-entry {
     left: 0;
     width: 100%;
     height: 100vh;
+}
+
+.fadeIn {
+    animation: fadeIn 100ms ease-in;
+}
+
+.fadeOut {
+    animation: fadeIn 100ms ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0 }
+    to { opacity: 1 }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1 }
+    to { opacity: 0 }
 }
 
 @media only screen and (max-width: 1299px) {

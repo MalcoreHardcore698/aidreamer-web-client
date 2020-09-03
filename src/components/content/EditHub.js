@@ -16,7 +16,7 @@ export default ({ status=false, hub, close }) => {
     const [_status, _setStatus] = useState(hub.status)
 
     return (
-        <Container>
+        <Container type="fat">
             <Input options={{
                 type: 'text',
                 value: title,

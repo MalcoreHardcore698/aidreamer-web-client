@@ -8,7 +8,7 @@ const api = config.get('api')
 
 export default ({ article }) => {
     return (
-        <Container>
+        <Container type="fat">
             <Entry options={{
                 capacious: false,
                 statusBar: [

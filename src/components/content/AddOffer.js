@@ -5,6 +5,7 @@ import Mutation from '../ui/Mutation'
 import Container from '../ui/Container'
 import Button from '../ui/Button'
 import Input from '../ui/Input'
+import TextArea from '../ui/TextArea'
 import Select from '../ui/Select'
 import { ADD_OFFER, GET_ALL_HUBS, GET_ALL_USERS } from '../../utils/queries'
 
@@ -28,8 +29,8 @@ export default ({ user=false, status=false, close }) => {
                 }
             }} />
 
-            <Input options={{
-                type: 'text',
+            <TextArea options={{
+                type: 'short',
                 name: 'message',
                 placeholder: 'Enter message',
                 onChange: (e) => {

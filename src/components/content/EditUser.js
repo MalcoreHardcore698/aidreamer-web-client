@@ -17,7 +17,7 @@ export default ({ user, close }) => {
     const [role, setRole] = useState(user.role)
 
     return (
-        <Container>
+        <Container type="fat">
             <Input options={{
                 type: 'text',
                 value: name,

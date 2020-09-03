@@ -16,6 +16,8 @@ import '../styles/Modal.css'
 import Transition from './Transition'
 import Button from './Button'
 
+const DURATION = 100
+
 function getPath(navigator) {
     if (!navigator || navigator.length === 0)
         return null
@@ -39,10 +41,11 @@ const Switch = (props) => {
     return Child
 }
 
-const Route = ({ component, close, jump }) => {
+const Route = ({ component, close, back, jump }) => {
     const Compoent = component
     return <Compoent
         close={close}
+        back={back}
         jump={jump}
     />
 }
@@ -53,6 +56,7 @@ export default ({ options }) => {
     const [animation, setAnimation] = useState(null)
 
     const {
+        type,
         title,
         home,
         routes,
@@ -61,7 +65,8 @@ export default ({ options }) => {
     } = options
 
     const classes = [
-        'ui-modal'
+        'ui-modal',
+        type
     ]
 
     const transitions = {
@@ -70,12 +75,12 @@ export default ({ options }) => {
             animation: 'fade',
             handlerEnter: () => setContent(true),
             handlerExit: () => setContent(false),
-            duration: 150
+            duration: DURATION
         },
         swing: {
             showContent: (content),
             animation: 'swing',
-            duration: 150
+            duration: DURATION
         }
     }
 
@@ -96,7 +101,7 @@ export default ({ options }) => {
                 ...navigator.filter((e, i) => (i !== (navigator.length - 1)))
             ])
             setAnimation('slideInLeft')
-        }, 150)
+        }, DURATION)
     }
     const handlerJump = (path) => {
         setAnimation('slideOutLeft')
@@ -106,7 +111,7 @@ export default ({ options }) => {
                 path
             ])
             setAnimation('slideInRight')
-        }, 150)
+        }, DURATION)
     }
     const handlerClose = () => {
         setContent(false)
@@ -115,7 +120,7 @@ export default ({ options }) => {
         setTimeout(() => {
             setNavigator(['/'])
             hideModal()
-        }, 100)
+        }, DURATION)
     }
 
     return (
@@ -142,7 +147,7 @@ export default ({ options }) => {
                         {(home && !routes) ? home
                         : <Switch path={getPath(navigator)}>
                             {routes?.map((props, key) =>
-                                <Route key={key} {...props} close={handlerClose} jump={handlerJump} />
+                                <Route key={key} {...props} close={handlerClose} back={handlerBack} jump={handlerJump} />
                             )}
                         </Switch>}
                     </div>

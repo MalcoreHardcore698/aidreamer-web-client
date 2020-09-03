@@ -106,10 +106,6 @@
     background: white;
 }
 
-.ui-entry .content-wrapper .manage button:last-child {
-    margin-inline-start: 5px;
-}
-
 .ui-entry.editable .title,
 .ui-entry .title.separeted {
     position: relative;

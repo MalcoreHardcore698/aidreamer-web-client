@@ -8,16 +8,24 @@ import {
     faPaperPlane,
     // eslint-disable-next-line 
     faTrophy,
+    faPen,
+    faLock,
+    faFlag,
+    faQuestion,
     faBell,
     faCog
 } from '@fortawesome/free-solid-svg-icons'
 import { AuthContext } from './AuthContext'
+import Row from './ui/Row'
 import Navigation from './ui/Navigation'
 import Container from './ui/Container'
 import Message from './ui/Message'
 import Button from './ui/Button'
 import Modal from './ui/Modal'
-import Row from './ui/Row'
+import List from './ui/List'
+import Input from './ui/Input'
+import TextArea from './ui/TextArea'
+import Divider from './ui/Divider'
 import Skeleton from './ui/Skeleton'
 import Auth from '../components/Auth'
 import { setUser } from '../utils/actions'
@@ -72,21 +80,156 @@ const InfoImage = () => {
     )
 }
 
-const SettingsContent = ({ hideModal }) => {
+const SettingsEditProfileContent = ({ jump }) => {
+    const state = useSelector(state => state)
+    const [disabled, setDisabled] = useState(true)
+
+    const user = state.user
+
+    return (
+        <Container>
+            <Input options={{
+                type: 'text',
+                name: 'name',
+                value: user.name,
+                onChange: () => {
+                    setDisabled(false)
+                }
+            }} />
+            <Button options={{
+                type: 'inactive',
+                disabled, handler: () => {
+                    jump('/privacy-and-security')
+                }
+            }}>
+                <p>Save Changes</p>
+            </Button>
+        </Container>
+    )
+}
+
+const SettingsHomeContent = ({ jump, close }) => {
     const auth = useContext(AuthContext)
     const dispatch = useDispatch()
 
     return (
         <Container>
             <Button options={{
-                typa: 'inactive',
+                type: 'inactive',
+                handler: () => jump('/edit')
+            }}>
+                <FontAwesomeIcon icon={faPen} />
+                <p>Edit profile</p>
+            </Button>
+            <Button options={{
+                type: 'inactive',
+                handler: () => jump('/privacy-and-security')
+            }}>
+                <FontAwesomeIcon icon={faLock} />
+                <p>Privacy and Security</p>
+            </Button>
+
+            <Divider />
+            
+            <Row type="col2">
+                <Button options={{
+                    type: 'inactive',
+                    handler: () => jump('/language')
+                }}>
+                    <FontAwesomeIcon icon={faFlag} />
+                    <p>Language</p>
+                </Button>
+                <Button options={{
+                    type: 'inactive',
+                    handler: () => jump('/ask-a-question')
+                }}>
+                    <FontAwesomeIcon icon={faQuestion} />
+                    <p>Ask a question</p>
+                </Button>
+            </Row>
+
+            <Divider />
+            
+            <Button options={{
+                type: 'active clear',
                 handler: () => {
-                    hideModal()
+                    close()
                     dispatch(setUser(null))
                     auth.logout()
                 }
             }}>
-                <p>Sign Out</p>
+                <p>Log Out</p>
+            </Button>
+        </Container>
+    )
+}
+
+const SettingsQuestionContent = ({ back }) => {
+    const [disabled, setDisabled] = useState(true)
+
+    return (
+        <Container>
+            <Input options={{
+                type: 'text',
+                name: 'title',
+                placeholder: 'Enter topic question',
+                onChange: () => {
+                    setDisabled(false)
+                }
+            }} />
+            <TextArea options={{
+                name: 'body',
+                placeholder: 'Enter content question',
+                onChange: () => {
+                    setDisabled(false)
+                }
+            }} />
+            <Button options={{
+                type: 'inactive',
+                disabled, handler: () => {
+                    back()
+                }
+            }}>
+                <p>Submit</p>
+            </Button>
+        </Container>
+    )
+}
+
+const SettingsLanguageContent = ({ back }) => {
+    const langs = [
+        { id: 0, value: 'English' },
+        { id: 1, value: 'Русский' },
+        { id: 2, value: 'Белоруская' }
+    ]
+    const [checked, setChecked] = useState(langs[0])
+    const [disabled, setDisabled] = useState(true)
+
+    return (
+        <Container>
+            <Divider />
+
+            <List options={{ list: langs }}>
+                {({ item }) => (
+                    <div
+                        className={`ui-item${(checked.id === item.id) ? ' checked' : ''}`}
+                        onClick={() => {
+                            setChecked(item)
+                            setDisabled(false)
+                        }}
+                    >
+                        <p className="name">{item.value}</p>
+                    </div>
+                )}
+            </List>
+
+            <Button options={{
+                type: 'inactive',
+                disabled, handler: () => {
+                    back()
+                }
+            }}>
+                <p>Apply</p>
             </Button>
         </Container>
     )
@@ -130,7 +273,27 @@ const Content = () => {
                         {
                             path: '/',
                             title: 'Settings',
-                            component: () => <SettingsContent hideModal={hideModal} />
+                            component: ({ jump, close }) => <SettingsHomeContent jump={jump} close={close} />
+                        },
+                        {
+                            path: '/edit',
+                            title: 'Edit Profile',
+                            component: ({ jump }) => <SettingsEditProfileContent jump={jump} />
+                        },
+                        {
+                            path: '/privacy-and-security',
+                            title: 'Privacy and Security',
+                            component: ({ jump }) => <InfoImage jump={jump} /> //<SettingsPrivacySecurityContent jump={jump} />
+                        },
+                        {
+                            path: '/language',
+                            title: 'Select language',
+                            component: ({ back }) => <SettingsLanguageContent back={back} />
+                        },
+                        {
+                            path: '/ask-a-question',
+                            title: 'Ask a Question',
+                            component: ({ back }) => <SettingsQuestionContent back={back} />
                         }
                     ], faCog)
                 ]

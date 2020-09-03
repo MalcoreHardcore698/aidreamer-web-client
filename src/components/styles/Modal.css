@@ -30,7 +30,9 @@
     position: relative;
     left: 0;
     right: 0;
-    width: 60%;
+    min-width: 25%;
+    max-width: 80%;
+    width: min-content;
     background: white;
     border: var(--border-main);
     border-radius: var(--br-main);
@@ -40,6 +42,10 @@
 
 .ui-modal .wrapper .content > p {
     margin-block-start: 10px;
+}
+
+.ui-modal .wrapper .fat {
+    min-width: 35vw;
 }
 
 .ui-modal .wrapper.slideOutLeft {

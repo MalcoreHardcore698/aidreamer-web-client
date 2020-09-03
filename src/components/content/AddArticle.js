@@ -21,7 +21,7 @@ export default ({ status=false, close }) => {
     const [_status, _setStatus] = useState('')
 
     return (
-        <Container>
+        <Container type="fat">
             <Input options={{
                 type: 'text',
                 placeholder: 'Enter title',
