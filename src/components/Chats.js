@@ -80,12 +80,10 @@ export default () => {
                     subtitle: (chat) && chat.name,
                     manage: false
                 }}>
-                    {(chat) ?
-                        <Chat options={{
-                            chat
-                        }} /> :
+                    {() => ((chat) ?
+                        <Chat options={{ chat }} /> :
                         <Message text="Please select a chat to start messaging" padding />
-                    }
+                    )}
                 </Section>
             </aside>
 
@@ -96,7 +94,8 @@ export default () => {
                     subtitle: (chat && chat.members) ? chat.members.length : 0,
                     manage: false
                 }}>
-                    {(chat && chat.members) ?
+                    {() => (
+                        (chat && chat.members) ?
                         <List options={{ list: chat.members }}>
                             {({ item }) => (
                                 <React.Fragment>
@@ -107,7 +106,7 @@ export default () => {
                                 </React.Fragment>
                             )}
                         </List> : <Message text="No Members" padding />
-                    }
+                    )}
                 </Section>
             </aside>
         </main>

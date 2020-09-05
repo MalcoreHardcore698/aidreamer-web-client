@@ -24,6 +24,15 @@ export function userReducer(state = {}, action) {
     }
 }
 
+export function formReducer(state={}, { type, payload }) {
+    switch (type) {
+        case C.SET_FORM:
+            return payload.form
+        default:
+            return state
+    }
+}
+
 export function documentReducer(state={}, { type, payload }) {
     switch (type) {
         case C.SET_DOCUMENT:
@@ -53,6 +62,7 @@ export function tableReducer(state=[], { type, payload }) {
 
 export const reducers = combineReducers({
     user: userReducer,
+    form: formReducer,
     document: documentReducer,
     documents: documentsReducer,
     table: tableReducer

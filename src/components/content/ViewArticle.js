@@ -20,7 +20,12 @@ export default ({ article }) => {
                     }
                 ]
             }}>
-                <img className="image" src={(article.image.path).replace('./', `${api}/`)} alt="Article" />
+                {(article.image && article.image.path) && <img
+                        className="image large"
+                        src={(article.image.path).replace('./', `${api}/`)}
+                        alt="Article"
+                    />
+                }
                 <p className="paragraph">{article.description}</p>
                 <p className="body">{article.body}</p>
                 <p className="hub">Hub: {article.hub.title}</p>

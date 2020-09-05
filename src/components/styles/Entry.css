@@ -76,11 +76,15 @@
 
 .ui-entry .content-wrapper .content .image {
     display: flex;
-    height: 256px;
+    height: 128px;
     width: 100%;
     object-fit: cover;
     border-radius: var(--br-main);
     background: var(--color-body-background);
+}
+
+.ui-entry .content-wrapper .content .image.large {
+    height: 256px;
 }
 
 .ui-entry .content-wrapper .content .title {

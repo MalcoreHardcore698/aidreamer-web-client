@@ -15,6 +15,9 @@ import {
     faBell,
     faCog
 } from '@fortawesome/free-solid-svg-icons'
+import EnglishFlagIcon from '../assets/icons/united-kingdom.svg'
+import RussianFlagIcon from '../assets/icons/russia.svg'
+import BelarusFlagIcon from '../assets/icons/belarus.svg'
 import { AuthContext } from './AuthContext'
 import Row from './ui/Row'
 import Navigation from './ui/Navigation'
@@ -23,6 +26,7 @@ import Message from './ui/Message'
 import Button from './ui/Button'
 import Modal from './ui/Modal'
 import List from './ui/List'
+import Alert from './ui/Alert'
 import Input from './ui/Input'
 import TextArea from './ui/TextArea'
 import Divider from './ui/Divider'
@@ -41,7 +45,7 @@ function getButton(handler, routes, icon) {
     return ({
         options: {
             type: 'large-round',
-            handler: () => handler(routes)
+            handler: () => handler(routes, true)
         },
         component: <FontAwesomeIcon icon={icon} />
     })
@@ -97,7 +101,8 @@ const SettingsEditProfileContent = ({ jump }) => {
                 }
             }} />
             <Button options={{
-                type: 'inactive',
+                state: 'inactive',
+                classNames: 'grow',
                 disabled, handler: () => {
                     jump('/privacy-and-security')
                 }
@@ -115,14 +120,16 @@ const SettingsHomeContent = ({ jump, close }) => {
     return (
         <Container>
             <Button options={{
-                type: 'inactive',
+                state: 'inactive',
+                classNames: 'grow',
                 handler: () => jump('/edit')
             }}>
                 <FontAwesomeIcon icon={faPen} />
                 <p>Edit profile</p>
             </Button>
             <Button options={{
-                type: 'inactive',
+                state: 'inactive',
+                classNames: 'grow',
                 handler: () => jump('/privacy-and-security')
             }}>
                 <FontAwesomeIcon icon={faLock} />
@@ -133,14 +140,16 @@ const SettingsHomeContent = ({ jump, close }) => {
             
             <Row type="col2">
                 <Button options={{
-                    type: 'inactive',
+                    state: 'inactive',
+                    classNames: 'grow',
                     handler: () => jump('/language')
                 }}>
                     <FontAwesomeIcon icon={faFlag} />
                     <p>Language</p>
                 </Button>
                 <Button options={{
-                    type: 'inactive',
+                    state: 'inactive',
+                    classNames: 'grow',
                     handler: () => jump('/ask-a-question')
                 }}>
                     <FontAwesomeIcon icon={faQuestion} />
@@ -151,7 +160,8 @@ const SettingsHomeContent = ({ jump, close }) => {
             <Divider />
             
             <Button options={{
-                type: 'active clear',
+                state: 'active clear',
+                classNames: 'grow',
                 handler: () => {
                     close()
                     dispatch(setUser(null))
@@ -185,7 +195,8 @@ const SettingsQuestionContent = ({ back }) => {
                 }
             }} />
             <Button options={{
-                type: 'inactive',
+                state: 'inactive',
+                classNames: 'grow',
                 disabled, handler: () => {
                     back()
                 }
@@ -198,9 +209,9 @@ const SettingsQuestionContent = ({ back }) => {
 
 const SettingsLanguageContent = ({ back }) => {
     const langs = [
-        { id: 0, value: 'English' },
-        { id: 1, value: 'Русский' },
-        { id: 2, value: 'Белоруская' }
+        { id: 0, icon: EnglishFlagIcon, label: 'English' },
+        { id: 1, icon: RussianFlagIcon, label: 'Русский' },
+        { id: 2, icon: BelarusFlagIcon, label: 'Белоруская' }
     ]
     const [checked, setChecked] = useState(langs[0])
     const [disabled, setDisabled] = useState(true)
@@ -218,13 +229,17 @@ const SettingsLanguageContent = ({ back }) => {
                             setDisabled(false)
                         }}
                     >
-                        <p className="name">{item.value}</p>
+                        <p className="avatar">
+                            <img src={item.icon} alt="User" />
+                        </p>
+                        <p className="name">{item.label}</p>
                     </div>
                 )}
             </List>
 
             <Button options={{
                 type: 'inactive',
+                classNames: 'grow',
                 disabled, handler: () => {
                     back()
                 }
@@ -241,9 +256,18 @@ const Content = () => {
 
     const [closeByBackground, setClosedByBackground] = useState(true)
     const [content, setModal] = useState()
+    const [center, setCenterModal] = useState(false)
   
-    const showModal = (content) => setModal(content)
-    const hideModal = () => setModal(null)
+    const showModal = (content, center=false) => {
+        setModal(content)
+        setCenterModal(center)
+        document.body.style.overflow = 'hidden'
+    }
+    const hideModal = () => {
+        setModal(null)
+        setCenterModal(false)
+        document.body.style.overflow = 'initial'
+    }
 
     useEffect(() => {
         if ((state.user) && !state.user.avatar) {
@@ -254,7 +278,7 @@ const Content = () => {
                     title: 'Choose your Avatar',
                     component: () => <InfoImage />
                 }
-            ])
+            ], true)
         }
     }, [state.user, logout])
 
@@ -300,28 +324,36 @@ const Content = () => {
             }} />}
 
             <Switch>
-                {(isAuthenticated) ? routes.map((props, key) =>
-                    <Route
-                        {...props}
-                        key={key}
-                        component={() => props.component({ showModal, hideModal })}
-                    />
-                ) :
-                    <Route
-                        exact
-                        path="/auth"
-                        component={({ showModal }) =>
-                            <Auth showModal={showModal} />
-                        }
-                    />
-                }
-                <Redirect to={(isAuthenticated) ? '/' : '/auth'} />
+                {(isAuthenticated && 
+                    <React.Fragment>
+                        {routes.map((props, key) =>
+                            <Route
+                                {...props}
+                                key={key}
+                                component={() => props.component({ showModal, hideModal })}
+                            />
+                        )}
+                        <Redirect from="/auth" to={`/`} />
+                    </React.Fragment>
+                )}
+
+                {(!isAuthenticated && 
+                    <React.Fragment>
+                        <Route
+                            path="/auth"
+                            component={({ showModal }) =>
+                                <Auth showModal={showModal} />
+                            }
+                        />
+                        <Redirect to="/auth" />
+                    </React.Fragment>
+                )}
             </Switch>
             
             <Modal options={{
                 routes: content,
                 closeByBackground,
-                hideModal
+                center, hideModal
             }} />
         </React.Fragment>
     )
@@ -396,7 +428,11 @@ const WithUser = () => {
     }
 
     if (error) {
-        return <p>Error</p>
+        return (
+            <main className="alert">
+                <Alert type="error" message="Sorry, site is temporarily unavailable" />
+            </main>
+        )
     }
 
     return <Content />

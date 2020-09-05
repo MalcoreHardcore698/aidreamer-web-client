@@ -9,7 +9,6 @@ export const useAuth = () => {
   const [ready, setReady] = useState(false)
 
   const login = useCallback((value) => {
-    console.log(value)
     if (value) {
       setSessionID(value)
       setCookie(cookie, value)

@@ -9,6 +9,15 @@ export function setUser(user) {
     }
 }
 
+export function setForm(form) {
+    return {
+        type: C.SET_FORM,
+        payload: {
+            form
+        }
+    }
+}
+
 export function addChat(chatId) {
     return {
         type: C.ADD_CHAT,

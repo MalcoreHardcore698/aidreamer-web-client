@@ -64,18 +64,23 @@ html::-webkit-scrollbar-track,
 body::-webkit-scrollbar,
 body::-webkit-scrollbar-track,
 textarea::-webkit-scrollbar,
-textarea::-webkit-scrollbar-track {
+textarea::-webkit-scrollbar-track,
+.ui-modal::-webkit-scrollbar,
+.ui-modal::-webkit-scrollbar-track {
     width: 0;
 }
 
 html::-webkit-scrollbar-button,
 body::-webkit-scrollbar-button,
-textarea::-webkit-scrollbar-button {
+textarea::-webkit-scrollbar-button,
+.ui-modal::-webkit-scrollbar-button {
     display: none;
 }
 
 body {
     background: var(--color-body-background);
+    white-space: normal;
+    overflow-wrap: anywhere;
 }
 
 p, ul {
@@ -192,7 +197,7 @@ main.auth form.loading::before {
 }
 
 main.auth form > .ui-input,
-main.auth form > .ui-button {
+main.auth form > .react-ripples .ui-button {
     flex-grow: 1;
 }
 
@@ -214,6 +219,13 @@ main.auth form .logo svg path {
 
 main.auth .ui-alert {
     width: 280px;
+}
+
+main.alert {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 280px);
 }
 
 .ui-section.my-tours > .content > .ui-entry,
@@ -272,6 +284,21 @@ main.tours .ui-section > .content > .ui-entry {
 
 .ui-chat form .ui-input {
     flex-grow: 100;
+}
+
+.ui-section .content .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    grid-gap: var(--padding-content);
+}
+
+.ui-section.my-articles .content .grid,
+.ui-section.articles .content .grid {
+    grid-template-columns: repeat(auto-fill, minmax(425px, 1fr));
+}
+
+.ui-section .content .react-ripples {
+    margin-block-end: 15px;
 }
 
 .tsparticles-canvas-el {

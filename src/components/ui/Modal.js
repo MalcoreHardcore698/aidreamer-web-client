@@ -10,6 +10,7 @@
 **/
 
 import React, { useState } from 'react'
+import PreventOutsideScroll from 'react-prevent-outside-scroll'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 import '../styles/Modal.css'
@@ -60,12 +61,14 @@ export default ({ options }) => {
         title,
         home,
         routes,
+        center,
         hideModal=() => {},
         closeByBackground=true
     } = options
 
     const classes = [
         'ui-modal',
+        (center) ? 'center' : '',
         type
     ]
 
@@ -125,34 +128,36 @@ export default ({ options }) => {
 
     return (
         <Transition {...transitions.fade}>
-            <div className={classes.join(' ')}>
-                <div
-                    className={`background${(!closeByBackground) ? ' clear' : ''}`}
-                    onClick={(closeByBackground) ? handlerClose : () => {}}
-                ></div>
+            <PreventOutsideScroll>
+                <div className={classes.join(' ')}>
+                    <div
+                        className={`background${(!closeByBackground) ? ' clear' : ''}`}
+                        onClick={(closeByBackground) ? handlerClose : () => {}}
+                    ></div>
 
-                <Transition {...transitions.swing}>
-                    <div className={`wrapper animate${(animation) ? ` ${animation}` : ''}`}>
-                        <div className="headline">
-                            {(navigator.length > 1) && <Button options={{
-                                state: 'icon',
-                                lockdown: true,
-                                handler: () => handlerBack()
-                            }}>
-                                <FontAwesomeIcon icon={faArrowLeft} />
-                            </Button>}
-                            <h1>{(title && !routes) ? title : getTitle()}</h1>
+                    <Transition {...transitions.swing}>
+                        <div id='scroller' className={`wrapper animate${(animation) ? ` ${animation}` : ''}`}>
+                            <div className="headline">
+                                {(navigator.length > 1) && <Button options={{
+                                    state: 'icon',
+                                    lockdown: true,
+                                    handler: () => handlerBack()
+                                }}>
+                                    <FontAwesomeIcon icon={faArrowLeft} />
+                                </Button>}
+                                <h1>{(title && !routes) ? title : getTitle()}</h1>
+                            </div>
+
+                            {(home && !routes) ? home
+                            : <Switch path={getPath(navigator)}>
+                                {routes?.map((props, key) =>
+                                    <Route key={key} {...props} close={handlerClose} back={handlerBack} jump={handlerJump} />
+                                )}
+                            </Switch>}
                         </div>
-
-                        {(home && !routes) ? home
-                        : <Switch path={getPath(navigator)}>
-                            {routes?.map((props, key) =>
-                                <Route key={key} {...props} close={handlerClose} back={handlerBack} jump={handlerJump} />
-                            )}
-                        </Switch>}
-                    </div>
-                </Transition>
-            </div>
+                    </Transition>
+                </div>
+            </PreventOutsideScroll>
         </Transition>
     )
 }

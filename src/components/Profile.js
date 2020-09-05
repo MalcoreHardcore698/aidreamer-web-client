@@ -75,17 +75,21 @@ export default ({ showModal }) => {
                     subtitle: achievements.length,
                     manage: false
                 }}>
-                    {achievements.map((achievement, key) =>
-                        <Achievement key={key} options={{
-                            achievement,
-                            handler: () => showModal([
-                                {
-                                    path: '/',
-                                    title: 'Achievement',
-                                    component: () => <EntryContent />
-                                }
-                            ])
-                        }} />    
+                    {() => (
+                        <div className="grid">
+                            {achievements.map((achievement, key) =>
+                                <Achievement key={key} options={{
+                                    achievement,
+                                    handler: () => showModal([
+                                        {
+                                            path: '/',
+                                            title: 'Achievement',
+                                            component: () => <EntryContent />
+                                        }
+                                    ], true)
+                                }} />    
+                            )}
+                        </div>
                     )}
                 </Section>
             </aside>
@@ -121,82 +125,89 @@ export default ({ showModal }) => {
                     subtitle: '',
                     targets
                 }}>
-                    <Button options={{
-                        type: 'inactive',
-                        handler: () => {
-                            showModal([
-                                {
-                                    path: '/',
-                                    title: 'Add Offer',
-                                    component: ({ jump, close }) => <AddOffer jump={jump} close={close} />
+                    {({ filter }) => (
+                        <React.Fragment>
+                            <Button options={{
+                                state: 'inactive',
+                                classNames: 'stretch',
+                                handler: () => {
+                                    showModal([
+                                        {
+                                            path: '/',
+                                            title: 'Add Offer',
+                                            component: ({ jump, close }) => <AddOffer jump={jump} close={close} />
+                                        }
+                                    ])
                                 }
-                            ])
-                        }
-                    }}>
-                        <FontAwesomeIcon icon={faPlus} />
-                    </Button>
-                    <Query query={GET_USER_OFFERS} variables={{ id: state.user.id }} pseudo={{ height: 256, count: 3 }}>
-                        {({ data, refetch }) =>
-                            <Subscription query={SUB_USER_OFFERS} variables={{ id: state.user.id }} refetch={refetch}>
-                                {({ subData }) => {
-                                    const offers = ((subData && subData.offers) || data.allUserOffers)
+                            }}>
+                                <FontAwesomeIcon icon={faPlus} />
+                            </Button>
+                            <div className="grid">
+                                <Query query={GET_USER_OFFERS} variables={{ id: state.user.id }} pseudo={{ height: 256, count: 3 }}>
+                                    {({ data, refetch }) =>
+                                        <Subscription query={SUB_USER_OFFERS} variables={{ id: state.user.id }} refetch={refetch}>
+                                            {({ subData }) => {
+                                                const offers = ((subData && subData.offers) || data.allUserOffers)
 
-                                    if (offers.length === 0)
-                                        return <Message text="Empty" padding />
+                                                if (offers.length === 0)
+                                                    return <Message text="Empty" padding />
 
-                                    return (
-                                        offers.map((offer, key) => (
-                                            <Entry key={key} options={{
-                                                editable: true,
-                                                capacious: false,
-                                                statusBar: [
-                                                    {
-                                                        lite: <Moment date={new Date(new Date().setTime(offer.createdAt))} format="MMM, DD" />,
-                                                        dark: <Moment date={new Date(new Date().setTime(offer.createdAt))} format="h:m" />
-                                                    }
-                                                ],
-                                                handlerEdit: () => showModal([
-                                                    {
-                                                        path: '/',
-                                                        title: 'Edit Offer',
-                                                        component: ({ close }) => <EditOffer offer={offer} close={close} />
-                                                    }
-                                                ]),
-                                                handlerDelete: () => showModal([
-                                                    {
-                                                        path: '/',
-                                                        title: 'Delete Offer',
-                                                        component: ({ close }) => <DeleteEntries
-                                                            entry={offer}
-                                                            query={DELETE_OFFERS}
-                                                            handler={async (action, entry, docs) => {
-                                                                await action({
-                                                                    variables: {
-                                                                        offers: (entry)
-                                                                            ? [{
-                                                                                id: entry.id,
-                                                                                user: entry.user.id
-                                                                            }]
-                                                                            : docs.map(doc => ({
-                                                                                id: doc.id,
-                                                                                user: doc.user.id
-                                                                            }))
-                                                                    }
-                                                                })
-                                                            }}
-                                                            close={close}
-                                                        />
-                                                    }
-                                                ])
-                                            }}>
-                                                <h2 className="title">{offer.title}</h2>
-                                            </Entry>
-                                        )
-                                    ))
-                                }}
-                            </Subscription>
-                        }
-                    </Query>
+                                                return (
+                                                    offers.map((offer, key) => (
+                                                        <Entry key={key} options={{
+                                                            editable: true,
+                                                            capacious: false,
+                                                            statusBar: [
+                                                                {
+                                                                    lite: <Moment date={new Date(new Date().setTime(offer.createdAt))} format="MMM, DD" />,
+                                                                    dark: <Moment date={new Date(new Date().setTime(offer.createdAt))} format="h:m" />
+                                                                }
+                                                            ],
+                                                            handlerEdit: () => showModal([
+                                                                {
+                                                                    path: '/',
+                                                                    title: 'Edit Offer',
+                                                                    component: ({ close }) => <EditOffer offer={offer} close={close} />
+                                                                }
+                                                            ], true),
+                                                            handlerDelete: () => showModal([
+                                                                {
+                                                                    path: '/',
+                                                                    title: 'Delete Offer',
+                                                                    component: ({ close }) => <DeleteEntries
+                                                                        entry={offer}
+                                                                        query={DELETE_OFFERS}
+                                                                        handler={async (action, entry, docs) => {
+                                                                            await action({
+                                                                                variables: {
+                                                                                    offers: (entry)
+                                                                                        ? [{
+                                                                                            id: entry.id,
+                                                                                            user: entry.user.id
+                                                                                        }]
+                                                                                        : docs.map(doc => ({
+                                                                                            id: doc.id,
+                                                                                            user: doc.user.id
+                                                                                        }))
+                                                                                }
+                                                                            })
+                                                                        }}
+                                                                        close={close}
+                                                                    />
+                                                                }
+                                                            ], true)
+                                                        }}>
+                                                            <h2 className="title">{offer.title}</h2>
+                                                        </Entry>
+                                                    )
+                                                ))
+                                            }}
+                                        </Subscription>
+                                    }
+                                </Query>
+                            </div>
+                        </React.Fragment>
+                    )}
                 </Section>
 
                 <Section options={{
@@ -205,87 +216,99 @@ export default ({ showModal }) => {
                     subtitle: '',
                     targets
                 }}>
-                    <Button options={{
-                        type: 'inactive',
-                        handler: () => {
-                            showModal([
-                                {
-                                    path: '/',
-                                    title: 'Add Article',
-                                    component: ({ jump, close }) => <AddArticle jump={jump} close={close} />
+                    {({ filter }) => (
+                        <React.Fragment>
+                            <Button options={{
+                                state: 'inactive',
+                                classNames: 'stretch',
+                                handler: () => {
+                                    showModal([
+                                        {
+                                            path: '/',
+                                            title: 'Add Article',
+                                            component: ({ jump, close }) => <AddArticle jump={jump} close={close} />
+                                        }
+                                    ])
                                 }
-                            ])
-                        }
-                    }}>
-                        <FontAwesomeIcon icon={faPlus} />
-                    </Button>
-                    <Query query={GET_USER_ARTICLES} variables={{ id: state.user.id }} pseudo={{ height: 256, count: 3 }}>
-                        {({ data, refetch }) =>
-                            <Subscription query={SUB_USER_ARTICLES} variables={{ id: state.user.id }} refetch={refetch}>
-                                {({ subData }) => {
-                                    const articles = ((subData && subData.articles) || data.allUserArticles)
+                            }}>
+                                <FontAwesomeIcon icon={faPlus} />
+                            </Button>
+                            <div className="grid">
+                                <Query query={GET_USER_ARTICLES} variables={{ id: state.user.id }} pseudo={{ height: 256, count: 3 }}>
+                                    {({ data, refetch }) =>
+                                        <Subscription query={SUB_USER_ARTICLES} variables={{ id: state.user.id }} refetch={refetch}>
+                                            {({ subData }) => {
+                                                const articles = ((subData && subData.articles) || data.allUserArticles)
 
-                                    if (articles.length === 0)
-                                        return <Message text="Empty" padding />
+                                                if (articles.length === 0)
+                                                    return <Message text="Empty" padding />
 
-                                    return (
-                                        articles.map((article, key) => (
-                                            <Entry key={key} options={{
-                                                editable: true,
-                                                capacious: false,
-                                                manageOffset: true,
-                                                statusBar: [
-                                                    { lite: 'Comments', dark: article.comments.length || 0 },
-                                                    { lite: 'Views', dark: article.views || 0 },
-                                                    {
-                                                        lite: <Moment date={new Date(new Date().setTime(article.createdAt))} format="MMM, DD" />,
-                                                        dark: <Moment date={new Date(new Date().setTime(article.createdAt))} format="h:m" />
-                                                    }
-                                                ],
-                                                handlerEdit: () => showModal([
-                                                    {
-                                                        path: '/',
-                                                        title: 'Edit Article',
-                                                        component: ({ close }) => <EditArticle article={article} close={close} />
-                                                    }
-                                                ]),
-                                                handlerDelete: () => showModal([
-                                                    {
-                                                        path: '/',
-                                                        title: 'Delete Article',
-                                                        component: ({ close }) => <DeleteEntries
-                                                            entry={article}
-                                                            query={DELETE_ARTICLES}
-                                                            handler={async (action, entry, docs) => {
-                                                                await action({
-                                                                    variables: {
-                                                                        articles: (entry)
-                                                                            ? [{
-                                                                                id: entry.id,
-                                                                                author: entry.author.id
-                                                                            }]
-                                                                            : docs.map(doc => ({
-                                                                                id: doc.id,
-                                                                                author: doc.author.id
-                                                                            }))
-                                                                    }
-                                                                })
-                                                            }}
-                                                            close={close}
-                                                        />
-                                                    }
-                                                ])
-                                            }}>
-                                                <img className="image" src={(article.image.path).replace('./', `${api}/`)} alt="Article" />
-                                                <h2 className="title">{article.title}</h2>
-                                                <p className="paragraph">{article.description}</p>
-                                            </Entry>
-                                        )
-                                    ))
-                                }}
-                            </Subscription>
-                        }
-                    </Query>
+                                                return (
+                                                    articles.map((article, key) => (
+                                                        <Entry key={key} options={{
+                                                            editable: true,
+                                                            capacious: false,
+                                                            manageOffset: !(article.image && !article.image.path),
+                                                            statusBar: [
+                                                                { lite: 'Comments', dark: article.comments.length || 0 },
+                                                                { lite: 'Views', dark: article.views || 0 },
+                                                                {
+                                                                    lite: <Moment date={new Date(new Date().setTime(article.createdAt))} format="MMM, DD" />,
+                                                                    dark: <Moment date={new Date(new Date().setTime(article.createdAt))} format="h:m" />
+                                                                }
+                                                            ],
+                                                            handlerEdit: () => showModal([
+                                                                {
+                                                                    path: '/',
+                                                                    title: 'Edit Article',
+                                                                    component: ({ close }) => <EditArticle article={article} close={close} />
+                                                                }
+                                                            ]),
+                                                            handlerDelete: () => showModal([
+                                                                {
+                                                                    path: '/',
+                                                                    title: 'Delete Article',
+                                                                    component: ({ close }) => <DeleteEntries
+                                                                        entry={article}
+                                                                        query={DELETE_ARTICLES}
+                                                                        handler={async (action, entry, docs) => {
+                                                                            await action({
+                                                                                variables: {
+                                                                                    articles: (entry)
+                                                                                        ? [{
+                                                                                            id: entry.id,
+                                                                                            author: entry.author.id
+                                                                                        }]
+                                                                                        : docs.map(doc => ({
+                                                                                            id: doc.id,
+                                                                                            author: doc.author.id
+                                                                                        }))
+                                                                                }
+                                                                            })
+                                                                        }}
+                                                                        close={close}
+                                                                    />
+                                                                }
+                                                            ], true)
+                                                        }}>
+                                                            {(article.image && article.image.path) && <img
+                                                                    className="image"
+                                                                    src={(article.image.path).replace('./', `${api}/`)}
+                                                                    alt="Article"
+                                                                />
+                                                            }
+                                                            <h2 className="title">{article.title}</h2>
+                                                            <p className="paragraph">{article.description}</p>
+                                                        </Entry>
+                                                    )
+                                                ))
+                                            }}
+                                        </Subscription>
+                                    }
+                                </Query>
+                            </div>
+                        </React.Fragment>
+                    )}
                 </Section>
 
                 {/*
@@ -338,11 +361,15 @@ export default ({ showModal }) => {
                     subtitle: '',
                     manage: false
                 }}>
-                    {notifications.map((notification, key) =>
-                        <Notify key={key} options={{
-                            message: notification.msg,
-                            avatar: notification.img
-                        }} />    
+                    {() => (
+                        <div className="grid">
+                            {notifications.map((notification, key) =>
+                                <Notify key={key} options={{
+                                    message: notification.msg,
+                                    avatar: notification.img
+                                }} />    
+                            )}
+                        </div>
                     )}
                 </Section>
             </aside>

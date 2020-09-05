@@ -77,28 +77,28 @@
     cursor: default;
 }
 
-.ui-button.stretch {
-    width: 100%;
-}
-
-.ui-button.grow {
-    flex-grow: 1;
-}
-
-.ui-button.mbs15 {
-    margin-block-start: 15px;
-}
-
-.ui-button.clear {
-    height: auto;
-    border: none;
-    background: none;
-}
-
 .react-ripples {
     border-radius: var(--br-main);
 }
 
 .react-ripples s {
     z-index: var(--z-nine);
+}
+
+.stretch {
+    width: 100%;
+}
+
+.grow {
+    flex-grow: 1;
+}
+
+.mbs15 {
+    margin-block-start: 15px;
+}
+
+.clear {
+    height: auto;
+    border: none;
+    background: none;
 }

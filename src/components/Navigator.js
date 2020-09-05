@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFilter, faPlus } from '@fortawesome/free-solid-svg-icons'
@@ -38,6 +38,8 @@ const api = config.get('api')
 export default ({ showModal }) => {
     const state = useSelector(state => state)
 
+    const [currentHub, setCurrentHub] = useState('all')
+
     if (!state.user) return null
 
     return (
@@ -50,8 +52,7 @@ export default ({ showModal }) => {
                     </Headline>
 
                     <Button options={{
-                        type: 'icon',
-                        state: 'inactive'
+                        state: 'icon inactive'
                     }}>
                         <FontAwesomeIcon icon={faFilter} />
                     </Button>
@@ -60,7 +61,8 @@ export default ({ showModal }) => {
                 <Search />
 
                 <Button options={{
-                    type: 'inactive',
+                    state: 'inactive',
+                    classNames: 'stretch',
                     handler: () => {
                         showModal([
                             {
@@ -68,7 +70,7 @@ export default ({ showModal }) => {
                                 title: 'Add Offer',
                                 component: ({ jump, close }) => <AddOffer jump={jump} close={close} />
                             }
-                        ])
+                        ], true)
                     }
                 }}>
                     <FontAwesomeIcon icon={faPlus} />
@@ -100,7 +102,7 @@ export default ({ showModal }) => {
                                                     title: 'Edit Offer',
                                                     component: ({ close }) => <EditOffer offer={offer} close={close} />
                                                 }
-                                            ]),
+                                            ], true),
                                             handlerDelete: () => showModal([
                                                 {
                                                     path: '/',
@@ -126,7 +128,7 @@ export default ({ showModal }) => {
                                                         close={close}
                                                     />
                                                 }
-                                            ])
+                                            ], true)
                                         }}>
                                             <h2 className="title">{offer.title}</h2>
                                         </Entry>
@@ -142,23 +144,32 @@ export default ({ showModal }) => {
                 <Query query={GET_ALL_HUBS} variables={{ status: 'PUBLISHED' }} pseudo={{ height: 45, count: 6 }}>
                     {({ data, refetch }) => (data.allHubs.length > 1) && (
                         <Subscription query={SUB_ALL_HUBS} variables={{ status: 'PUBLISHED' }} refetch={refetch}>
-                            {({ subData }) => (
-                                <Toggler options={{
-                                    type: 'auto',
-                                    targets: ((subData && subData.hubs) || (data && data.allHubs) || []).map((hub, key) => ({
-                                        type: hub.id,
-                                        value: (
-                                            <Row key={key}>
-                                                {(hub.icon && hub.icon.path) &&
-                                                <div className="icon">
-                                                    <img src={(hub.icon.path).replace('./', `${api}/`)} alt={hub.title} />
-                                                </div>}
-                                                <p>{hub.title}</p>
-                                            </Row>
-                                        )}))
-                                    }}
-                                />
-                            )}
+                            {({ subData }) => {
+                                const hubs = ((subData && subData.hubs) || (data && data.allHubs))
+                                return (
+                                    <Toggler options={{
+                                        state: currentHub,
+                                        handler: setCurrentHub,
+                                        targets: [
+                                            {
+                                                type: 'all',
+                                                value: <Row><p>All</p></Row>
+                                            },
+                                            ...hubs.map((hub, key) => ({
+                                                type: hub.id,
+                                                value: (
+                                                    <Row key={key}>
+                                                        {(hub.icon && hub.icon.path) &&
+                                                        <div className="icon">
+                                                            <img src={(hub.icon.path).replace('./', `${api}/`)} alt={hub.title} />
+                                                        </div>}
+                                                        <p>{hub.title}</p>
+                                                    </Row>
+                                                )}))
+                                        ]}}
+                                    />
+                                )
+                            }}
                         </Subscription>
                     )}
                 </Query>
@@ -169,47 +180,51 @@ export default ({ showModal }) => {
                     subtitle: 'All',
                     targets
                 }}>
-                    <Query query={GET_ALL_OFFERS} variables={{ status: 'PUBLISHED' }} pseudo={{ height: 256, count: 3 }}>
-                        {({ data, refetch }) =>
-                            <Subscription query={SUB_ALL_OFFERS} variables={{ status: 'PUBLISHED' }} refetch={refetch}>
-                                {({ subData }) => {
-                                    const offers = (subData && subData.offers) || (data && data.allOffers) || []
+                    {({ filter }) => (
+                        <div className="grid">
+                            <Query query={GET_ALL_OFFERS} variables={{ status: 'PUBLISHED' }} pseudo={{ height: 256, count: 3 }}>
+                                {({ data, refetch }) =>
+                                    <Subscription query={SUB_ALL_OFFERS} variables={{ status: 'PUBLISHED' }} refetch={refetch}>
+                                        {({ subData }) => {
+                                            const offers = (subData && subData.offers) || (data && data.allOffers) || []
 
-                                    if (offers.length === 0)
-                                        return <Message text="Empty" padding />
+                                            if (offers.length === 0)
+                                                return <Message text="Empty" padding />
 
-                                    return (
-                                        offers.map((offer, key) => 
-                                            <Entry key={key} options={{
-                                                capacious: false,
-                                                userBar: {
-                                                    name: offer.user.name,
-                                                    status: offer.user.status || 'Online',
-                                                    avatar: offer.user.avatar?.path
-                                                },
-                                                statusBar: [
-                                                    {
-                                                        lite: <Moment date={new Date(new Date().setTime(offer.createdAt))} format="MMM, DD" />,
-                                                        dark: <Moment date={new Date(new Date().setTime(offer.createdAt))} format="h:m" />
-                                                    }
-                                                ],
-                                                handler: () => showModal([
-                                                    {
-                                                        path: '/',
-                                                        title: offer.title,
-                                                        component: () => <ViewOffer offer={offer} />
-                                                    }
-                                                ])
-                                            }}>
-                                                <h2 className="title">{offer.title}</h2>
-                                                <p>{offer.message}</p>
-                                            </Entry>
-                                        )
-                                    )
-                                }}
-                            </Subscription>
-                        }
-                    </Query>
+                                            return (
+                                                offers.map((offer, key) => ((currentHub === 'all') || (offer.hub.id === currentHub)) ? (
+                                                    <Entry key={key} options={{
+                                                        capacious: false,
+                                                        userBar: {
+                                                            name: offer.user.name,
+                                                            status: offer.user.status || 'Online',
+                                                            avatar: offer.user.avatar?.path
+                                                        },
+                                                        statusBar: [
+                                                            {
+                                                                lite: <Moment date={new Date(new Date().setTime(offer.createdAt))} format="MMM, DD" />,
+                                                                dark: <Moment date={new Date(new Date().setTime(offer.createdAt))} format="h:m" />
+                                                            }
+                                                        ],
+                                                        handler: () => showModal([
+                                                            {
+                                                                path: '/',
+                                                                title: offer.title,
+                                                                component: () => <ViewOffer offer={offer} />
+                                                            }
+                                                        ])
+                                                    }}>
+                                                        <h2 className="title">{offer.title}</h2>
+                                                        <p>{offer.message}</p>
+                                                    </Entry>
+                                                ) : null)
+                                            )
+                                        }}
+                                    </Subscription>
+                                }
+                            </Query>
+                        </div>
+                    )}
                 </Section>
             </aside>
 
@@ -220,7 +235,9 @@ export default ({ showModal }) => {
                     subtitle: 12,
                     manage: false
                 }}>
-                    
+                    {() => (
+                        null
+                    )}
                 </Section>
             </aside>
         </main>

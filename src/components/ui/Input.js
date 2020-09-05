@@ -11,7 +11,8 @@ import '../styles/Input.css'
 export default ({ options }) => {
     const {
         type='text',
-        value,
+        value, ref, name,
+        defaultValue,
         placeholder='Write a message...',
         autoComplete="Default text",
         onChange=() => {}
@@ -23,8 +24,11 @@ export default ({ options }) => {
 
     return (
         <input
+            ref={ref}
             type={type}
+            name={name}
             value={value}
+            defaultValue={defaultValue}
             className={classes.join(' ')}
             placeholder={placeholder}
             onChange={onChange}
