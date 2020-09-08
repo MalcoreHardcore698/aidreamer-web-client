@@ -540,7 +540,13 @@ export const GET_USER_ARTICLES = gql`
                 path
             }
             comments {
-                message
+                id
+                user {
+                    name
+                }
+                text
+                updatedAt
+                createdAt
             }
             hub {
                 id
@@ -568,7 +574,16 @@ export const GET_ALL_ARTICLES = gql`
                 path
             }
             comments {
-                message
+                id
+                user {
+                    name
+                    avatar {
+                        path
+                    }
+                }
+                text
+                updatedAt
+                createdAt
             }
             hub {
                 id
@@ -601,7 +616,16 @@ export const SUB_USER_ARTICLES = gql`
                 path
             }
             comments {
-                message
+                id
+                user {
+                    name
+                    avatar {
+                        path
+                    }
+                }
+                text
+                updatedAt
+                createdAt
             }
             hub {
                 id
@@ -633,7 +657,16 @@ export const SUB_ARTICLES = gql`
                 path
             }
             comments {
-                message
+                id
+                user {
+                    name
+                    avatar {
+                        path
+                    }
+                }
+                text
+                updatedAt
+                createdAt
             }
             hub {
                 id
@@ -660,6 +693,18 @@ export const GET_ARTICLE = gql`
                 id
                 name
                 path
+            }
+            comments {
+                id
+                user {
+                    name
+                    avatar {
+                        path
+                    }
+                }
+                text
+                updatedAt
+                createdAt
             }
             hub {
                 id
@@ -722,6 +767,46 @@ export const DELETE_ARTICLES = gql`
         $articles: [InputArticle]
     ) {
         deleteArticles(articles: $articles)
+    }
+`
+
+export const ADD_COMMENT = gql`
+    mutation addComment(
+        $article: ID!
+        $text: String!
+    ) {
+        addComment(
+            article: $article
+            text: $text
+        )
+    }
+`
+
+export const EDIT_COMMENT = gql`
+    mutation editComment(
+        $id: ID!
+        $article: ID
+        $user: ID
+        $text: String
+    ) {
+        editComment(
+            id: $id
+            article: $article
+            user: $user
+            text: $text
+        )
+    }
+`
+
+export const DELTE_COMMENTS = gql`
+    mutation deleteComments(
+        $id: [ID]!
+        $article: ID!
+    ) {
+        deleteComments(
+            id: $id
+            article: $article
+        )
     }
 `
 // END ARTICLE

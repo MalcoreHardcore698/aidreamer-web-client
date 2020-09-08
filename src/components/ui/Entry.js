@@ -68,7 +68,7 @@ export default (props) => {
 
     const renderContent = () => {
         return (
-            <div className="content-wrapper">
+            <div className="content-wrapper" onClick={handler}>
                 {(!Children)
                     ? <Message text="No Content" />
                     : <React.Fragment>
@@ -90,18 +90,22 @@ export default (props) => {
         
         return (
             <div className="status-bar">
-                {statusBar.map((item, key) =>
+                {statusBar.options.map((item, key) =>
                     <p key={key}>
                         <span className="lite">{item.lite}</span>
                         <span className="dark">{item.dark}</span>
                     </p>
+                )}
+
+                {(statusBar.input) && (
+                    <div className="input">{statusBar.input}</div>
                 )}
             </div>
         )
     }
     
     return (
-        <div className={classes.join(' ')} onClick={handler}>
+        <div className={classes.join(' ')}>
             {renderUserBar()}
             {renderContent()}
             {renderStatusBar()}

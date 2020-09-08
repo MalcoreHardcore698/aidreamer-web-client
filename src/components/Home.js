@@ -5,8 +5,11 @@ import { faFilter, faPlus } from '@fortawesome/free-solid-svg-icons'
 import Moment from 'react-moment'
 
 import Query from './ui/Query'
+import Mutation from './ui/Mutation'
 import Subscription from './ui/Subscription'
 import Row from './ui/Row'
+import Avatar from './ui/Avatar'
+import Input from './ui/Input'
 import Headline from './ui/Headline'
 import Button from './ui/Button'
 import Search from './ui/Search'
@@ -15,6 +18,7 @@ import Section from './ui/Section'
 import Message from './ui/Message'
 import Entry from './ui/Entry'
 
+import ViewAlert from './content/ViewAlert'
 import AddArticle from './content/AddArticle'
 import EditArticle from './content/EditArticle'
 import ViewArticle from './content/ViewArticle'
@@ -27,6 +31,7 @@ import {
     GET_ALL_HUBS,
     GET_USER_ARTICLES,
     GET_ALL_ARTICLES,
+    ADD_COMMENT,
     DELETE_ARTICLES,
     SUB_ALL_HUBS,
     SUB_ARTICLES,
@@ -90,14 +95,16 @@ export default ({ showModal }) => {
                                         <Entry key={key} options={{
                                             editable: true,
                                             capacious: false,
-                                            statusBar: [
-                                                { lite: 'Comments', dark: article.comments.length || 0 },
-                                                { lite: 'Views', dark: article.views || 0 },
-                                                {
-                                                    lite: <Moment date={new Date(new Date().setTime(article.createdAt))} format="MMM, DD" />,
-                                                    dark: <Moment date={new Date(new Date().setTime(article.createdAt))} format="h:m" />
-                                                }
-                                            ],
+                                            statusBar: {
+                                                options: [
+                                                    { lite: 'Comments', dark: article.comments.length || 0 },
+                                                    { lite: 'Views', dark: article.views || 0 },
+                                                    {
+                                                        lite: <Moment date={new Date(new Date().setTime(article.createdAt))} format="MMM, DD" />,
+                                                        dark: <Moment date={new Date(new Date().setTime(article.createdAt))} format="h:m" />
+                                                    }
+                                                ]
+                                            },
                                             handlerEdit: () => showModal([
                                                 {
                                                     path: '/',
@@ -202,14 +209,55 @@ export default ({ showModal }) => {
                                                             status: article.author.status || 'Online',
                                                             avatar: article.author.avatar?.path
                                                         },
-                                                        statusBar: [
-                                                            { lite: 'Comments', dark: article.comments.length || 0 },
-                                                            { lite: 'Views', dark: article.views || 0 },
-                                                            {
-                                                                lite: <Moment date={new Date(new Date().setTime(article.createdAt))} format="MMM, DD" />,
-                                                                dark: <Moment date={new Date(new Date().setTime(article.createdAt))} format="h:m" />
-                                                            }
-                                                        ],
+                                                        statusBar: {
+                                                            options: [
+                                                                { lite: 'Comments', dark: article.comments.length },
+                                                                { lite: 'Views', dark: article.views || 0 },
+                                                                {
+                                                                    lite: <Moment date={new Date(new Date().setTime(article.createdAt))} format="MMM, DD" />,
+                                                                    dark: <Moment date={new Date(new Date().setTime(article.createdAt))} format="h:m" />
+                                                                }
+                                                            ],
+                                                            input: (
+                                                                <React.Fragment>
+                                                                    <Avatar avatar={{ path: state.user.avatar.path }} properties={['circle']} />
+                                                                    <Mutation query={ADD_COMMENT}>
+                                                                        {({ action }) => (
+                                                                            <Input options={{
+                                                                                onKeyPress: async (e) => {
+                                                                                    try {
+                                                                                        if (e.key === 'Enter') {
+                                                                                            e.persist()
+                                                                                            
+                                                                                            const text = e.target.value
+                                                                                            e.target.value = ''
+                                                
+                                                                                            await action({
+                                                                                                variables: {
+                                                                                                    article: article.id,
+                                                                                                    text
+                                                                                                }
+                                                                                            })
+                                                                                        }
+                                                                                    } catch {
+                                                                                        showModal([
+                                                                                            {
+                                                                                                path: '/',
+                                                                                                title: 'Error',
+                                                                                                component: ({ close }) => <ViewAlert
+                                                                                                    text="Ops! Wrong something :("
+                                                                                                    close={close}
+                                                                                                />
+                                                                                            }
+                                                                                        ], true)
+                                                                                    }
+                                                                                }
+                                                                            }} />
+                                                                        )}
+                                                                    </Mutation>
+                                                                </React.Fragment>
+                                                            ),
+                                                        },
                                                         handler: () => showModal([
                                                             {
                                                                 path: '/',

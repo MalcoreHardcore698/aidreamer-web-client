@@ -21,7 +21,11 @@ export default (props) => {
             className={`ui-list${(handler) ? ' clickable' : ''}`}
             onClick={handler}
         >
-            {list.map((item, key) => <Children key={key} item={item} />)}
+            {list.map((item, key) => (
+                <div className="ui-item">
+                    <Children key={key} item={item} />
+                </div>
+            ))}
         </div>
     )
 }

@@ -99,12 +99,14 @@ export default ({ showModal }) => {
                                         <Entry key={key} options={{
                                             editable: true,
                                             capacious: false,
-                                            statusBar: [
-                                                {
-                                                    lite: <Moment date={new Date(new Date().setTime(offer.createdAt))} format="MMM, DD" />,
-                                                    dark: <Moment date={new Date(new Date().setTime(offer.createdAt))} format="h:m" />
-                                                }
-                                            ],
+                                            statusBar: {
+                                                options: [
+                                                    {
+                                                        lite: <Moment date={new Date(new Date().setTime(offer.createdAt))} format="MMM, DD" />,
+                                                        dark: <Moment date={new Date(new Date().setTime(offer.createdAt))} format="h:m" />
+                                                    }
+                                                ]
+                                            },
                                             handlerEdit: () => showModal([
                                                 {
                                                     path: '/',
@@ -242,12 +244,14 @@ export default ({ showModal }) => {
                                                                 </Mutation>
                                                             )
                                                         },
-                                                        statusBar: [
-                                                            {
-                                                                lite: <Moment date={new Date(new Date().setTime(offer.createdAt))} format="MMM, DD" />,
-                                                                dark: <Moment date={new Date(new Date().setTime(offer.createdAt))} format="h:m" />
-                                                            }
-                                                        ],
+                                                        statusBar: {
+                                                            options: [
+                                                                {
+                                                                    lite: <Moment date={new Date(new Date().setTime(offer.createdAt))} format="MMM, DD" />,
+                                                                    dark: <Moment date={new Date(new Date().setTime(offer.createdAt))} format="h:m" />
+                                                                }
+                                                            ]
+                                                        },
                                                         handler: () => showModal([
                                                             {
                                                                 path: '/',

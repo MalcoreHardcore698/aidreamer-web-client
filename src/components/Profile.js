@@ -156,12 +156,14 @@ export default ({ showModal }) => {
                                                         <Entry key={key} options={{
                                                             editable: true,
                                                             capacious: false,
-                                                            statusBar: [
-                                                                {
-                                                                    lite: <Moment date={new Date(new Date().setTime(offer.createdAt))} format="MMM, DD" />,
-                                                                    dark: <Moment date={new Date(new Date().setTime(offer.createdAt))} format="h:m" />
-                                                                }
-                                                            ],
+                                                            statusBar: {
+                                                                options: [
+                                                                    {
+                                                                        lite: <Moment date={new Date(new Date().setTime(offer.createdAt))} format="MMM, DD" />,
+                                                                        dark: <Moment date={new Date(new Date().setTime(offer.createdAt))} format="h:m" />
+                                                                    }
+                                                                ]
+                                                            },
                                                             handlerEdit: () => showModal([
                                                                 {
                                                                     path: '/',
@@ -249,14 +251,16 @@ export default ({ showModal }) => {
                                                             editable: true,
                                                             capacious: false,
                                                             manageOffset: !(article.image && !article.image.path),
-                                                            statusBar: [
-                                                                { lite: 'Comments', dark: article.comments.length || 0 },
-                                                                { lite: 'Views', dark: article.views || 0 },
-                                                                {
-                                                                    lite: <Moment date={new Date(new Date().setTime(article.createdAt))} format="MMM, DD" />,
-                                                                    dark: <Moment date={new Date(new Date().setTime(article.createdAt))} format="h:m" />
-                                                                }
-                                                            ],
+                                                            statusBar: {
+                                                                options: [
+                                                                    { lite: 'Comments', dark: article.comments.length || 0 },
+                                                                    { lite: 'Views', dark: article.views || 0 },
+                                                                    {
+                                                                        lite: <Moment date={new Date(new Date().setTime(article.createdAt))} format="MMM, DD" />,
+                                                                        dark: <Moment date={new Date(new Date().setTime(article.createdAt))} format="h:m" />
+                                                                    }
+                                                                ]
+                                                            },
                                                             handlerEdit: () => showModal([
                                                                 {
                                                                     path: '/',
