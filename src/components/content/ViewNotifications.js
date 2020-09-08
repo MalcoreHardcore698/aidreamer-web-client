@@ -1,9 +1,10 @@
 import React from 'react'
+import Moment from 'react-moment'
 import Container from './../ui/Container'
 import Query from './../ui/Query'
 import Subscription from './../ui/Subscription'
 import Message from './../ui/Message'
-import Notify from './../ui/Notify'
+import List from './../ui/List'
 
 import {
     GET_USER_NOTIFICATIONS,
@@ -23,14 +24,21 @@ export default () => {
                                 return <Message text="Empty" padding />
 
                             return (
-                                <div className="grid">
-                                    {notifications.map((notification, key) =>
-                                        <Notify key={key} options={{
-                                            message: notification.text,
-                                            avatar: notification.img
-                                        }} />    
+                                (notifications.length > 0) ?
+                                <List options={{ list: notifications }}>
+                                    {({ item }) => (
+                                        <React.Fragment>
+                                            <p className="avatar">
+                                                <img src={item.img} alt="User" />
+                                            </p>
+                                            <p className="name">{item.text}</p>
+                                            <p className="date">
+                                                <Moment date={new Date(new Date().setTime(item.createdAt))} format="h:m" />
+                                            </p>
+                                        </React.Fragment>
                                     )}
-                                </div>
+                                </List> :
+                                <Message text="No Comments" padding />
                             )
                         }}
                     </Subscription>

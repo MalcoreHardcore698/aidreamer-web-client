@@ -5,7 +5,7 @@ import Entry from '../ui/Entry'
 
 export default ({ offer }) => {
     return (
-        <Container>
+        <Container type="clear">
             <Entry options={{
                 capacious: false,
                 userBar: {

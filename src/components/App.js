@@ -79,10 +79,11 @@ export default () => {
   const { data, loading, error } = useQuery(GET_USER)
 
   useEffect(() => {
-    if (data && data.getUser) {
-      dispatch(setUser(data.getUser))
+    if (data) {
+      if (data.getUser) dispatch(setUser(data.getUser))
+      else logout()
     }
-  }, [data, dispatch])
+  }, [data, logout, dispatch])
 
   if (loading && !state.user) {
     return <SkeletonContent />

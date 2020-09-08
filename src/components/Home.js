@@ -105,6 +105,13 @@ export default ({ showModal }) => {
                                                     }
                                                 ]
                                             },
+                                            handlerView: () => showModal([
+                                                {
+                                                    path: '/',
+                                                    title: 'Article',
+                                                    component: ({ close }) => <ViewArticle article={article} close={close} />
+                                                }
+                                            ]),
                                             handlerEdit: () => showModal([
                                                 {
                                                     path: '/',
@@ -261,7 +268,7 @@ export default ({ showModal }) => {
                                                         handler: () => showModal([
                                                             {
                                                                 path: '/',
-                                                                title: article.title,
+                                                                title: 'Article',
                                                                 component: () => <ViewArticle article={article} />
                                                             }
                                                         ])

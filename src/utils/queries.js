@@ -417,6 +417,7 @@ export const SUB_NOTIFICATIONS = gql`
         notifications {
             id
             text
+            createdAt
         }
     }
 `
@@ -426,6 +427,7 @@ export const GET_USER_NOTIFICATIONS = gql`
         allUserNotifications {
             id
             text
+            createdAt
         }
     }
 `
@@ -543,6 +545,9 @@ export const GET_USER_ARTICLES = gql`
                 id
                 user {
                     name
+                    avatar {
+                        path
+                    }
                 }
                 text
                 updatedAt

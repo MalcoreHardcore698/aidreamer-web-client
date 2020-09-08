@@ -398,3 +398,15 @@ main.chats aside:first-child .loader {
         padding-bottom: 180px;
     }
 }
+
+@media only screen and (max-width: 480px) {
+    main {
+        display: flex;
+        flex-direction: column;
+        padding-bottom: 75px;
+    }
+
+    .ui-chat .messages .message .content {
+        max-width: 85%;
+    }
+}

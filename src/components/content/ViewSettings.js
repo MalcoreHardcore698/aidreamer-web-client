@@ -159,20 +159,21 @@ export const SettingsLanguageContent = ({ back }) => {
         <Container>
             <Divider />
 
-            <List options={{ list: langs }}>
+            <List options={{
+                list: langs,
+                state: checked,
+                handlerItem: (item) => {
+                    setChecked(item)
+                    setDisabled(false)
+                }
+            }}>
                 {({ item }) => (
-                    <div
-                        className={`ui-item${(checked.id === item.id) ? ' checked' : ''}`}
-                        onClick={() => {
-                            setChecked(item)
-                            setDisabled(false)
-                        }}
-                    >
+                    <React.Fragment>
                         <p className="avatar">
                             <img src={item.icon} alt="User" />
                         </p>
                         <p className="name">{item.label}</p>
-                    </div>
+                    </React.Fragment>
                 )}
             </List>
 

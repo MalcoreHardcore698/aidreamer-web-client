@@ -1,13 +1,14 @@
-import React, { useState } from 'react'
+import React, { useRef } from 'react'
 import { useSelector } from 'react-redux'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faReply } from '@fortawesome/free-solid-svg-icons'
 import Moment from 'react-moment'
 import Mutation from '../ui/Mutation'
 import Container from '../ui/Container'
-import Avatar from '../ui/Avatar'
-import Input from '../ui/Input'
 import Button from '../ui/Button'
 import List from '../ui/List'
-import Message from '../ui/Message'
+import Avatar from '../ui/Avatar'
+import Input from '../ui/Input'
 import Entry from '../ui/Entry'
 import { config } from '../../utils/config'
 import { ADD_COMMENT } from '../../utils/queries'
@@ -16,10 +17,11 @@ const api = config.get('api')
 
 export default ({ article }) => {
     const state = useSelector(state => state)
-    const [comments, setComments] = useState(false)
+
+    const inputRef = useRef(null)
 
     return (
-        <Container type="fat">
+        <Container type="fat clear">
             <Entry options={{
                 capacious: false,
                 statusBar: {
@@ -37,6 +39,7 @@ export default ({ article }) => {
                             <Mutation query={ADD_COMMENT}>
                                 {({ action }) => (
                                     <Input options={{
+                                        ref: inputRef,
                                         onKeyPress: async (e) => {
                                             try {
                                                 if (e.key === 'Enter') {
@@ -60,6 +63,40 @@ export default ({ article }) => {
                                 )}
                             </Mutation>
                         </React.Fragment>
+                    ),
+                    body: (
+                        (article.comments.length > 0) ?
+                        <List options={{ list: article.comments }}>
+                            {({ item }) => (
+                                <React.Fragment>
+                                    <p className="avatar">
+                                        <img src={item.user.avatar.path} alt="User" />
+                                    </p>
+                                    <div className="content">
+                                        <div className="top">
+                                            <p className="name">{item.user.name}</p>
+                                            <p className="date">
+                                                <Moment date={new Date(new Date().setTime(item.createdAt))} format="h:m" />
+                                            </p>
+                                        </div>
+
+                                        <p className="text">{item.text}</p>
+                                    </div>
+                                    {(item.user.name !== state.user.name) && (
+                                        <div className="reply">
+                                            <Button options={{
+                                                state: 'icon inactive',
+                                                handler: () => {
+                                                    inputRef.current.value = `@${item.user.name} `
+                                                }
+                                            }}>
+                                                <FontAwesomeIcon icon={faReply} />
+                                            </Button>
+                                        </div>
+                                    )}
+                                </React.Fragment>
+                            )}
+                        </List> : null
                     )
                 }
             }}>
@@ -69,37 +106,10 @@ export default ({ article }) => {
                         alt="Article"
                     />
                 }
-                <p className="paragraph">{article.description}</p>
+                <p className="title">{article.title}</p>
                 <p className="body">{article.body}</p>
                 <p className="hub">Hub: {article.hub.title}</p>
             </Entry>
-
-            {(!comments && article.comments.length > 0) && (
-                <Button options={{
-                    state: 'inactive',
-                    handler: () => setComments(!comments)
-                }}>
-                    <p>Show Comments</p>
-                </Button>
-            )}
-
-            {(comments) ? (
-                (article.comments.length > 0) ?
-                <List options={{ list: article.comments }}>
-                    {({ item }) => (
-                        <React.Fragment>
-                            <p className="avatar">
-                                <img src={item.user.avatar.path} alt="User" />
-                            </p>
-                            <p className="name">{item.text}</p>
-                            <p className="date">
-                                <Moment date={new Date(new Date().setTime(item.createdAt))} format="h:m" />
-                            </p>
-                        </React.Fragment>
-                    )}
-                </List> :
-                <Message text="No Comments" padding />
-            ) : null}
         </Container>
     )
 }

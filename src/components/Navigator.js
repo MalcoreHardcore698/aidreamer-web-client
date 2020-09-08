@@ -107,6 +107,13 @@ export default ({ showModal }) => {
                                                     }
                                                 ]
                                             },
+                                            handlerView: () => showModal([
+                                                {
+                                                    path: '/',
+                                                    title: 'Offer',
+                                                    component: ({ close }) => <ViewOffer offer={offer} close={close} />
+                                                }
+                                            ]),
                                             handlerEdit: () => showModal([
                                                 {
                                                     path: '/',
@@ -142,6 +149,7 @@ export default ({ showModal }) => {
                                             ], true)
                                         }}>
                                             <h2 className="title">{offer.title}</h2>
+                                            <p className="paragraph">{offer.hub.title}</p>
                                         </Entry>
                                     )
                                 ))
