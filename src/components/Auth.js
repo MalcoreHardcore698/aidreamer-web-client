@@ -54,7 +54,7 @@ const Login = ({ setLoading, setError }) => {
             }} />
             
             <Button options={{
-                type: 'inactive',
+                state: 'inactive',
                 handler: () => {
                     onLogin({
                         variables: {
@@ -141,7 +141,7 @@ const Register = ({ setLoading, setError }) => {
             }} />
 
             <Button options={{
-                type: 'inactive',
+                state: 'inactive',
                 handler: () => {
                     if (!name && !email && !password && !confirmPassword)
                         return null

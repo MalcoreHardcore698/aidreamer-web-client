@@ -1,50 +1,105 @@
-import React, { useState } from 'react'
+import React from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import Moment from 'react-moment'
+
+import Mutation from './ui/Mutation'
+import Query from './ui/Query'
+import Subscription from './ui/Subscription'
 import Row from './ui/Row'
 import Headline from './ui/Headline'
 import Section from './ui/Section'
-import Button from './ui/Button'
 import Search from './ui/Search'
 import List from './ui/List'
 import Unit from './ui/Unit'
 import Avatar from './ui/Avatar'
 import Input from './ui/Input'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faFilter } from '@fortawesome/free-solid-svg-icons'
-import units from '../stores/units'
 import Message from './ui/Message'
-import ImageAvatar from '../assets/images/avatar.png'
 
-const Chat = ({ chat }) => {
+import ViewAlert from './content/ViewAlert'
+
+import ImageAvatar from '../assets/images/avatar.png'
+import {
+    ADD_USER_CHAT_MESSAGE,
+    GET_CHAT_MESSAGES,
+    GET_USER_CHATS,
+    SUB_USER_CHATS,
+    SUB_MESSAGES
+} from '../utils/queries'
+import { setChat } from '../utils/actions'
+
+function getShortText(messages) {
+    const text = messages[messages.length - 1].text
+    const length = text.length
+    if (length > 14)
+        return `${text.slice(0, 15)}...`
+    else return text
+}
+
+const Chat = ({ messages, showModal }) => {
+    const state = useSelector(state => state)
+
     return (
         <div className="ui-chat">
             <div className="messages">
-                {(chat || chat?.messages.length > 0) ?
-                    chat.messages.map((message, key) =>
-                        <div key={key} className="message">
-                            <img src={message.avatar} alt={message.name} />
-                            <p className="name">{message.name}</p>
-                            <p className="date">{message.date}</p>
+                {messages.map((message, key) => (message) ?
+                    <div key={key} className="message">
+                        <img className="avatar" src={message.user.avatar.path} alt={message.user.name} />
+                        <div className={`content ${(message.user.name === state.user.name) ? 'dark' : 'lite'}`}>
+                            <p className="text">{message.text}</p>
+                            <p className="date">
+                                <Moment date={new Date(new Date().setTime(message.createdAt))} format="h:m" />
+                            </p>
                         </div>
-                    ) : <Message
-                        text="No Messages"
-                    />
-                }
+                    </div>
+                : null)}
             </div>
 
-            <form>
-                <Row type="flex">
-                    <Avatar avatar={{ path: ImageAvatar }} properties={['circle']} />
-                    <Input options={{
+            <Row type="flex">
+                <Avatar avatar={{ path: ImageAvatar }} properties={['circle']} />
+                <Mutation query={ADD_USER_CHAT_MESSAGE}>
+                    {({ action }) => (
+                        <Input options={{
+                            onKeyPress: async (e) => {
+                                try {
+                                    if (e.key === 'Enter') {
+                                        if (state.chat && state.chat.chat) {
+                                            e.persist()
+                                            
+                                            const text = e.target.value
+                                            e.target.value = ''
 
-                    }} />
-                </Row>
-            </form>
+                                            await action({
+                                                variables: {
+                                                    id: state.chat.chat.id,
+                                                    text: text
+                                                }
+                                            })
+                                        }
+                                    }
+                                } catch {
+                                    showModal([
+                                        {
+                                            path: '/',
+                                            title: 'Error',
+                                            component: ({ close }) => <ViewAlert
+                                                text="Ops! Wrong something :("
+                                                close={close}
+                                            />
+                                        }
+                                    ], true)
+                                }
+                            }
+                        }} />
+                    )}
+                </Mutation>
+            </Row>
         </div>
     )
 }
 
-export default () => {
-    const [chat, setChat] = useState(null)
+export default ({ showModal }) => {
+    const state = useSelector(state => state)
+    const dispatch = useDispatch()
 
     return (
         <main className="chats">
@@ -54,49 +109,85 @@ export default () => {
                         <span>Chats</span>
                         <span>Messages</span>
                     </Headline>
-
-                    <Button options={{
-                        type: 'icon',
-                        state: 'inactive'
-                    }}>
-                        <FontAwesomeIcon icon={faFilter} />
-                    </Button>
                 </Row>
 
                 <Search />
 
-                {units.map((unit, key) =>
-                    <Unit key={key} options={{
-                        unit, active: chat,
-                        handler: () => setChat(unit)
-                    }} />
-                )}
+                <Query query={GET_USER_CHATS} pseudo={{ height: 64, count: 6 }}>
+                    {({ data, refetch }) =>
+                        <Subscription query={SUB_USER_CHATS} refetch={refetch}>
+                            {({ subData }) => {
+                                const chats = (subData && subData.userChats) || (data && data.allUserChats) || []
+
+                                if (chats.length === 0)
+                                    return <Message text="No Chats" padding/>
+
+                                return (
+                                    chats.map((unit, key) =>
+                                        <Unit key={key} options={{
+                                            unit: {
+                                                id: unit.id,
+                                                name: unit?.chat?.title || 'Undefined',
+                                                legend: getShortText(unit?.chat?.messages),
+                                                count: unit?.chat?.messages.filter(m => m?.type === 'UNREADED')?.length || null,
+                                                img: unit?.chat?.interlocutor?.avatar?.path || ''
+                                            },
+                                            active: state.chat,
+                                            handler: () => dispatch(setChat(unit))
+                                        }} />
+                                    )
+                                )
+                            }}
+                        </Subscription>
+                    }
+                </Query>
             </aside>
 
             <aside>
                 <Section options={{
                     name: 'chats',
-                    title: 'Chat',
-                    subtitle: (chat) && chat.name,
+                    title: 'History',
+                    subtitle: (state.chat) && (state.chat.chat.title),
                     manage: false
                 }}>
-                    {() => ((chat) ?
-                        <Chat options={{ chat }} /> :
-                        <Message text="Please select a chat to start messaging" padding />
+                    {() => (
+                        (!state.chat)
+                        ? <Message text="Please select a chat to start messaging" padding />
+                        : (
+                            <Query query={GET_CHAT_MESSAGES} variables={{ id: state.chat.chat.id }} pseudo={{ count: 1 }}>
+                                {({ data, refetch }) =>
+                                    <Subscription query={SUB_MESSAGES} variables={{ id: state.chat.chat.id }} refetch={refetch}>
+                                        {({ subData }) => {
+                                            const messages = (subData && subData.messages) || (data && data.allChatMessages) || []
+
+                                            if (messages.length === 0)
+                                                return <Message text="Empty" padding />
+
+                                            return (
+                                                <Chat
+                                                    messages={messages}
+                                                    showModal={showModal}
+                                                />
+                                            )
+                                        }}
+                                    </Subscription>
+                                }
+                            </Query>
+                        )
                     )}
                 </Section>
             </aside>
 
             <aside>
-                <Section options={{
-                    name: 'team-ranking',
+                {(state.chat && state.chat.members) && <Section options={{
+                    name: 'members',
                     title: 'Members',
-                    subtitle: (chat && chat.members) ? chat.members.length : 0,
+                    subtitle: (state.chat && state.chat.members) ? state.chat.members.length : 0,
                     manage: false
                 }}>
                     {() => (
-                        (chat && chat.members) ?
-                        <List options={{ list: chat.members }}>
+                        (state.chat && state.chat.members) ?
+                        <List options={{ list: state.chat.members }}>
                             {({ item }) => (
                                 <React.Fragment>
                                     <p className="avatar">
@@ -107,7 +198,7 @@ export default () => {
                             )}
                         </List> : <Message text="No Members" padding />
                     )}
-                </Section>
+                </Section>}
             </aside>
         </main>
     )

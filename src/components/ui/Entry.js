@@ -56,10 +56,12 @@ export default (props) => {
         return (
             <div className="user-bar">
                 <img className="avatar" src={userBar.avatar} alt="Avatar" />
-                <p className="content">
+                <p className={`content${(userBar.rightButton) ? ' top-offset' : ''}`}>
                     <span className="name">{userBar.name}</span>
                     <span className="status">{userBar.status}</span>
                 </p>
+
+                {(userBar.rightButton) && (userBar.rightButton)}
             </div>
         )
     }

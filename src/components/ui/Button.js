@@ -7,12 +7,26 @@
 
 import React from 'react'
 import Ripples from 'react-ripples'
+import { Link } from 'react-router-dom'
 import '../styles/Button.css'
 
-const Button = ({ type, child, classes, disabled, handler }) => {
+const Button = ({ type, child, classes, disabled, path, handler }) => {
     const handlerClick = async (e) => {
         e.preventDefault()
         await handler(e)
+    }
+
+    if (type === 'link') {
+        return (
+            <Link
+                to={path}
+                className={classes.join(' ')}
+                disabled={disabled}
+                onClick={(handler) && handlerClick}
+            >
+
+            </Link>
+        )
     }
 
     return (
@@ -27,14 +41,15 @@ const Button = ({ type, child, classes, disabled, handler }) => {
     )
 }
 
-const Ripple = ({ type, child, classes, classNames, disabled, handler }) => {
+const Ripple = ({ type, child, classes, disabled, path, handler }) => {
     if (handler)
         return (
-            <Ripples className={classNames} color="#afbdc4" during={1000}>
+            <Ripples color="#afbdc4" during={1000}>
                 <Button
                     type={type}
+                    path={path}
                     child={child}
-                    classes={[...classes, classNames]}
+                    classes={classes}
                     disabled={disabled}
                     handler={handler}
                 />
@@ -42,11 +57,12 @@ const Ripple = ({ type, child, classes, classNames, disabled, handler }) => {
         )
 
     return (
-        <Ripples className={classNames} color="#afbdc4" during={1000}>
+        <Ripples color="#afbdc4" during={1000}>
             <Button
                 type={type}
+                path={path}
                 child={child}
-                classes={[...classes, classNames]}
+                classes={classes}
                 disabled={disabled}
             />
         </Ripples>
@@ -59,7 +75,7 @@ export default (props) => {
     const {
         type, state,
         classNames, disabled,
-        handler,
+        handler, path
     } = props.options || {}
 
     const classes = [
@@ -69,10 +85,16 @@ export default (props) => {
     ]
 
     const options = {
-        type, classNames,
+        type, path,
         child: Children,
-        classes, disabled
+        disabled
     }
 
-    return <Ripple {...options} handler={handler} />
+    return (
+        <Ripple
+            {...options}
+            classes={classes}
+            handler={handler}
+        />
+    )
 }

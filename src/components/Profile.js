@@ -142,18 +142,18 @@ export default ({ showModal }) => {
                             }}>
                                 <FontAwesomeIcon icon={faPlus} />
                             </Button>
-                            <div className="grid">
-                                <Query query={GET_USER_OFFERS} variables={{ id: state.user.id }} pseudo={{ height: 256, count: 3 }}>
-                                    {({ data, refetch }) =>
-                                        <Subscription query={SUB_USER_OFFERS} variables={{ id: state.user.id }} refetch={refetch}>
-                                            {({ subData }) => {
-                                                const offers = ((subData && subData.offers) || data.allUserOffers)
+                            <Query query={GET_USER_OFFERS} pseudo={{ height: 256, count: 3 }}>
+                                {({ data, refetch }) =>
+                                    <Subscription query={SUB_USER_OFFERS} refetch={refetch}>
+                                        {({ subData }) => {
+                                            const offers = ((subData && subData.offers) || data.allUserOffers)
 
-                                                if (offers.length === 0)
-                                                    return <Message text="Empty" padding />
+                                            if (offers.length === 0)
+                                                return <Message text="Empty" padding />
 
-                                                return (
-                                                    offers.map((offer, key) => (
+                                            return (
+                                                <div className="grid">
+                                                    {offers.map((offer, key) => (
                                                         <Entry key={key} options={{
                                                             editable: true,
                                                             capacious: false,
@@ -200,12 +200,12 @@ export default ({ showModal }) => {
                                                             <h2 className="title">{offer.title}</h2>
                                                         </Entry>
                                                     )
-                                                ))
-                                            }}
-                                        </Subscription>
-                                    }
-                                </Query>
-                            </div>
+                                                )}
+                                            </div>)
+                                        }}
+                                    </Subscription>
+                                }
+                            </Query>
                         </React.Fragment>
                     )}
                 </Section>
@@ -233,18 +233,19 @@ export default ({ showModal }) => {
                             }}>
                                 <FontAwesomeIcon icon={faPlus} />
                             </Button>
-                            <div className="grid">
-                                <Query query={GET_USER_ARTICLES} variables={{ id: state.user.id }} pseudo={{ height: 256, count: 3 }}>
-                                    {({ data, refetch }) =>
-                                        <Subscription query={SUB_USER_ARTICLES} variables={{ id: state.user.id }} refetch={refetch}>
-                                            {({ subData }) => {
-                                                const articles = ((subData && subData.articles) || data.allUserArticles)
+                            
+                            <Query query={GET_USER_ARTICLES} pseudo={{ height: 256, count: 3 }}>
+                                {({ data, refetch }) =>
+                                    <Subscription query={SUB_USER_ARTICLES} refetch={refetch}>
+                                        {({ subData }) => {
+                                            const articles = ((subData && subData.articles) || data.allUserArticles)
 
-                                                if (articles.length === 0)
-                                                    return <Message text="Empty" padding />
+                                            if (articles.length === 0)
+                                                return <Message text="Empty" padding />
 
-                                                return (
-                                                    articles.map((article, key) => (
+                                            return (
+                                                <div className="grid">
+                                                    {articles.map((article, key) => (
                                                         <Entry key={key} options={{
                                                             editable: true,
                                                             capacious: false,
@@ -300,58 +301,16 @@ export default ({ showModal }) => {
                                                             <h2 className="title">{article.title}</h2>
                                                             <p className="paragraph">{article.description}</p>
                                                         </Entry>
-                                                    )
-                                                ))
-                                            }}
-                                        </Subscription>
-                                    }
-                                </Query>
-                            </div>
+                                                    ))}
+                                                </div>
+                                            )
+                                        }}
+                                    </Subscription>
+                                }
+                            </Query>
                         </React.Fragment>
                     )}
                 </Section>
-
-                {/*
-                <Section options={{
-                    name: 'my-tours',
-                    title: 'My Tours',
-                    subtitle: '',
-                    targets
-                }}>
-                    {tours.map((tour, key) =>
-                        <Entry key={key} options={{
-                            editable: true,
-                            capacious: false,
-                            manageOffset: true,
-                            statusBar: [
-                                { lite: 'Participants', dark: tour.participants },
-                                { lite: 'Date', dark: tour.date },
-                                { lite: 'Prize Pool', dark: tour.prize },
-                                { lite: 'Location', dark: tour.location }
-                            ],
-                            handlerEdit: () => showModal([
-                                {
-                                    path: '/',
-                                    title: 'Edit Tour',
-                                    component: () => <EntryContent />
-                                }
-                            ]),
-                            handlerDelete: () => showModal([
-                                {
-                                    path: '/',
-                                    title: 'Delete Tour',
-                                    component: () => <EntryContent />
-                                }
-                            ])
-                        }}>
-                            <img className="image" src={ImageTourPoster} alt="Tour" />
-                            <h2 className="title separeted">
-                                <span>{tour.title}</span><span>{tour.type}</span>
-                            </h2>
-                        </Entry>
-                    )}
-                </Section>
-                */}
             </aside>
 
             <aside>

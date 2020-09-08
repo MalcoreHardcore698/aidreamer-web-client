@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useHistory } from 'react-router-dom'
+import { useSelector, useDispatch } from 'react-redux'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faFilter, faPlus } from '@fortawesome/free-solid-svg-icons'
+import { faFilter, faPlus, faComment } from '@fortawesome/free-solid-svg-icons'
 import Moment from 'react-moment'
 
+import Mutation from './ui/Mutation'
 import Query from './ui/Query'
 import Subscription from './ui/Subscription'
 import Row from './ui/Row'
@@ -18,9 +20,11 @@ import Entry from './ui/Entry'
 import AddOffer from './content/AddOffer'
 import EditOffer from './content/EditOffer'
 import ViewOffer from './content/ViewOffer'
+import ViewAlert from './content/ViewAlert'
 import DeleteEntries from './content/DeleteEntries'
 
 import {
+    OPEN_USER_CHAT,
     GET_USER_OFFERS,
     GET_ALL_OFFERS,
     GET_ALL_HUBS,
@@ -30,6 +34,8 @@ import {
     SUB_ALL_HUBS
 } from '../utils/queries'
 
+import { setChat } from '../utils/actions'
+
 import targets from '../stores/targets'
 import { config } from '../utils/config'
 
@@ -37,6 +43,9 @@ const api = config.get('api')
 
 export default ({ showModal }) => {
     const state = useSelector(state => state)
+    const dispatch = useDispatch()
+
+    const history = useHistory()
 
     const [currentHub, setCurrentHub] = useState('all')
 
@@ -76,9 +85,9 @@ export default ({ showModal }) => {
                     <FontAwesomeIcon icon={faPlus} />
                 </Button>
 
-                <Query query={GET_USER_OFFERS} variables={{ id: state.user.id }}>
+                <Query query={GET_USER_OFFERS}>
                     {({ data, refetch }) =>
-                        <Subscription query={SUB_USER_OFFERS} variables={{ id: state.user.id }} refetch={refetch}>
+                        <Subscription query={SUB_USER_OFFERS} refetch={refetch}>
                             {({ subData }) => {
                                 const offers = (subData && subData.offers) || (data && data.allUserOffers) || []
 
@@ -198,7 +207,40 @@ export default ({ showModal }) => {
                                                         userBar: {
                                                             name: offer.user.name,
                                                             status: offer.user.status || 'Online',
-                                                            avatar: offer.user.avatar?.path
+                                                            avatar: offer.user.avatar?.path,
+                                                            rightButton: (offer.user.name !== state.user.name) && (
+                                                                <Mutation query={OPEN_USER_CHAT}>
+                                                                    {({ action }) => (
+                                                                        <Button options={{
+                                                                            state: 'icon inactive',
+                                                                            handler: async () => {
+                                                                                try {
+                                                                                    const chat = await action({
+                                                                                        variables: {
+                                                                                            name: offer.user.name
+                                                                                        }
+                                                                                    })
+                                                                                    dispatch(setChat(chat.data.openUserChat))
+                                                                                    history.push('/chats')
+                                                                                } catch {
+                                                                                    showModal([
+                                                                                        {
+                                                                                            path: '/',
+                                                                                            title: 'Error',
+                                                                                            component: ({ close }) => <ViewAlert
+                                                                                                text="Ops! Wrong something :("
+                                                                                                close={close}
+                                                                                            />
+                                                                                        }
+                                                                                    ], true)
+                                                                                }
+                                                                            }
+                                                                        }}>
+                                                                            <FontAwesomeIcon icon={faComment} />
+                                                                        </Button>
+                                                                    )}
+                                                                </Mutation>
+                                                            )
                                                         },
                                                         statusBar: [
                                                             {

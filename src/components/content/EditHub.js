@@ -64,7 +64,7 @@ export default ({ status=false, hub, close }) => {
             <Mutation query={EDIT_HUB}>
                 {({ action }) => (
                     <Button options={{
-                        type: 'inactive',
+                        state: 'inactive',
                         handler: async () => {
                             const variables = {
                                 id: hub.id,
@@ -72,8 +72,9 @@ export default ({ status=false, hub, close }) => {
                                 status: 'PUBLISHED'
                             }
 
-                            if (icon) variables.icon = icon
-                            if (status) variables.status = _status
+                            // if (icon) variables.icon = icon
+                            if (color) variables.color = color
+                            if (status) variables.status = _status.value
 
                             await action({ variables })
 

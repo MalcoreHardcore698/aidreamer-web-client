@@ -25,7 +25,7 @@
 
 .ui-entry .user-bar {
     display: grid;
-    grid-template-columns: var(--height-main) 1fr;
+    grid-template-columns: var(--height-main) 1fr var(--height-main);
     grid-gap: 10px;
     padding: var(--padding-content);
     border-block-end: var(--border-main);
@@ -42,31 +42,27 @@
 }
 
 .ui-entry .user-bar .content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
     align-self: center;
     font-weight: bold;
     line-height: 1;
+}
+
+.ui-entry .user-bar .content.top-offset {
+    top: -8px;
 }
 
 .ui-entry .user-bar .content .name {
     color: var(--color-text);
 }
 
-.ui-entry .user-bar .content .name::after {
-    content: '';
-    position: relative;
-    top: -1px;
-    display: inline-flex;
-    width: 6px;
-    height: 6px;
-    background: var(--color-graylite);
-    border-radius: 50%;
-    margin: 0 8px;
-}
-
 .ui-entry .user-bar .content .status {
     color: var(--color-accent);
     text-transform: capitalize;
     font-size: .875rem;
+    margin-block-start: 5px;
 }
 
 .ui-entry .content-wrapper {

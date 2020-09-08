@@ -32,7 +32,7 @@ import TextArea from './ui/TextArea'
 import Divider from './ui/Divider'
 import Skeleton from './ui/Skeleton'
 import Auth from '../components/Auth'
-import { setUser } from '../utils/actions'
+import { setUser, setChat } from '../utils/actions'
 import { GET_USER } from '../utils/queries'
 
 import ImageAvatar from '../assets/images/avatar.png'
@@ -50,31 +50,6 @@ function getButton(handler, routes, icon) {
         component: <FontAwesomeIcon icon={icon} />
     })
 }
-
-const links = [
-    {
-        path: '/profile',
-        component: <img src={ImageAvatar} alt="Avatar" />
-    },
-    {
-        path: '/',
-        component: SVGLogo
-    },
-    {
-        path: '/navigator',
-        component: <FontAwesomeIcon icon={faCompass} />
-    },
-    /*
-    {
-        path: '/tours',
-        component: <FontAwesomeIcon icon={faTrophy} />
-    },
-    */
-    {
-        path: '/chats',
-        component: <FontAwesomeIcon icon={faPaperPlane} />
-    }
-]
 
 const InfoImage = () => {
     return (
@@ -238,7 +213,7 @@ const SettingsLanguageContent = ({ back }) => {
             </List>
 
             <Button options={{
-                type: 'inactive',
+                state: 'inactive',
                 classNames: 'grow',
                 disabled, handler: () => {
                     back()
@@ -252,6 +227,8 @@ const SettingsLanguageContent = ({ back }) => {
 
 const Content = () => {
     const state = useSelector(state => state)
+    const dispatch = useDispatch()
+
     const { isAuthenticated, logout } = useContext(AuthContext)
 
     const [closeByBackground, setClosedByBackground] = useState(true)
@@ -285,7 +262,35 @@ const Content = () => {
     return (
         <React.Fragment>
             {(isAuthenticated) && <Navigation options={{
-                links, buttons: [
+                links: [
+                    {
+                        path: '/profile',
+                        handler: () => dispatch(setChat(null)),
+                        component: <img src={ImageAvatar} alt="Avatar" />
+                    },
+                    {
+                        path: '/',
+                        handler: () => dispatch(setChat(null)),
+                        component: SVGLogo
+                    },
+                    {
+                        path: '/navigator',
+                        component: <FontAwesomeIcon icon={faCompass} />
+                    },
+                    /*
+                    {
+                        path: '/tours',
+                        handler: () => dispatch(setChat(null)),
+                        component: <FontAwesomeIcon icon={faTrophy} />
+                    },
+                    */
+                    {
+                        path: '/chats',
+                        handler: () => dispatch(setChat(null)),
+                        component: <FontAwesomeIcon icon={faPaperPlane} />
+                    }
+                ],
+                buttons: [
                     getButton(showModal, [
                         {
                             path: '/',

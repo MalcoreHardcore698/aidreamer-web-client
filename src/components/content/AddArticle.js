@@ -22,13 +22,14 @@ export default ({ status=false, close }) => {
 
     const[hub, setHub] = useState(null)
     const[image, setImage] = useState(null)
+    const [_status, _setStatus] = useState(null)
 
     const { handleSubmit, register, errors } = useForm()
     const onSubmit = async (form) => {
         if (!hub) return
 
         const variables = {
-            author: state.user.id,
+            author: state.user.name,
             title: form.title,
             description: form.description,
             body: form.body, hub,
@@ -37,7 +38,7 @@ export default ({ status=false, close }) => {
 
         if (image) variables.image = image
         if (form.status) variables.status = form.status
-
+        
         await action({ variables })
 
         close()
@@ -96,11 +97,15 @@ export default ({ status=false, close }) => {
             </Query>
 
             {(status) && <Select options={{
-                value: '',
+                name: 'status',
+                value: _status,
                 options: [
                     { value: 'MODERATION', label: 'MODERATION' },
                     { value: 'PUBLISHED', label: 'PUBLISHED' }
-                ]
+                ],
+                onChange: (e) => {
+                    _setStatus(e)
+                }
             }} />}
 
             <Dropzone options={{

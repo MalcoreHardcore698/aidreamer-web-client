@@ -76,9 +76,9 @@ export default ({ showModal }) => {
                     <FontAwesomeIcon icon={faPlus} />
                 </Button>
 
-                <Query query={GET_USER_ARTICLES} variables={{ id: state.user.id }}>
+                <Query query={GET_USER_ARTICLES}>
                     {({ data, refetch }) =>
-                        <Subscription query={SUB_USER_ARTICLES} variables={{ id: state.user.id }} refetch={refetch}>
+                        <Subscription query={SUB_USER_ARTICLES} refetch={refetch}>
                             {({ subData }) => {
                                 const articles = (subData && subData.articles) || (data && data.allUserArticles) || []
 

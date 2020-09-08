@@ -15,6 +15,7 @@
     font-family: 'Roboto', sans-serif;
     cursor: pointer;
     color: var(--color-graylite);
+    flex-grow: 1;
     transition: var(--transition);
 }
 
@@ -78,6 +79,7 @@
 }
 
 .react-ripples {
+    display: flex;
     border-radius: var(--br-main);
 }
 
