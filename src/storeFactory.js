@@ -10,7 +10,7 @@ import initialState from './initialState'
 
 const env = process.env.NODE_ENV
 
-export default (env === 'production')
+export default (env === 'development')
     ? createStore(
         reducers,
         initialState,

@@ -340,8 +340,12 @@ export const SUB_USER_CHATS = gql`
 `
 
 export const SUB_MESSAGES = gql`
-    subscription messages {
-        messages {
+    subscription messages(
+        $id: ID
+    ) {
+        messages(
+            id: $id
+        ) {
             user {
                 name
             }
@@ -405,6 +409,24 @@ export const ADD_USER_CHAT_MESSAGE = gql`
             id: $id
             text: $text
         )
+    }
+`
+
+export const SUB_NOTIFICATIONS = gql`
+    subscription notifications {
+        notifications {
+            id
+            text
+        }
+    }
+`
+
+export const GET_USER_NOTIFICATIONS = gql`
+    query allUserNotifications {
+        allUserNotifications {
+            id
+            text
+        }
     }
 `
 // END USER

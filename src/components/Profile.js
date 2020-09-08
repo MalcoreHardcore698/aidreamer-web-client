@@ -27,18 +27,17 @@ import {
     GET_ALL_HUBS,
     GET_USER_ARTICLES,
     GET_USER_OFFERS,
+    GET_USER_NOTIFICATIONS,
     DELETE_ARTICLES,
     DELETE_OFFERS,
     SUB_ALL_HUBS,
     SUB_USER_ARTICLES,
-    SUB_USER_OFFERS
+    SUB_USER_OFFERS,
+    SUB_NOTIFICATIONS
 } from '../utils/queries'
 
 import targets from '../stores/targets'
-// eslint-disable-next-line 
-import tours from '../stores/tours'
 import achievements from '../stores/achievements'
-import notifications from '../stores/notifications'
 
 // eslint-disable-next-line 
 import ImageTourPoster from '../assets/images/poster.png'
@@ -321,14 +320,29 @@ export default ({ showModal }) => {
                     manage: false
                 }}>
                     {() => (
-                        <div className="grid">
-                            {notifications.map((notification, key) =>
-                                <Notify key={key} options={{
-                                    message: notification.msg,
-                                    avatar: notification.img
-                                }} />    
+                        <Query query={GET_USER_NOTIFICATIONS} pseudo={{ height: 45, count: 6 }}>
+                            {({ data, refetch }) => (
+                                <Subscription query={SUB_NOTIFICATIONS} refetch={refetch}>
+                                    {({ subData }) => {
+                                        const notifications = ((subData && subData.notifications) || data.allUserNotifications)
+
+                                        if (notifications.length === 0)
+                                            return <Message text="Empty" padding />
+
+                                        return (
+                                            <div className="grid">
+                                                {notifications.map((notification, key) =>
+                                                    <Notify key={key} options={{
+                                                        message: notification.text,
+                                                        avatar: notification.img
+                                                    }} />    
+                                                )}
+                                            </div>
+                                        )
+                                    }}
+                                </Subscription>
                             )}
-                        </div>
+                        </Query>
                     )}
                 </Section>
             </aside>

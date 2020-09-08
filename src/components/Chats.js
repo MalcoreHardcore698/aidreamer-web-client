@@ -28,6 +28,8 @@ import {
 import { setChat } from '../utils/actions'
 
 function getShortText(messages) {
+    if (messages.length === 0) return ''
+
     const text = messages[messages.length - 1].text
     const length = text.length
     if (length > 14)
@@ -41,7 +43,8 @@ const Chat = ({ messages, showModal }) => {
     return (
         <div className="ui-chat">
             <div className="messages">
-                {messages.map((message, key) => (message) ?
+                {(messages.length === 0) ? <Message text="Empty History" padding />
+                : messages.map((message, key) => (message) ?
                     <div key={key} className="message">
                         <img className="avatar" src={message.user.avatar.path} alt={message.user.name} />
                         <div className={`content ${(message.user.name === state.user.name) ? 'dark' : 'lite'}`}>
@@ -50,8 +53,8 @@ const Chat = ({ messages, showModal }) => {
                                 <Moment date={new Date(new Date().setTime(message.createdAt))} format="h:m" />
                             </p>
                         </div>
-                    </div>
-                : null)}
+                    </div> : null
+                )}
             </div>
 
             <Row type="flex">
@@ -127,7 +130,7 @@ export default ({ showModal }) => {
                                         <Unit key={key} options={{
                                             unit: {
                                                 id: unit.id,
-                                                name: unit?.chat?.title || 'Undefined',
+                                                name: unit?.interlocutor?.name || 'Undefined',
                                                 legend: getShortText(unit?.chat?.messages),
                                                 count: unit?.chat?.messages.filter(m => m?.type === 'UNREADED')?.length || null,
                                                 img: unit?.chat?.interlocutor?.avatar?.path || ''
@@ -147,7 +150,7 @@ export default ({ showModal }) => {
                 <Section options={{
                     name: 'chats',
                     title: 'History',
-                    subtitle: (state.chat) && (state.chat.chat.title),
+                    subtitle: (state.chat) && (state.chat.interlocutor.name),
                     manage: false
                 }}>
                     {() => (
@@ -158,10 +161,8 @@ export default ({ showModal }) => {
                                 {({ data, refetch }) =>
                                     <Subscription query={SUB_MESSAGES} variables={{ id: state.chat.chat.id }} refetch={refetch}>
                                         {({ subData }) => {
-                                            const messages = (subData && subData.messages) || (data && data.allChatMessages) || []
-
-                                            if (messages.length === 0)
-                                                return <Message text="Empty" padding />
+                                            console.log(subData, data)
+                                            const messages = (subData && subData.messages) || (data && data.allChatMessages) || (state.chat.chat.messages) || []
 
                                             return (
                                                 <Chat
