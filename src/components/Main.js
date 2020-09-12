@@ -23,16 +23,15 @@ import {
     SettingsQuestionContent,
     SettingsLanguageContent
 } from './content/ViewSettings'
-
 import Auth from './Auth'
-
 import { setChat } from '../utils/actions'
-
-import ImageAvatar from '../assets/images/avatar.png'
+import { config } from '../utils/config'
 import SVGLogo from '../assets/images/logo'
 
 import routes from '../routes'
 import '../assets/styles/App.css'
+
+const api = config.get('api')
 
 function getButton(handler, routes, icon) {
     return ({
@@ -85,7 +84,11 @@ const Content = () => {
                     {
                         path: '/profile',
                         handler: () => dispatch(setChat(null)),
-                        component: <img src={ImageAvatar} alt="Avatar" />
+                        component: (state.user && state.user.avatar) && <img
+                            className="image"
+                            src={(state.user.avatar.path).replace('./', `${api}/`)}
+                            alt="Avatar"
+                        />
                     },
                     {
                         path: '/',

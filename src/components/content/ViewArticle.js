@@ -69,9 +69,7 @@ export default ({ article }) => {
                         <List options={{ list: article.comments }}>
                             {({ item }) => (
                                 <React.Fragment>
-                                    <p className="avatar">
-                                        <img src={item.user.avatar.path} alt="User" />
-                                    </p>
+                                    <Avatar avatar={{ path: item.user.avatar.path }} properties={['circle']} />
                                     <div className="content">
                                         <div className="top">
                                             <p className="name">{item.user.name}</p>

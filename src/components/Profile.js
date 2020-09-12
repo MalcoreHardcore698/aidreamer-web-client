@@ -362,7 +362,7 @@ export default ({ showModal }) => {
                                                 {notifications.map((notification, key) =>
                                                     <Notify key={key} options={{
                                                         message: notification.text,
-                                                        avatar: notification.img
+                                                        avatar: notification.user?.avatar?.path
                                                     }} />    
                                                 )}
                                             </div>

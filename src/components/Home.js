@@ -214,7 +214,7 @@ export default ({ showModal }) => {
                                                         userBar: {
                                                             name: article.author.name,
                                                             status: article.author.status || 'Online',
-                                                            avatar: article.author.avatar?.path
+                                                            avatar: article.author.avatar.path
                                                         },
                                                         statusBar: {
                                                             options: [
@@ -227,7 +227,7 @@ export default ({ showModal }) => {
                                                             ],
                                                             input: (
                                                                 <React.Fragment>
-                                                                    <Avatar avatar={{ path: state.user.avatar.path }} properties={['circle']} />
+                                                                    <Avatar avatar={state?.user?.avatar} properties={['circle']} />
                                                                     <Mutation query={ADD_COMMENT}>
                                                                         {({ action }) => (
                                                                             <Input options={{

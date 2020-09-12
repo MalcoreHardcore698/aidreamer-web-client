@@ -173,6 +173,7 @@
     position: relative;
     display: flex;
     width: 100%;
+    grid-gap: 10px;
     grid-column: 1 / 3;
     margin-block-start: 5px;
     padding-block-start: 15px;
@@ -181,6 +182,7 @@
 .ui-modal .wrapper .ui-entry .status-bar .input {
     margin: 5px 0;
     padding: 15px 0;
+    grid-gap: 10px;
 }
 
 .ui-entry .status-bar .input::after,

@@ -236,12 +236,126 @@ export const DELETE_USERS = gql`
     }
 `
 
+// BEGIN CHAT
+export const GET_ALL_CHAT_TYPES = gql`
+    query allChatTypes {
+        allChatTypes
+    }
+`
+
+export const ADD_CHAT = gql`
+    mutation addChat(
+        $type: ChatType!
+        $title: String!
+        $members: [String]!
+    ) {
+        addChat (
+            type: $type
+            title: $title
+            members: $members
+        )
+    }
+`
+
+export const EDIT_CHAT = gql`
+    mutation editChat(
+        $id: ID!
+        $type: ChatType
+        $title: String
+        $members: [String]
+    ) {
+        editChat (
+            id: $id
+            type: $type
+            title: $title
+            members: $members
+        )
+    }
+`
+
+export const DELETE_CHATS = gql`
+    mutation deleteChats(
+        $id: [ID]!
+    ) {
+        deleteChats (
+            id: $id
+        )
+    }
+`
+
+export const GET_ALL_CHATS = gql`
+    query allChats {
+        allChats {
+            id
+            type
+            title
+            members {
+                name
+                avatar {
+                    path
+                }
+            }
+            messages {
+                user {
+                    name
+                    avatar {
+                        path
+                    }
+                }
+                text
+                type
+                updatedAt
+                createdAt
+            }
+        }
+    }
+`
+
+export const SUB_ALL_CHATS = gql`
+    subscription chats {
+        chats {
+            id
+            type
+            title
+            members {
+                name
+                avatar {
+                    path
+                }
+            }
+            messages {
+                user {
+                    name
+                    avatar {
+                        path
+                    }
+                }
+                text
+                type
+                updatedAt
+                createdAt
+            }
+        }
+    }
+`
+
+export const DELETE_USER_CHATS = gql`
+    mutation deleteUserChats(
+        $id: [ID]!
+    ) {
+        deleteUserChats(
+            id: $id
+        )
+    }
+`
+
 export const GET_USER_CHATS = gql`
     query allUserChats {
         allUserChats {
             id
             chat {
                 id
+                type
                 title
                 members {
                     name
@@ -306,6 +420,7 @@ export const SUB_USER_CHATS = gql`
             id
             chat {
                 id
+                type
                 title
                 members {
                     name
@@ -360,6 +475,7 @@ export const SUB_MESSAGES = gql`
 export const OPEN_USER_CHAT = gql`
     mutation openUserChat(
         $name: String!
+        $type: ChatType!
     ) {
         openUserChat(
             name: $name
@@ -411,12 +527,18 @@ export const ADD_USER_CHAT_MESSAGE = gql`
         )
     }
 `
+// END CHAT
 
 export const SUB_NOTIFICATIONS = gql`
     subscription notifications {
         notifications {
             id
             text
+            user {
+                avatar {
+                    path
+                }
+            }
             createdAt
         }
     }
@@ -427,6 +549,11 @@ export const GET_USER_NOTIFICATIONS = gql`
         allUserNotifications {
             id
             text
+            user {
+                avatar {
+                    path
+                }
+            }
             createdAt
         }
     }
@@ -597,6 +724,9 @@ export const GET_ALL_ARTICLES = gql`
             author {
                 id
                 name
+                avatar {
+                    path
+                }
             }
             status
             updatedAt
@@ -639,6 +769,9 @@ export const SUB_USER_ARTICLES = gql`
             author {
                 id
                 name
+                avatar {
+                    path
+                }
             }
             updatedAt
             createdAt
@@ -826,6 +959,9 @@ export const GET_USER_OFFERS = gql`
             user {
                 id
                 name
+                avatar {
+                    path
+                }
             }
             hub {
                 id
@@ -851,6 +987,9 @@ export const SUB_USER_OFFERS = gql`
             user {
                 id
                 name
+                avatar {
+                    path
+                }
             }
             hub {
                 id
@@ -872,6 +1011,9 @@ export const GET_ALL_OFFERS = gql`
             user {
                 id
                 name
+                avatar {
+                    path
+                }
             }
             hub {
                 id
@@ -897,6 +1039,9 @@ export const SUB_ALL_OFFERS = gql`
             user {
                 id
                 name
+                avatar {
+                    path
+                }
             }
             hub {
                 id
@@ -1017,3 +1162,258 @@ export const GET_ALL_PERMITIONS = gql`
     }
 `
 // END PERMITIONS
+
+// BEGIN IMAGES
+export const GET_ALL_IMAGES = gql`
+    query allImages {
+        allImages {
+            id
+            path
+            name
+            updatedAt
+            createdAt
+        }
+    }
+`
+
+export const SUB_ALL_IMAGES = gql`
+    subscription images {
+        images {
+            id
+            name
+            path
+            updatedAt
+            createdAt
+        }
+    }
+`
+
+export const ADD_IMAGE = gql`
+    mutation addImage(
+        $file: Upload!
+    ) {
+        addImage(
+            file: $file
+        )
+    }
+`
+
+export const EDIT_IMAGE = gql`
+    mutation editImage(
+        $id: ID!
+        $file: Upload
+    ) {
+        editImage(
+            id: $id
+            file: $file
+        )
+    }
+`
+
+export const DELETE_IMAGES = gql`
+    mutation deleteImages(
+        $id: [ID]!
+    ) {
+        deleteImages(
+            id: $id
+        )
+    }
+`
+// END IMAGES
+
+// BEGIN AVATARS
+export const GET_ALL_AVATARS = gql`
+    query allAvatars {
+        allAvatars {
+            id
+            order
+            path
+            name
+            complexity
+            hub {
+                id
+                title
+            }
+            updatedAt
+            createdAt
+        }
+    }
+`
+
+export const SUB_ALL_AVATARS = gql`
+    subscription avatars {
+        avatars {
+            id
+            order
+            path
+            name
+            complexity
+            hub {
+                id
+                title
+            }
+            updatedAt
+            createdAt
+        }
+    }
+`
+
+export const ADD_AVATAR = gql`
+    mutation addAvatar(
+        $file: Upload!
+        $order: Int!
+        $complexity: Int!
+        $hub: ID!
+    ) {
+        addAvatar(
+            file: $file
+            order: $order
+            complexity: $complexity
+            hub: $hub
+        )
+    }
+`
+
+export const EDIT_AVATAR = gql`
+    mutation editAvatar(
+        $id: ID!
+        $file: Upload
+        $order: Int
+        $complexity: Int
+        $hub: ID
+    ) {
+        editAvatar(
+            id: $id
+            file: $file
+            order: $order
+            complexity: $complexity
+            hub: $hub
+        )
+    }
+`
+
+export const DELETE_AVATARS = gql`
+    mutation deleteAvatars(
+        $id: [ID]!
+    ) {
+        deleteAvatars(
+            id: $id
+        )
+    }
+`
+// END AVATARS
+
+// BEGIN ICONS
+export const GET_ALL_ICONS = gql`
+    query allIcons {
+        allIcons {
+            id
+            path
+            name
+            hub {
+                id
+                title
+            }
+            updatedAt
+            createdAt
+        }
+    }
+`
+
+export const SUB_ALL_ICONS = gql`
+    subscription icons {
+        icons {
+            id
+            path
+            name
+            hub {
+                id
+                title
+            }
+            updatedAt
+            createdAt
+        }
+    }
+`
+
+export const ADD_ICON = gql`
+    mutation addIcon(
+        $file: Upload!
+        $hub: ID!
+    ) {
+        addIcon(
+            file: $file
+            hub: $hub
+        )
+    }
+`
+
+export const EDIT_ICON = gql`
+    mutation editIcon(
+        $id: ID!
+        $file: Upload
+        $hub: ID
+    ) {
+        editIcon(
+            id: $id
+            file: $file
+            hub: $hub
+        )
+    }
+`
+
+export const DELETE_ICONS = gql`
+    mutation deleteIcons(
+        $id: [ID]!
+    ) {
+        deleteIcons(
+            id: $id
+        )
+    }
+`
+// END ICONS
+
+// BEGIN LANGUAGE
+export const GET_ALL_LANGUAGES = gql`
+    query allLanguages {
+        allLanguages {
+            id
+            code
+            updatedAt
+            createdAt
+        }
+    }
+`
+
+export const ADD_LANGUAGE = gql`
+    mutation addLanguage(
+        $code: String!
+    ) {
+        addLanguage(
+            code: $code
+        )
+    }
+`
+
+export const EDIT_LANGUAGE = gql`
+    mutation editLanguage(
+        $id: ID!
+        $code: String
+    ) {
+        editLanguage(
+            id: $id
+            code: $code
+        )
+    }
+`
+
+export const DELETE_LANGUAGES = gql`
+    mutation deleteLanguages(
+        $id: [ID]!
+    ) {
+        deleteLanguages(
+            id: $id
+        )
+    }
+`
+// END LANGUAGE

@@ -14,10 +14,7 @@ import Unit from './ui/Unit'
 import Avatar from './ui/Avatar'
 import Input from './ui/Input'
 import Message from './ui/Message'
-
 import ViewAlert from './content/ViewAlert'
-
-import ImageAvatar from '../assets/images/avatar.png'
 import {
     ADD_USER_CHAT_MESSAGE,
     GET_CHAT_MESSAGES,
@@ -46,7 +43,7 @@ const Chat = ({ messages, showModal }) => {
                 {(messages.length === 0) ? <Message text="Empty History" padding />
                 : messages.map((message, key) => (message) ?
                     <div key={key} className="message">
-                        <img className="avatar" src={message.user.avatar.path} alt={message.user.name} />
+                        <Avatar avatar={{ path: message.user.avatar.path }} properties={['circle']} />
                         <div className={`content ${(message.user.name === state.user.name) ? 'dark' : 'lite'}`}>
                             <p className="text">{message.text}</p>
                             <p className="date">
@@ -58,7 +55,7 @@ const Chat = ({ messages, showModal }) => {
             </div>
 
             <Row type="flex">
-                <Avatar avatar={{ path: ImageAvatar }} properties={['circle']} />
+                <Avatar avatar={{ path: state.user.avatar.path }} properties={['circle']} />
                 <Mutation query={ADD_USER_CHAT_MESSAGE}>
                     {({ action }) => (
                         <Input options={{
@@ -133,7 +130,7 @@ export default ({ showModal }) => {
                                                 name: unit?.interlocutor?.name || 'Undefined',
                                                 legend: getShortText(unit?.chat?.messages),
                                                 count: unit?.chat?.messages.filter(m => m?.type === 'UNREADED')?.length || null,
-                                                img: unit?.chat?.interlocutor?.avatar?.path || ''
+                                                img: unit?.chat?.interlocutor?.avatar
                                             },
                                             active: state.chat,
                                             handler: () => dispatch(setChat(unit))
@@ -191,9 +188,7 @@ export default ({ showModal }) => {
                         <List options={{ list: state.chat.members }}>
                             {({ item }) => (
                                 <React.Fragment>
-                                    <p className="avatar">
-                                        <img src={item.avatar} alt="User" />
-                                    </p>
+                                    <Avatar avatar={{ path: item.avatar.path }} properties={['circle']} />
                                     <p className="name">{item.name}</p>
                                 </React.Fragment>
                             )}

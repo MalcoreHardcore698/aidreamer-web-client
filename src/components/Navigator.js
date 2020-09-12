@@ -210,6 +210,8 @@ export default ({ showModal }) => {
                                             if (offers.length === 0)
                                                 return <Message text="Empty" padding />
 
+                                            console.log(offers)
+
                                             return (
                                                 offers.map((offer, key) => ((currentHub === 'all') || (offer.hub.id === currentHub)) ? (
                                                     <Entry key={key} options={{
@@ -217,7 +219,7 @@ export default ({ showModal }) => {
                                                         userBar: {
                                                             name: offer.user.name,
                                                             status: offer.user.status || 'Online',
-                                                            avatar: offer.user.avatar?.path,
+                                                            avatar: offer.user?.avatar?.path,
                                                             rightButton: (offer.user.name !== state.user.name) && (
                                                                 <Mutation query={OPEN_USER_CHAT}>
                                                                     {({ action }) => (
