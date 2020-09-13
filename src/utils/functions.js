@@ -24,8 +24,9 @@ export function setCookie(name, value, expiresDays=30) {
     const date = new Date()
     date.setTime(date.getTime() + (expiresDays * 24*60*60*1000))
     const expires = "expires="+ date.toUTCString()
+    const domain = `domain=api.aidreamer.com`
 
-    document.cookie = `${name}=${JSON.stringify(value)};${expires};path=/`
+    document.cookie = `${name}=${JSON.stringify(value)};${expires};${domain};path=/`
 }
 
 export function getCookie(cname) {

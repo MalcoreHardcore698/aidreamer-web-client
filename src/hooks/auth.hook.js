@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from 'react'
 import { setCookie, getCookie, clearCookie } from '../utils/functions'
 
-const cookie = 'connect.sid'
+const cookie = 'secret'
 
 export const useAuth = () => {
   const [sessionID, setSessionID] = useState('')
