@@ -74,7 +74,13 @@
     height: 32px;
 }
 
-.ui-item .avatar img {
+.ui-item .date {
+    color: var(--color-section-subtitle);
+    font-weight: 500;
+    font-size: 12px;
+}
+
+.ui-item .ui-avatar img {
     border-radius: 50%;
     width: 25px;
     height: 25px;
@@ -93,7 +99,7 @@
     align-self: center;
 }
 
-.ui-item .avatar,
+.ui-item .ui-avatar,
 .ui-item .score {
     display: flex;
     justify-content: center;

@@ -22,7 +22,6 @@ import EditOffer from './content/EditOffer'
 import ViewOffer from './content/ViewOffer'
 import ViewAlert from './content/ViewAlert'
 import DeleteEntries from './content/DeleteEntries'
-
 import {
     OPEN_USER_CHAT,
     GET_USER_OFFERS,
@@ -33,13 +32,8 @@ import {
     SUB_ALL_OFFERS,
     SUB_ALL_HUBS
 } from '../utils/queries'
-
 import { setChat } from '../utils/actions'
-
 import targets from '../stores/targets'
-import { config } from '../utils/config'
-
-const api = config.get('api')
 
 export default ({ showModal }) => {
     const state = useSelector(state => state)
@@ -178,10 +172,6 @@ export default ({ showModal }) => {
                                                 type: hub.id,
                                                 value: (
                                                     <Row key={key}>
-                                                        {(hub.icon && hub.icon.path) &&
-                                                        <div className="icon">
-                                                            <img src={(hub.icon.path).replace('./', `${api}/`)} alt={hub.title} />
-                                                        </div>}
                                                         <p>{hub.title}</p>
                                                     </Row>
                                                 )}))
@@ -209,8 +199,6 @@ export default ({ showModal }) => {
 
                                             if (offers.length === 0)
                                                 return <Message text="Empty" padding />
-
-                                            console.log(offers)
 
                                             return (
                                                 offers.map((offer, key) => ((currentHub === 'all') || (offer.hub.id === currentHub)) ? (

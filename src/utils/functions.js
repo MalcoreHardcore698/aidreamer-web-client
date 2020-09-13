@@ -1,3 +1,5 @@
+const isDev = process.env.NODE_ENV === 'development'
+
 export function parseLink(str) {
     return str.toLowerCase().replace(' ', '-')
 }
@@ -24,8 +26,9 @@ export function setCookie(name, value, expiresDays=30) {
     const date = new Date()
     date.setTime(date.getTime() + (expiresDays * 24*60*60*1000))
     const expires = "expires="+ date.toUTCString()
+    const domain = (isDev) ? '' : 'domain=.aidreamer.com;'
 
-    document.cookie = `${name}=${JSON.stringify(value)};${expires};domain=.aidreamer.com;path=/`
+    document.cookie = `${name}=${JSON.stringify(value)};${expires};${domain}path=/`
 }
 
 export function getCookie(cname) {

@@ -130,7 +130,7 @@ export default ({ showModal }) => {
                                                 name: unit?.interlocutor?.name || 'Undefined',
                                                 legend: getShortText(unit?.chat?.messages),
                                                 count: unit?.chat?.messages.filter(m => m?.type === 'UNREADED')?.length || null,
-                                                img: unit?.chat?.interlocutor?.avatar
+                                                img: unit?.interlocutor?.avatar
                                             },
                                             active: state.chat,
                                             handler: () => dispatch(setChat(unit))

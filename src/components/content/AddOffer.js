@@ -72,10 +72,6 @@ export default ({ status=false, close }) => {
                             type: hub.id,
                             value: (
                                 <Row key={key}>
-                                    {(hub.icon && hub.icon.path) &&
-                                    <div className="icon">
-                                        <img src={(hub.icon.path).replace('./', `${api}/`)} alt={hub.title} />
-                                    </div>}
                                     <p>{hub.title}</p>
                                 </Row>
                             )}))
