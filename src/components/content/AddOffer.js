@@ -11,9 +11,6 @@ import TextArea from '../ui/TextArea'
 import Select from '../ui/Select'
 import Toggler from '../ui/Toggler'
 import { GET_ALL_HUBS, ADD_OFFER } from '../../utils/queries'
-import { config } from '../../utils/config'
-
-const api = config.get('api')
 
 export default ({ status=false, close }) => {
     const state = useSelector(state => state)

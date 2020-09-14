@@ -11,9 +11,6 @@ import Select from '../ui/Select'
 import Dropzone from '../ui/Dropzone'
 import Toggler from '../ui/Toggler'
 import { GET_ALL_HUBS, EDIT_ARTICLE } from '../../utils/queries'
-import { config } from '../../utils/config'
-
-const api = config.get('api')
 
 export default ({ status=false, article, close }) => {
     const [action, { loading }] = useMutation(EDIT_ARTICLE)

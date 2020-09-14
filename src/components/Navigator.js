@@ -1,18 +1,27 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import { useWindowSize } from '../hooks/window.size.hook'
 import { useHistory } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faFilter, faPlus, faComment } from '@fortawesome/free-solid-svg-icons'
+import {
+    faFilter,
+    faPlus,
+    faComment,
+    faEllipsisH
+} from '@fortawesome/free-solid-svg-icons'
 import Moment from 'react-moment'
 
 import Mutation from './ui/Mutation'
 import Query from './ui/Query'
 import Subscription from './ui/Subscription'
 import Row from './ui/Row'
+import Container from './ui/Container'
 import Headline from './ui/Headline'
 import Button from './ui/Button'
 import Search from './ui/Search'
+import List from './ui/List'
 import Toggler from './ui/Toggler'
+import Dropdown from './ui/Dropdown'
 import Section from './ui/Section'
 import Message from './ui/Message'
 import Entry from './ui/Entry'
@@ -39,9 +48,21 @@ export default ({ showModal }) => {
     const state = useSelector(state => state)
     const dispatch = useDispatch()
 
+    const size = useWindowSize()
     const history = useHistory()
 
     const [currentHub, setCurrentHub] = useState('all')
+    const [hubDropdown, setHubDropdown] = useState(false)
+
+    const [slicedIndex, setSlicedIndex] = useState(2)
+
+    useEffect(() => {
+        if (size.width <= 580) {
+            setSlicedIndex(0)
+        } else {
+            setSlicedIndex(2)
+        }
+    }, [size.width])
 
     if (!state.user) return null
 
@@ -89,7 +110,7 @@ export default ({ showModal }) => {
                                     return <Message text="Empty" padding />
 
                                 return (
-                                    offers.map((offer, key) => (
+                                    offers.map((offer, key) => ((currentHub === 'all') || (offer.hub.id === currentHub.id)) ? (
                                         <Entry key={key} options={{
                                             editable: true,
                                             capacious: false,
@@ -142,10 +163,11 @@ export default ({ showModal }) => {
                                                 }
                                             ], true)
                                         }}>
+                                            <p className="tag" style={{ background: offer.hub.color }}>{offer.hub.title}</p>
                                             <h2 className="title">{offer.title}</h2>
                                             <p className="paragraph">{offer.hub.title}</p>
                                         </Entry>
-                                    )
+                                    ) : null
                                 ))
                             }}
                         </Subscription>
@@ -159,22 +181,57 @@ export default ({ showModal }) => {
                         <Subscription query={SUB_ALL_HUBS} variables={{ status: 'PUBLISHED' }} refetch={refetch}>
                             {({ subData }) => {
                                 const hubs = ((subData && subData.hubs) || (data && data.allHubs))
+                                
                                 return (
                                     <Toggler options={{
                                         state: currentHub,
-                                        handler: setCurrentHub,
+                                        handler: (item) => {
+                                            setCurrentHub(item)
+                                            setHubDropdown(false)
+                                        },
                                         targets: [
                                             {
                                                 type: 'all',
                                                 value: <Row><p>All</p></Row>
                                             },
-                                            ...hubs.map((hub, key) => ({
-                                                type: hub.id,
+                                            ...hubs.slice(0, slicedIndex).map((hub, key) => ({
+                                                type: hub,
                                                 value: (
                                                     <Row key={key}>
                                                         <p>{hub.title}</p>
                                                     </Row>
-                                                )}))
+                                                )})),
+                                            {
+                                                type: 'erase',
+                                                classNames: 'dropdown',
+                                                value: (
+                                                    <Container clear sticky>
+                                                        <Button options={{
+                                                            state: 'inactive',
+                                                            handler: () => setHubDropdown(!hubDropdown)
+                                                        }}>
+                                                            <FontAwesomeIcon icon={faEllipsisH} />
+                                                        </Button>
+
+                                                        <Dropdown options={{ dropdown: hubDropdown, styles: { right: 0 } }}>
+                                                            <List options={{
+                                                                list: hubs.slice(slicedIndex).map(h => ({ id: h.id, label: h.title})),
+                                                                state: currentHub,
+                                                                handlerItem: (item) => {
+                                                                    setCurrentHub(item)
+                                                                    setHubDropdown(false)
+                                                                }
+                                                            }}>
+                                                                {({ item }) => (
+                                                                    <React.Fragment>
+                                                                        <p className="name">{item.label}</p>
+                                                                    </React.Fragment>
+                                                                )}
+                                                            </List>
+                                                        </Dropdown>
+                                                    </Container>
+                                                )
+                                            }
                                         ]}}
                                     />
                                 )
@@ -201,7 +258,7 @@ export default ({ showModal }) => {
                                                 return <Message text="Empty" padding />
 
                                             return (
-                                                offers.map((offer, key) => ((currentHub === 'all') || (offer.hub.id === currentHub)) ? (
+                                                offers.map((offer, key) => ((currentHub === 'all') || (offer.hub.id === currentHub.id)) ? (
                                                     <Entry key={key} options={{
                                                         capacious: false,
                                                         userBar: {
@@ -258,6 +315,7 @@ export default ({ showModal }) => {
                                                             }
                                                         ])
                                                     }}>
+                                                        <p className="tag" style={{ background: offer.hub.color }}>{offer.hub.title}</p>
                                                         <h2 className="title">{offer.title}</h2>
                                                         <p>{offer.message}</p>
                                                     </Entry>

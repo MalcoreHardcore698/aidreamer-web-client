@@ -683,6 +683,7 @@ export const GET_USER_ARTICLES = gql`
             hub {
                 id
                 title
+                color
             }
             author {
                 id
@@ -720,6 +721,7 @@ export const GET_ALL_ARTICLES = gql`
             hub {
                 id
                 title
+                color
             }
             author {
                 id
@@ -765,6 +767,7 @@ export const SUB_USER_ARTICLES = gql`
             hub {
                 id
                 title
+                color
             }
             author {
                 id
@@ -809,6 +812,7 @@ export const SUB_ARTICLES = gql`
             hub {
                 id
                 title
+                color
             }
             author {
                 id
@@ -847,6 +851,7 @@ export const GET_ARTICLE = gql`
             hub {
                 id
                 title
+                color
             }
             source
             url
@@ -966,6 +971,7 @@ export const GET_USER_OFFERS = gql`
             hub {
                 id
                 title
+                color
             }
             status
             updatedAt
@@ -994,6 +1000,7 @@ export const SUB_USER_OFFERS = gql`
             hub {
                 id
                 title
+                color
             }
             status
             updatedAt
@@ -1018,6 +1025,7 @@ export const GET_ALL_OFFERS = gql`
             hub {
                 id
                 title
+                color
             }
             status
             updatedAt
@@ -1046,6 +1054,7 @@ export const SUB_ALL_OFFERS = gql`
             hub {
                 id
                 title
+                color
             }
             status
             updatedAt

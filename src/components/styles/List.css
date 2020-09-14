@@ -54,9 +54,8 @@
 }
 
 .ui-item {
-    display: grid;
-    grid-template-columns: 32px 1fr max-content;
-    align-content: center;
+    display: flex;
+    align-items: center;
     grid-gap: 10px;
 
     color: var(--color-graydark);

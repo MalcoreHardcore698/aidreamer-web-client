@@ -51,5 +51,6 @@ export function getCookie(cname) {
 }
 
 export function clearCookie(name) {
-    document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;'
+    const domain = (isDev) ? '' : 'domain=.aidreamer.com;'
+    document.cookie = name + `=;expires=Thu, 01 Jan 1970 00:00:00 GMT; ${domain}`;
 }

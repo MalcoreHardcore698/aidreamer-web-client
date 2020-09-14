@@ -22,7 +22,15 @@ export default ({ options }) => {
         type
     ]
 
+    const classesToggle = (target) => [
+        'toggle',
+        (target?.classNames),
+        (target.type === state) ? ' active' : ''
+    ]
+
     const handlerState = (target) => {
+        if (target === 'erase')
+            return null
         handler(target)
     }
 
@@ -31,7 +39,7 @@ export default ({ options }) => {
             {targets.map((target, key) =>
                 <div
                     key={key}
-                    className={`toggle${(target.type === state) ? ' active' : ''}`}
+                    className={classesToggle(target).join(' ')}
                     onClick={() => handlerState(target.type)}
                 >
                     {target.value}
