@@ -116,7 +116,7 @@
 }
 
 .ui-toggler .toggle .ui-dropdown {
-    z-index: var(--z-ninetynine);
+    z-index: var(--z-twenty);
 }
 
 @media only screen and (max-width: 480px) {

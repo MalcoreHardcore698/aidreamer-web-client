@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { Switch, Route, Redirect } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
+    faUser,
     faCompass,
     faPaperPlane,
     // eslint-disable-next-line 
@@ -23,6 +24,13 @@ import {
     SettingsQuestionContent,
     SettingsLanguageContent
 } from './content/ViewSettings'
+import {
+    SetupGreeting,
+    SetupChooseAvatar,
+    SetupChoosePreferences,
+    SetupCongratulations
+} from './content/ViewSetup'
+
 import Auth from './Auth'
 import { setChat } from '../utils/actions'
 import { config } from '../utils/config'
@@ -65,13 +73,28 @@ const Content = () => {
     }
 
     useEffect(() => {
-        if ((state.user) && !state.user.avatar) {
+        if ((state.user) && !state.user.avatar.path) {
             setClosedByBackground(false)
             showModal([
                 {
                     path: '/',
-                    title: 'Choose your Avatar',
-                    component: () => <ViewEmpty />
+                    title: 'Welcome to AidReamer!',
+                    component: ({ jump }) => <SetupGreeting jump={jump} />
+                },
+                {
+                    path: '/choose-avatar',
+                    title: 'Step 1: Choose your avatar',
+                    component: ({ jump }) => <SetupChooseAvatar jump={jump} />
+                },
+                {
+                    path: '/choose-preferences',
+                    title: 'Step 2: Choose your favourites games',
+                    component: ({ jump }) => <SetupChoosePreferences jump={jump} />
+                },
+                {
+                    path: '/congratulations',
+                    title: 'Congratulations!',
+                    component: ({ close }) => <SetupCongratulations close={close} />
                 }
             ], true)
         }
@@ -84,11 +107,11 @@ const Content = () => {
                     {
                         path: '/profile',
                         handler: () => dispatch(setChat(null)),
-                        component: (state.user && state.user.avatar) && <img
+                        component: (state.user && state.user.avatar.path) ? <img
                             className="image"
                             src={(state.user.avatar.path).replace('./', `${api}/`)}
                             alt="Avatar"
-                        />
+                        /> : <p className="undefined"><FontAwesomeIcon icon={faUser} /></p>
                     },
                     {
                         path: '/',

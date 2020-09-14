@@ -1,11 +1,9 @@
-import React, { useState, useEffect } from 'react'
-import { useWindowSize } from '../hooks/window.size.hook'
+import React from 'react'
 import { useSelector } from 'react-redux'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
     faFilter,
-    faPlus,
-    faEllipsisH
+    faPlus
 } from '@fortawesome/free-solid-svg-icons'
 import Moment from 'react-moment'
 
@@ -13,15 +11,12 @@ import Query from './ui/Query'
 import Mutation from './ui/Mutation'
 import Subscription from './ui/Subscription'
 import Row from './ui/Row'
-import Container from './ui/Container'
 import Avatar from './ui/Avatar'
 import Input from './ui/Input'
 import Headline from './ui/Headline'
 import Button from './ui/Button'
 import Search from './ui/Search'
-import Toggler from './ui/Toggler'
-import Dropdown from './ui/Dropdown'
-import List from './ui/List'
+import HubToggler from './ui/HubToggler'
 import Section from './ui/Section'
 import Message from './ui/Message'
 import Entry from './ui/Entry'
@@ -36,12 +31,10 @@ import targets from '../stores/targets'
 
 import { config } from '../utils/config'
 import {
-    GET_ALL_HUBS,
     GET_USER_ARTICLES,
     GET_ALL_ARTICLES,
     ADD_COMMENT,
     DELETE_ARTICLES,
-    SUB_ALL_HUBS,
     SUB_ARTICLES,
     SUB_USER_ARTICLES
 } from '../utils/queries'
@@ -50,21 +43,6 @@ const api = config.get('api')
 
 export default ({ showModal }) => {
     const state = useSelector(state => state)
-
-    const size = useWindowSize()
-
-    const [currentHub, setCurrentHub] = useState('all')
-    const [hubDropdown, setHubDropdown] = useState(false)
-
-    const [slicedIndex, setSlicedIndex] = useState(2)
-
-    useEffect(() => {
-        if (size.width <= 580) {
-            setSlicedIndex(0)
-        } else {
-            setSlicedIndex(2)
-        }
-    }, [size.width])
 
     if (!state.user) return null
     
@@ -112,7 +90,7 @@ export default ({ showModal }) => {
                                     return <Message text="Empty" padding />
 
                                 return (
-                                    articles.map((article, key) => ((currentHub === 'all') || (article.hub.id === currentHub.id)) ? (
+                                    articles.map((article, key) => ((state.filters.currentHub === 'all') || (article.hub.id === state.filters.currentHub.id)) ? (
                                         <Entry key={key} options={{
                                             editable: true,
                                             capacious: false,
@@ -179,69 +157,7 @@ export default ({ showModal }) => {
             </aside>
 
             <aside>
-                <Query query={GET_ALL_HUBS} variables={{ status: 'PUBLISHED' }} pseudo={{ height: 45, count: 6 }}>
-                    {({ data, refetch }) => (data.allHubs.length > 1) && (
-                        <Subscription query={SUB_ALL_HUBS} variables={{ status: 'PUBLISHED' }} refetch={refetch}>
-                            {({ subData }) => {
-                                const hubs = ((subData && subData.hubs) || (data && data.allHubs))
-                                
-                                return (
-                                    <Toggler options={{
-                                        state: currentHub,
-                                        handler: (item) => {
-                                            setCurrentHub(item)
-                                            setHubDropdown(false)
-                                        },
-                                        targets: [
-                                            {
-                                                type: 'all',
-                                                value: <Row><p>All</p></Row>
-                                            },
-                                            ...hubs.slice(0, slicedIndex).map((hub, key) => ({
-                                                type: hub,
-                                                value: (
-                                                    <Row key={key}>
-                                                        <p>{hub.title}</p>
-                                                    </Row>
-                                                )})),
-                                            {
-                                                type: 'erase',
-                                                classNames: 'dropdown',
-                                                value: (
-                                                    <Container clear sticky>
-                                                        <Button options={{
-                                                            state: 'inactive',
-                                                            handler: () => setHubDropdown(!hubDropdown)
-                                                        }}>
-                                                            <FontAwesomeIcon icon={faEllipsisH} />
-                                                        </Button>
-
-                                                        <Dropdown options={{ dropdown: hubDropdown, styles: { right: 0 } }}>
-                                                            <List options={{
-                                                                list: hubs.slice(slicedIndex).map(h => ({ id: h.id, label: h.title})),
-                                                                state: currentHub,
-                                                                handlerItem: (item) => {
-                                                                    setCurrentHub(item)
-                                                                    setHubDropdown(false)
-                                                                }
-                                                            }}>
-                                                                {({ item }) => (
-                                                                    <React.Fragment>
-                                                                        <p className="name">{item.label}</p>
-                                                                    </React.Fragment>
-                                                                )}
-                                                            </List>
-                                                        </Dropdown>
-                                                    </Container>
-                                                )
-                                            }
-                                        ]}}
-                                    />
-                                )
-                            }}
-                        </Subscription>
-                    )}
-                </Query>
+                <HubToggler all />
 
                 <Section options={{
                     name: 'articles',
@@ -261,7 +177,7 @@ export default ({ showModal }) => {
                                                 return <Message text="Empty" padding />
 
                                             return (
-                                                articles.map((article, key) => ((currentHub === 'all') || (article.hub.id === currentHub.id)) ? (
+                                                articles.map((article, key) => ((state.filters.currentHub === 'all') || (article.hub.id === state.filters.currentHub.id)) ? (
                                                     <Entry key={key} options={{
                                                         capacious: false,
                                                         userBar: {

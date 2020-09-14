@@ -4,7 +4,6 @@
  * MISSION: ...
  *
 **/
-
 import React from 'react'
 import Message from './Message'
 import '../styles/Toggler.css'
@@ -36,7 +35,7 @@ export default ({ options }) => {
 
     return (
         <div className={classes.join(' ')}>
-            {targets.map((target, key) =>
+            {targets.filter(t => t).map((target, key) =>
                 <div
                     key={key}
                     className={classesToggle(target).join(' ')}

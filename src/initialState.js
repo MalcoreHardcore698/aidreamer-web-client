@@ -3,5 +3,8 @@ export default {
     chat: null,
     document: null,
     documents: [],
-    table: []
+    table: [],
+    filters: {
+        currentHub: 'all'
+    }
 }
