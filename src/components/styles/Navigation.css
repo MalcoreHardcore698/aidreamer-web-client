@@ -30,7 +30,7 @@
     color: var(--color-accent) !important;
 }
 
-.ui-navigation .block .links {
+.ui-navigation:not(.dashboard) .block .links {
     display: flex;
     grid-gap: 15px;
     width: max-content;

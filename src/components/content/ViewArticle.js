@@ -107,6 +107,7 @@ export default ({ article }) => {
                 <p className="tag" style={{ background: article.hub.color }}>{article.hub.title}</p>
                 <p className="title">{article.title}</p>
                 <p className="body">{article.body}</p>
+                <p className="hub">Hub: {article.hub.title}</p>
             </Entry>
         </Container>
     )

@@ -24,6 +24,10 @@
     transition: all .15s ease;
 }
 
+.ui-toggler .toggle:hover {
+    color: var(--color-accent);
+}
+
 .ui-toggler .toggle.active::before {
     content: '';
     position: absolute;
@@ -41,6 +45,8 @@
 }
 
 .ui-toggler .toggle.dropdown {
+    position: relative;
+    z-index: var(--z-one-hundred);
     flex-grow: 1;
     padding: 0;
 }

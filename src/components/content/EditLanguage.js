@@ -19,6 +19,7 @@ export default ({ language, close }) => {
     const { handleSubmit, register, errors } = useForm()
     const onSubmit = async (form) => {
         const variables = {
+            id: language._id,
             code: form.code,
             title: form.title,
             flag: flag.id

@@ -122,6 +122,7 @@
     opacity: 1;
 }
 
+.ui-modal .wrapper .ui-alert,
 .ui-modal .wrapper .ui-notify {
     width: auto;
 }
