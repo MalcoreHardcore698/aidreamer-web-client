@@ -11,7 +11,6 @@ import '../styles/Radiobox.css'
 export default ({ options }) => {
     const {
         type,
-        state,
         list=[],
         handler
     } = options || {}

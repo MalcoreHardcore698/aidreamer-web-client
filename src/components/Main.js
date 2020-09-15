@@ -105,27 +105,31 @@ const Content = () => {
             <Navigation options={{
                 links: [
                     {
-                        path: '/profile',
-                        handler: () => dispatch(setChat(null)),
-                        component: (state.user && state.user.avatar.path) ? <img
-                            className="image"
-                            src={(state.user.avatar.path).replace('./', `${api}/`)}
-                            alt="Avatar"
-                        /> : <p className="undefined"><FontAwesomeIcon icon={faUser} /></p>
-                    },
-                    {
-                        path: '/',
-                        handler: () => dispatch(setChat(null)),
-                        component: SVGLogo
-                    },
-                    {
-                        path: '/navigator',
-                        component: <FontAwesomeIcon icon={faCompass} />
-                    },
-                    {
-                        path: '/chats',
-                        handler: () => dispatch(setChat(null)),
-                        component: <FontAwesomeIcon icon={faPaperPlane} />
+                        links: [
+                            {
+                                path: '/profile',
+                                handler: () => dispatch(setChat(null)),
+                                component: (state.user && state.user.avatar.path) ? <img
+                                    className="image"
+                                    src={(state.user.avatar.path).replace('./', `${api}/`)}
+                                    alt="Avatar"
+                                /> : <p className="undefined"><FontAwesomeIcon icon={faUser} /></p>
+                            },
+                            {
+                                path: '/',
+                                handler: () => dispatch(setChat(null)),
+                                component: SVGLogo
+                            },
+                            {
+                                path: '/navigator',
+                                component: <FontAwesomeIcon icon={faCompass} />
+                            },
+                            {
+                                path: '/chats',
+                                handler: () => dispatch(setChat(null)),
+                                component: <FontAwesomeIcon icon={faPaperPlane} />
+                            }
+                        ]
                     }
                 ],
                 buttons: [

@@ -1,22 +1,17 @@
 import React, { useState } from 'react'
 import { useMutation } from '@apollo/react-hooks'
 import { useForm } from 'react-hook-form'
-import Row from '../ui/Row'
-import Query from '../ui/Query'
 import Alert from '../ui/Alert'
 import Input from '../ui/Input'
 import Button from '../ui/Button'
-import Toggler from '../ui/Toggler'
+import HubToggler from '../ui/HubToggler'
 import Dropzone from '../ui/Dropzone'
-import { GET_ALL_HUBS, ADD_AVATAR } from '../../utils/queries'
-import { config } from '../../utils/config'
-
-const api = config.get('api')
+import { ADD_AVATAR } from '../../utils/queries'
 
 export default ({ avatar, close }) => {
     const [action, { loading }] = useMutation(ADD_AVATAR)
 
-    const[hub, setHub] = useState(avatar.hub.id)
+    const[hub, setHub] = useState(avatar.hub)
     const[image, setImage] = useState(null)
 
     const { handleSubmit, register, errors } = useForm()
@@ -27,7 +22,7 @@ export default ({ avatar, close }) => {
             order: parseInt(form.order),
             complexity: parseInt(form.complexity),
             file: image,
-            hub
+            hub: hub.id
         }
 
         await action({ variables })
@@ -38,11 +33,16 @@ export default ({ avatar, close }) => {
     return (
         <form className="fat" onSubmit={handleSubmit(onSubmit)}>
             {(errors.order || errors.complexity) && <Alert type="error" message={
-                (errors.order.message || errors.order.complexity)
+                (errors.order.message || errors.order.message)
             } />}
 
             <Input options={{
-                ref: register({ required: true }),
+                ref: register({
+                    required: true,
+                    pattern: {
+                        message: 'Order is required'
+                    }
+                }),
                 type: 'number',
                 name: 'order',
                 defaultValue: avatar.order || '',
@@ -51,7 +51,12 @@ export default ({ avatar, close }) => {
             }} />
             
             <Input options={{
-                ref: register({ required: true }),
+                ref: register({
+                    required: true,
+                    pattern: {
+                        message: 'Complexity is required'
+                    }
+                }),
                 type: 'number',
                 name: 'complexity',
                 defaultValue: avatar.complexity || '',
@@ -66,23 +71,10 @@ export default ({ avatar, close }) => {
                 setImage
             }} />
 
-            <Query query={GET_ALL_HUBS} pseudo={{ count: 1, height: 45 }}>
-                {({ data }) => (
-                    <Toggler options={{
-                        type: 'auto',
-                        state: hub,
-                        handler: setHub,
-                        targets: (data && data.allHubs).map((hub, key) => ({
-                            type: hub.id,
-                            value: (
-                                <Row key={key}>
-                                    <p>{hub.title}</p>
-                                </Row>
-                            )}))
-                        }}
-                    />
-                )}
-            </Query>
+            <HubToggler override={{
+                state: hub,
+                handler: setHub
+            }} />
 
             <Button options={{
                 type: 'submit',
