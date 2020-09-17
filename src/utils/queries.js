@@ -279,6 +279,21 @@ export const GET_ALL_STATUS = gql`
         allStatus
     }
 `
+
+export const GET_ALL_AWARDS = gql`
+    query allAwards {
+        allAwards
+    }
+`
+
+export const GET_ALL_CONDITION_ENUMS = gql`
+    query allEnums {
+        allActions
+        allAreas
+        allUnions
+        allGoals
+    }
+`
 // END STATS
 
 // BEGIN CHAT
