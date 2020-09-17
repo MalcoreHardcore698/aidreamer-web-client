@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import Moment from 'react-moment'
 
@@ -36,10 +36,18 @@ function getShortText(messages) {
 
 const Chat = ({ messages, showModal }) => {
     const state = useSelector(state => state)
+    const messagesRef = useRef(null)
+
+    useEffect(() => {
+        if (messagesRef && messagesRef.current) {
+            const el = messagesRef.current
+            el.scrollTop = el.scrollHeight
+        }
+    }, [messagesRef])
 
     return (
         <div className="ui-chat">
-            <div className="messages">
+            <div ref={messagesRef} className="messages">
                 {(messages.length === 0) ? <Message text="Empty History" padding />
                 : messages.map((message, key) => (message) ?
                     <div key={key} className="message">
@@ -74,6 +82,9 @@ const Chat = ({ messages, showModal }) => {
                                                     text: text
                                                 }
                                             })
+
+                                            const el = messagesRef.current
+                                            el.scrollTop = el.scrollHeight
                                         }
                                     }
                                 } catch {
@@ -115,7 +126,7 @@ export default ({ showModal }) => {
 
                 <Query query={GET_USER_CHATS} pseudo={{ height: 64, count: 6 }}>
                     {({ data, refetch }) =>
-                        <Subscription query={SUB_USER_CHATS} refetch={refetch}>
+                        <Subscription query={SUB_USER_CHATS} variables={{ name: state.user.name }} refetch={refetch}>
                             {({ subData }) => {
                                 const chats = (subData && subData.userChats) || (data && data.allUserChats) || []
 
@@ -158,7 +169,6 @@ export default ({ showModal }) => {
                                 {({ data, refetch }) =>
                                     <Subscription query={SUB_MESSAGES} variables={{ id: state.chat.chat.id }} refetch={refetch}>
                                         {({ subData }) => {
-                                            console.log(subData, data)
                                             const messages = (subData && subData.messages) || (data && data.allChatMessages) || (state.chat.chat.messages) || []
 
                                             return (

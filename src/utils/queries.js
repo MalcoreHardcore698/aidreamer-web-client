@@ -501,13 +501,17 @@ export const SUB_USER_CHATS = gql`
 
 export const SUB_MESSAGES = gql`
     subscription messages(
-        $id: ID
+        $id: ID!
     ) {
         messages(
             id: $id
         ) {
             user {
                 name
+                avatar {
+                    id
+                    path
+                }
             }
             text
             type
@@ -520,10 +524,11 @@ export const SUB_MESSAGES = gql`
 export const OPEN_USER_CHAT = gql`
     mutation openUserChat(
         $name: String!
-        $type: ChatType!
+        $type: ChatType
     ) {
         openUserChat(
             name: $name
+            type: $type
         ) {
             id
             chat {
@@ -575,8 +580,12 @@ export const ADD_USER_CHAT_MESSAGE = gql`
 // END CHAT
 
 export const SUB_NOTIFICATIONS = gql`
-    subscription notifications {
-        notifications {
+    subscription userNotifications(
+        $name: String!
+    ) {
+        userNotifications(
+            name: $name
+        )  {
             id
             text
             user {
@@ -955,6 +964,27 @@ export const DELETE_ARTICLES = gql`
         $articles: [InputArticle]
     ) {
         deleteArticles(articles: $articles)
+    }
+`
+
+export const SUB_COMMENTS = gql`
+    subscription comments(
+        $id: ID!
+    ) {
+        comments(
+            id: $id
+        ) {
+            id
+            user {
+                name
+                avatar {
+                    path
+                }
+            }
+            text
+            updatedAt
+            createdAt
+        }
     }
 `
 
