@@ -9,7 +9,7 @@ export default ({ options }) => {
     const {
         type,
         act,
-        showModal
+        handler
     } = options || {}
 
     const classes = [
@@ -24,26 +24,12 @@ export default ({ options }) => {
 
             {(act.tasks.length > 0) ? <List options={{
                 list: act.tasks,
-                handlerItem: (item) => {
-                    showModal([
-                        {
-                            path: '/',
-                            title: item.title,
-                            component: () => <ViewEmpty />
-                        }
-                    ], true)
-                }
+                handlerItem: (item) => handler(item)
             }}>
-                {({ task }) => (
-                    <React.Fragment key={task.id}>
-                        <Avatar avatar={{ path: task.icon.path }} />
-                        <p className="name">{task.title}</p>
-                        <CounterBadge options={{
-                            type: (task.awards.reduce((acc, curr) => acc + curr) > 9) ? 'circle' : '',
-                            background: 'var(--color-graydark)',
-                            color: 'white',
-                            count: task.awards.reduce((acc, curr) => acc + curr)
-                        }} />
+                {({ item }) => (
+                    <React.Fragment>
+                        <Avatar avatar={{ path: item.icon.path }} />
+                        <p className="name">{item.title}</p>
                     </React.Fragment>
                 )}
             </List>

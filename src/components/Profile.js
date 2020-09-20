@@ -9,7 +9,7 @@ import Query from './ui/Query'
 import Subscription from './ui/Subscription'
 import Headline from './ui/Headline'
 import Message from './ui/Message'
-import Achievement from './ui/Achievement'
+import Act from './ui/Act'
 import HubToggler from './ui/HubToggler'
 import Button from './ui/Button'
 import Section from './ui/Section'
@@ -25,11 +25,13 @@ import EditOffer from './content/EditOffer'
 import DeleteEntries from './content/DeleteEntries'
 
 import {
+    GET_USER_ACTS,
     GET_USER_ARTICLES,
     GET_USER_OFFERS,
     GET_USER_NOTIFICATIONS,
     DELETE_ARTICLES,
     DELETE_OFFERS,
+    SUB_USER_ACTS,
     SUB_USER_ARTICLES,
     SUB_USER_OFFERS,
     SUB_NOTIFICATIONS
@@ -64,29 +66,47 @@ export default ({ showModal }) => {
                     </Headline>
                 </Row>
 
-                <Section options={{
-                    name: 'achievement',
-                    title: 'Achievements',
-                    subtitle: achievements.length,
-                    manage: false
-                }}>
-                    {() => (
-                        <div className="grid">
-                            {achievements.map((achievement, key) =>
-                                <Achievement key={key} options={{
-                                    achievement,
-                                    handler: () => showModal([
-                                        {
-                                            path: '/',
-                                            title: 'Achievement',
-                                            component: () => <EntryContent />
+                <Query query={GET_USER_ACTS} pseudo={{ height: 70, count: 3 }}>
+                    {({ data, refetch }) =>
+                        <Subscription query={SUB_USER_ACTS} refetch={refetch}>
+                            {({ subData }) => {
+                                const userActs = ((subData && subData.userActs) || data.allUserActs)
+
+                                if (userActs.length === 0)
+                                    return <Message text="Empty" padding />
+
+                                return (
+                                    <Section options={{
+                                        name: 'acts',
+                                        title: 'Acts',
+                                        subtitle: userActs.length,
+                                        manage: false
+                                    }}>
+                                        {() => (userActs.length === 0)
+                                            ? <Message text="Empty" padding />
+                                            : (
+                                                <div className="grid">
+                                                    {userActs.map((userAct) =>
+                                                        <Act key={userAct.id} options={{
+                                                            act: userAct.act,
+                                                            handler: () => showModal([
+                                                                {
+                                                                    path: '/',
+                                                                    title: 'Act',
+                                                                    component: () => <EntryContent />
+                                                                }
+                                                            ], true)
+                                                        }} />    
+                                                    )}
+                                                </div>
+                                            )
                                         }
-                                    ], true)
-                                }} />    
-                            )}
-                        </div>
-                    )}
-                </Section>
+                                    </Section>
+                                )
+                            }}
+                        </Subscription>
+                    }
+                </Query>
             </aside>
 
             <aside>

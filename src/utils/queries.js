@@ -279,21 +279,6 @@ export const GET_ALL_STATUS = gql`
         allStatus
     }
 `
-
-export const GET_ALL_AWARDS = gql`
-    query allAwards {
-        allAwards
-    }
-`
-
-export const GET_ALL_CONDITION_ENUMS = gql`
-    query allEnums {
-        allActions
-        allAreas
-        allUnions
-        allGoals
-    }
-`
 // END STATS
 
 // BEGIN CHAT
@@ -628,6 +613,308 @@ export const GET_USER_NOTIFICATIONS = gql`
     }
 `
 // END USER
+
+// BEGIN HUB
+export const GET_USER_ACTS = gql`
+    query allUserActs {
+        allUserActs {
+            id
+            act {
+                id
+                title
+                description
+                tasks {
+                    id
+                    title
+                    icon {
+                        id
+                        path
+                    }
+                    condition {
+                        id
+                        action
+                        target
+                        goals
+                        multiply
+                        specific {
+                            id
+                            area
+                        }
+                        union
+                        link {
+                            id
+                            action
+                        }
+                    }
+                    awards {
+                        id
+                        award
+                        quantity
+                    }
+                    createdAt
+                }
+                awards {
+                    id
+                    award
+                    quantity
+                }
+                successor {
+                    id
+                    title
+                }
+                status
+                updatedAt
+                createdAt
+            }
+            tasks {
+                task {
+                    id
+                    title
+                }
+                status
+            }
+            status
+        }
+    }
+`
+
+export const SUB_USER_ACTS = gql`
+    subscription userActs {
+        userActs {
+            act {
+                id
+                title
+                description
+                tasks {
+                    id
+                    title
+                    icon {
+                        id
+                        path
+                    }
+                    condition {
+                        id
+                        action
+                        target
+                        goals
+                        multiply
+                        specific {
+                            id
+                            area
+                        }
+                        union
+                        link {
+                            id
+                            action
+                        }
+                    }
+                    awards {
+                        id
+                        award
+                        quantity
+                    }
+                    createdAt
+                }
+                awards {
+                    id
+                    award
+                    quantity
+                }
+                successor {
+                    id
+                    title
+                }
+                status
+                updatedAt
+                createdAt
+            }
+            tasks {
+                task {
+                    id
+                    title
+                }
+                status
+            }
+            status
+        }
+    }
+`
+
+export const GET_ALL_ACTS = gql`
+    query allActs {
+        allActs {
+            id
+            title
+            description
+            tasks {
+                id
+                title
+                icon {
+                    id
+                    path
+                }
+                condition {
+                    id
+                    action
+                    target
+                    goals
+                    multiply
+                    specific {
+                        id
+                        area
+                    }
+                    union
+                    link {
+                        id
+                        action
+                    }
+                }
+                awards {
+                    id
+                    award
+                    quantity
+                }
+                createdAt
+            }
+            awards {
+                id
+                award
+                quantity
+            }
+            successor {
+                id
+                title
+            }
+            isSource
+            status
+            updatedAt
+            createdAt
+        }
+    }
+`
+
+export const SUB_ALL_ACTS = gql`
+    subscription acts {
+        acts {
+            id
+            title
+            description
+            tasks {
+                id
+                title
+                icon {
+                    id
+                    path
+                }
+                condition {
+                    action
+                    target
+                    goals
+                    multiply
+                    specific {
+                        id
+                        area
+                    }
+                    union
+                    link {
+                        id
+                        action
+                    }
+                }
+                awards {
+                    id
+                    award
+                    quantity
+                }
+                createdAt
+            }
+            awards {
+                id
+                award
+                quantity
+            }
+            successor {
+                id
+                title
+            }
+            isSource
+            status
+            updatedAt
+            createdAt
+        }
+    }
+`
+
+export const ADD_ACT = gql`
+    mutation addAct(
+        $title: String!
+        $description: String!
+        $tasks: [InputActTask]!
+        $awards: [InputAward]
+        $successor: ID
+        $isSource: Boolean
+        $status: Status!
+    ) {
+        addAct(
+            title: $title
+            description: $description
+            tasks: $tasks
+            awards: $awards
+            successor: $successor
+            isSource: $isSource
+            status: $status
+        )
+    }
+`
+
+export const EDIT_ACT = gql`
+    mutation editAct(
+        $id: ID!
+        $title: String
+        $description: String
+        $tasks: [InputActTask]
+        $awards: [InputAward]
+        $successor: ID
+        $isSource: Boolean
+        $status: Status
+    ) {
+        editAct(
+            id: $id
+            title: $title
+            description: $description
+            tasks: $tasks
+            awards: $awards
+            successor: $successor
+            isSource: $isSource
+            status: $status
+        )
+    }
+`
+
+export const DELETE_ACTS = gql`
+    mutation deleteActs(
+        $id: [ID]!
+    ) {
+        deleteActs(id: $id)
+    }
+`
+
+export const GET_ALL_AWARDS = gql`
+    query allAwardTypes {
+        allAwardTypes
+    }
+`
+
+export const GET_ALL_CONDITION_ENUMS = gql`
+    query allEnums {
+        allAwardTypes
+        allActions
+        allGoals
+        allUnions
+        allAreas
+    }
+`
+// END ACT
 
 // BEGIN HUB
 export const GET_ALL_HUBS = gql`
