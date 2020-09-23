@@ -64,8 +64,7 @@
     grid-gap: var(--padding-content);
 }
 
-.ui-section > .content > .ui-skeleton,
-.ui-section > .content > .ui-entry {
+.ui-section > .content > .ui-skeleton {
     flex-basis: 320px;
 }
 
@@ -91,7 +90,7 @@
     grid-column: 1 / 3;
 }
 
-@media only screen and (max-width: 565px) {
+@media only screen and (max-width: 998px) {
     .ui-section .content .grid {
         grid-template-columns: 1fr !important;
     }

@@ -12,6 +12,7 @@ import * as serviceWorker from './serviceWorker'
 import storeFactory from './storeFactory'
 import App from './components/App'
 import { config } from './utils/config'
+import 'react-circular-progressbar/dist/styles.css'
 import './index.css'
 
 const api = config.get('api')

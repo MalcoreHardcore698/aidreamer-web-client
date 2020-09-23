@@ -1,9 +1,18 @@
 import React from 'react'
 import Avatar from './Avatar'
+import Frame from './Frame'
 import List from './List'
 import Message from './Message'
-import CounterBadge from './CounterBadge'
-import ViewEmpty from './../content/ViewEmpty'
+import SVGExpIcon from '../../assets/images/exp-icon.svg'
+import SVGGemIcon from '../../assets/images/gem-icon.svg'
+import '../styles/Act.css'
+
+function getAwardIcon(type) {
+    if (type === 'EXP')
+        return SVGExpIcon
+    else
+        return SVGGemIcon
+}
 
 export default ({ options }) => {
     const {
@@ -19,17 +28,29 @@ export default ({ options }) => {
 
     return (
         <div className={classes.join(' ')}>
-            <h2 className="title">{act.title}</h2>
-            <p className="description">{act.description}</p>
+            <Frame value={act.act.title} legend="Act" />
 
-            {(act.tasks.length > 0) ? <List options={{
-                list: act.tasks,
+            {(act.act.tasks.length > 0) ? <List options={{
+                list: act.act.tasks.map(t => ({
+                    ...t,
+                    _condition: act?.tasks?.find(_t => (_t.task.id === t.id) && (_t.status === 'COMPLETED'))
+                })),
                 handlerItem: (item) => handler(item)
             }}>
                 {({ item }) => (
                     <React.Fragment>
                         <Avatar avatar={{ path: item.icon.path }} />
-                        <p className="name">{item.title}</p>
+                        <div className="text">
+                            <p className="name">
+                                <span>{item.title}</span>
+                                {item.awards.map(award =>
+                                    <span key={award.id} className="award">{
+                                        <img src={getAwardIcon(award.award)} alt="Icon" />
+                                    }</span>    
+                                )}
+                            </p>
+                            <p className="condition">Join any Hub</p>
+                        </div>
                     </React.Fragment>
                 )}
             </List>

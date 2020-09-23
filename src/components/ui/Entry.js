@@ -18,7 +18,7 @@ const api = config.get('api')
 
 const Manage = ({ manageOffset, handlerView, handlerEdit, handlerDelete }) => {
     return (
-        <Row className="manage small" style={{ top: (manageOffset) ? 154 : 15 }}>
+        <Row className="manage small" style={{ top: (manageOffset) ? 280 : 15 }}>
             <Button options={{ state: 'icon inactive small', handler: handlerView }}>
                 <FontAwesomeIcon icon={faEye} />
             </Button>

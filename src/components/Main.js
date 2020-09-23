@@ -1,23 +1,23 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { Switch, Route, Redirect } from 'react-router-dom'
+import { Switch, Route, Redirect, NavLink } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
     faUser,
     faCompass,
     faPaperPlane,
-    // eslint-disable-next-line 
     faTrophy,
     faBell,
+    faBars,
     faCog
 } from '@fortawesome/free-solid-svg-icons'
 import { AuthContext } from './AuthContext'
-
 import Navigation from './ui/Navigation'
+import Button from './ui/Button'
 import Modal from './ui/Modal'
-
 import ViewEmpty from './content/ViewEmpty'
 import ViewNotifications from './content/ViewNotifications'
+import ViewMenu from './content/ViewMenu'
 import {
     SettingsEditProfileContent,
     SettingsHomeContent,
@@ -30,26 +30,14 @@ import {
     SetupChoosePreferences,
     SetupCongratulations
 } from './content/ViewSetup'
-
 import Auth from './Auth'
 import { setChat } from '../utils/actions'
 import { config } from '../utils/config'
 import SVGLogo from '../assets/images/logo'
-
 import routes from '../routes'
 import '../assets/styles/App.css'
 
 const api = config.get('api')
-
-function getButton(handler, routes, icon) {
-    return ({
-        options: {
-            type: 'large-round',
-            handler: () => handler(routes, true)
-        },
-        component: <FontAwesomeIcon icon={icon} />
-    })
-}
 
 const Content = () => {
     const state = useSelector(state => state)
@@ -71,6 +59,11 @@ const Content = () => {
         setCenterModal(false)
         document.body.style.overflow = 'initial'
     }
+
+    const getOptions = (routes, isCenter=true) => ({
+        type: 'large-round',
+        handler: () => showModal(routes, isCenter)
+    })
 
     useEffect(() => {
         if ((state.user) && !state.user.avatar.path) {
@@ -103,44 +96,59 @@ const Content = () => {
     return (
         <React.Fragment>
             <Navigation options={{
-                links: [
-                    {
-                        links: [
-                            {
-                                path: '/profile',
-                                handler: () => dispatch(setChat(null)),
-                                component: (state.user && state.user.avatar.path) ? <img
-                                    className="image"
-                                    src={(state.user.avatar.path).replace('./', `${api}/`)}
-                                    alt="Avatar"
-                                /> : <p className="undefined"><FontAwesomeIcon icon={faUser} /></p>
-                            },
-                            {
-                                path: '/',
-                                handler: () => dispatch(setChat(null)),
-                                component: SVGLogo
-                            },
-                            {
-                                path: '/navigator',
-                                component: <FontAwesomeIcon icon={faCompass} />
-                            },
-                            {
-                                path: '/chats',
-                                handler: () => dispatch(setChat(null)),
-                                component: <FontAwesomeIcon icon={faPaperPlane} />
-                            }
-                        ]
-                    }
+                left: [
+                    <NavLink
+                        exact
+                        to={'/'}
+                        onClick={() => dispatch(setChat(null))}
+                    >
+                        {SVGLogo}
+                    </NavLink>,
+                    <NavLink
+                        exact
+                        to={'/profile'}
+                        onClick={() => dispatch(setChat(null))}
+                    >
+                        {(state.user && state.user.avatar.path) ? <img
+                            className="image"
+                            src={(state.user.avatar.path).replace('./', `${api}/`)}
+                            alt="Avatar"
+                        />
+                        : <p className="undefined"><FontAwesomeIcon icon={faUser} /></p>}
+                    </NavLink>,
+                    <NavLink
+                        exact
+                        to={'/navigator'}
+                        onClick={() => dispatch(setChat(null))}
+                    >
+                        <FontAwesomeIcon icon={faCompass} />
+                    </NavLink>,
+                    <NavLink
+                        exact
+                        to={'/chats'}
+                        onClick={() => dispatch(setChat(null))}
+                    >
+                        <FontAwesomeIcon icon={faPaperPlane} />
+                    </NavLink>,
+                    <NavLink
+                        exact
+                        to={'/tours'}
+                        onClick={() => dispatch(setChat(null))}
+                    >
+                        <FontAwesomeIcon icon={faTrophy} />
+                    </NavLink>
                 ],
-                buttons: [
-                    getButton(showModal, [
+                right: [
+                    <Button options={getOptions([
                         {
                             path: '/',
                             title: 'Notifications',
                             component: () => <ViewNotifications />
                         }
-                    ], faBell),
-                    getButton(showModal, [
+                    ])}>
+                        <FontAwesomeIcon icon={faBell} />
+                    </Button>,
+                    <Button options={getOptions([
                         {
                             path: '/',
                             title: 'Settings',
@@ -166,7 +174,18 @@ const Content = () => {
                             title: 'Ask a Question',
                             component: ({ back }) => <SettingsQuestionContent back={back} />
                         }
-                    ], faCog)
+                    ])}>
+                        <FontAwesomeIcon icon={faCog} />
+                    </Button>,
+                    <Button options={getOptions([
+                        {
+                            path: '/',
+                            title: 'Menu',
+                            component: ({ close }) => <ViewMenu close={close} />
+                        }
+                    ])}>
+                        <FontAwesomeIcon icon={faBars} />
+                    </Button>
                 ]
             }} />
 
