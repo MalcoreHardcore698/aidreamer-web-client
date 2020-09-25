@@ -49,7 +49,7 @@ export default ({ options }) => {
                                     }</span>    
                                 )}
                             </p>
-                            <p className="condition">Join any Hub</p>
+                            <p className="condition">{item.translation}</p>
                         </div>
                     </React.Fragment>
                 )}

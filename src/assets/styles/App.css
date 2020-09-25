@@ -132,6 +132,7 @@ main.profile > aside.head {
 
 main.chats {
     display: grid;
+    padding-block-end: 30px;
 }
 
 main.chats,
@@ -279,6 +280,11 @@ main.profile > aside.head .info .user-preferences .user-preference {
 main.profile > aside.head .info .user-preferences .user-preference .ui-avatar {
     width: 100%;
     height: 100%;
+}
+
+main.profile > aside.head .info .user-preferences .user-preference .ui-avatar img {
+    width: 28px;
+    height: 28px;
 }
 
 main.skeleton {
@@ -477,7 +483,7 @@ main.chats aside:first-child .loader {
     border: var(--border-main);
 
     width: 100%;
-    height: calc(100vh - 280px);
+    height: 100%;
 
     overflow: hidden;
 }
@@ -565,6 +571,10 @@ main.chats aside:first-child .loader {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(425px, 1fr));
     grid-gap: var(--padding-content);
+}
+
+.ui-section.offers .content .grid {
+    grid-template-columns: repeat(auto-fill, minmax(325px, 1fr));
 }
 
 .ui-section.my-articles .content .grid,

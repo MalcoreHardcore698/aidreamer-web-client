@@ -14,6 +14,7 @@ import Query from './Query'
 import Subscription from './Subscription'
 import Row from './Row'
 import Container from './Container'
+import Avatar from './Avatar'
 import Button from './Button'
 import Dropdown from './Dropdown'
 import Toggler from './Toggler'
@@ -24,22 +25,26 @@ import {
 } from '../../utils/queries'
 import { setCurrentHub } from '../../utils/actions'
 
-export default ({ override, all }) => {
+export default ({ override, all, slicedFactor=4 }) => {
     const state = useSelector(state => state)
     const dispatch = useDispatch()
 
     const size = useWindowSize()
 
     const [hubDropdown, setHubDropdown] = useState(false)
-    const [slicedIndex, setSlicedIndex] = useState(2)
+    const [slicedIndex, setSlicedIndex] = useState(slicedFactor)
 
     useEffect(() => {
         if (size.width <= 580) {
-            setSlicedIndex(0)
+            setSlicedIndex((slicedFactor === 2) ? 1 : 0)
+        } else if (size.width <= 768) {
+            setSlicedIndex((slicedFactor < 3) ? slicedFactor : slicedFactor - 2)
+        } else if (size.width <= 998) {
+            setSlicedIndex((slicedFactor === 0) ? slicedFactor : slicedFactor - 1)
         } else {
-            setSlicedIndex(2)
+            setSlicedIndex(slicedFactor)
         }
-    }, [size.width])
+    }, [size.width, slicedFactor])
 
     return (
         <Query query={GET_ALL_HUBS} variables={{ status: 'PUBLISHED' }} pseudo={{ height: 45, count: 6 }}>
@@ -80,11 +85,13 @@ export default ({ override, all }) => {
                                         type: hub,
                                         value: (
                                             <Row key={key}>
+                                                <Avatar avatar={{ path: hub.icon.path }} properties={['circle']} />
                                                 <p>{hub.title}</p>
                                             </Row>
                                         )})),
                                     {
                                         type: 'erase',
+                                        disabled: (slicedStarts.length === hubs.length),
                                         classNames: 'dropdown',
                                         value: (
                                             <Container clear sticky>

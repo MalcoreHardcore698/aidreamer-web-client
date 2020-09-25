@@ -8,7 +8,7 @@ import {
     faPaperPlane,
     faTrophy
 } from '@fortawesome/free-solid-svg-icons'
-import Container from './../ui/Container'
+import Container from '../ui/Container'
 import { setChat } from '../../utils/actions'
 import { config } from '../../utils/config'
 import SVGLogo from '../../assets/images/logo'

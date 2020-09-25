@@ -93,7 +93,22 @@
 }
 
 .ui-toggler .toggle .ui-row {
+    display: flex;
+    align-items: center;
     grid-gap: 5px;
+}
+
+.ui-toggler .toggle .ui-row .ui-avatar {
+    display: flex;
+    filter: brightness(0.8);
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+}
+
+.ui-toggler .toggle .ui-row .ui-avatar img {
+    width: 28px;
+    height: 28px;
 }
 
 .ui-toggler .toggle .ui-row .icon {

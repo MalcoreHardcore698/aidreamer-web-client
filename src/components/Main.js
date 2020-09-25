@@ -15,21 +15,21 @@ import { AuthContext } from './AuthContext'
 import Navigation from './ui/Navigation'
 import Button from './ui/Button'
 import Modal from './ui/Modal'
-import ViewEmpty from './content/ViewEmpty'
-import ViewNotifications from './content/ViewNotifications'
-import ViewMenu from './content/ViewMenu'
+import ViewEmpty from './views/Empty'
+import ViewNotifications from './views/Notifications'
+import ViewMenu from './views/Menu'
 import {
     SettingsEditProfileContent,
     SettingsHomeContent,
     SettingsQuestionContent,
     SettingsLanguageContent
-} from './content/ViewSettings'
+} from './views/Settings'
 import {
     SetupGreeting,
     SetupChooseAvatar,
     SetupChoosePreferences,
     SetupCongratulations
-} from './content/ViewSetup'
+} from './views/Setup'
 import Auth from './Auth'
 import { setChat } from '../utils/actions'
 import { config } from '../utils/config'

@@ -1,7 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import Moment from 'react-moment'
-
 import Query from './ui/Query'
 import Mutation from './ui/Mutation'
 import Subscription from './ui/Subscription'
@@ -13,17 +12,14 @@ import HubToggler from './ui/HubToggler'
 import Section from './ui/Section'
 import Message from './ui/Message'
 import Entry from './ui/Entry'
-
-import ViewAlert from './content/ViewAlert'
-import ViewArticle from './content/ViewArticle'
-
+import ViewAlert from './views/Alert'
+import ViewPost from './views/Post'
 import targets from '../stores/targets'
-
 import { config } from '../utils/config'
 import {
-    GET_ALL_ARTICLES,
     ADD_COMMENT,
-    SUB_ARTICLES,
+    GET_ALL_POSTS,
+    SUB_ALL_POSTS,
 } from '../utils/queries'
 
 const api = config.get('api')
@@ -52,33 +48,33 @@ export default ({ showModal }) => {
                     title: 'Articles',
                     targets, filter: true
                 }}>
-                    {({ filter }) => (
+                    {() => (
                         <div className="grid">
-                            <Query query={GET_ALL_ARTICLES} variables={{ status: 'PUBLISHED' }} pseudo={{ height: 256, count: 3 }}>
+                            <Query query={GET_ALL_POSTS} variables={{ status: 'PUBLISHED', type: 'ARTICLE' }} pseudo={{ height: 256, count: 3 }}>
                                 {({ data, refetch }) =>
-                                    <Subscription query={SUB_ARTICLES} variables={{ status: 'PUBLISHED' }} refetch={refetch}>
+                                    <Subscription query={SUB_ALL_POSTS} variables={{ status: 'PUBLISHED', type: 'ARTICLE' }} refetch={refetch}>
                                         {({ subData }) => {
-                                            const articles = (subData && subData.articles) || (data && data.allArticles) || []
+                                            const posts = (subData && subData.posts) || (data && data.allPosts) || []
 
-                                            if (articles.length === 0)
+                                            if (posts.length === 0)
                                                 return <Message text="Empty" padding />
 
                                             return (
-                                                articles.map((article, key) => ((state.filters.currentHub === 'all') || (article.hub.id === state.filters.currentHub.id)) ? (
+                                                posts.map((post, key) => ((state.filters.currentHub === 'all') || (post.hub.id === state.filters.currentHub.id)) ? (
                                                     <Entry key={key} options={{
                                                         capacious: false,
                                                         userBar: {
-                                                            name: article.author.name,
-                                                            status: article.author.status || 'Online',
-                                                            avatar: article.author.avatar.path
+                                                            name: post.author.name,
+                                                            status: post.author.status || 'Online',
+                                                            avatar: post.author.avatar.path
                                                         },
                                                         statusBar: {
                                                             options: [
-                                                                { lite: 'Comments', dark: article.comments.length },
-                                                                { lite: 'Views', dark: article.views || 0 },
+                                                                { lite: 'Comments', dark: post.comments.length },
+                                                                { lite: 'Views', dark: post.views || 0 },
                                                                 {
-                                                                    lite: <Moment date={new Date(new Date().setTime(article.createdAt))} format="MMM, DD" />,
-                                                                    dark: <Moment date={new Date(new Date().setTime(article.createdAt))} format="h:m" />
+                                                                    lite: <Moment date={new Date(new Date().setTime(post.createdAt))} format="MMM, DD" />,
+                                                                    dark: <Moment date={new Date(new Date().setTime(post.createdAt))} format="h:m" />
                                                                 }
                                                             ],
                                                             input: (
@@ -97,7 +93,7 @@ export default ({ showModal }) => {
                                                 
                                                                                             await action({
                                                                                                 variables: {
-                                                                                                    article: article.id,
+                                                                                                    post: post.id,
                                                                                                     text
                                                                                                 }
                                                                                             })
@@ -124,21 +120,21 @@ export default ({ showModal }) => {
                                                         handler: () => showModal([
                                                             {
                                                                 path: '/',
-                                                                title: 'Article',
-                                                                component: () => <ViewArticle article={article} />
+                                                                title: 'Post',
+                                                                component: () => <ViewPost document={post} />
                                                             }
                                                         ])
                                                     }}>
-                                                        {(article.image && article.image.path) &&
+                                                        {(post.preview && post.preview.path) &&
                                                             <img
                                                                 className="image"
-                                                                src={(article.image.path).replace('./', `${api}/`)}
-                                                                alt="Article"
+                                                                src={(post.preview.path).replace('./', `${api}/`)}
+                                                                alt="Post"
                                                             />
                                                         }
-                                                        <p className="tag" style={{ background: article.hub.color }}>{article.hub.title}</p>
-                                                        <h2 className="title">{article.title}</h2>
-                                                        <p className="paragraph">{article.description}</p>
+                                                        <p className="tag" style={{ background: post.hub.color }}>{post.hub.title}</p>
+                                                        <h2 className="title">{post.title}</h2>
+                                                        <p className="paragraph">{post.description}</p>
                                                     </Entry>
                                                 ) : null)
                                             )

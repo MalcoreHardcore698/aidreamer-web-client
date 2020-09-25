@@ -17,23 +17,22 @@ import HubToggler from './ui/HubToggler'
 import Button from './ui/Button'
 import Section from './ui/Section'
 import Entry from './ui/Entry'
-import ViewArticle from './content/ViewArticle'
-import AddArticle from './content/AddArticle'
-import EditArticle from './content/EditArticle'
-import DeleteEntries from './content/DeleteEntries'
+import CounterBadge from './ui/CounterBadge'
+import ViewPost from './views/Post'
+import FormPost from './forms/Post'
+import DeleteEntries from './forms/Delete'
 import {
     GET_USER_ACTS,
-    GET_USER_ARTICLES,
-    DELETE_ARTICLES,
+    GET_USER_POSTS,
+    DELETE_POSTS,
     SUB_USER_ACTS,
-    SUB_USER_ARTICLES
+    SUB_USER_POSTS
 } from '../utils/queries'
 import SVGExpIcon from '../assets/images/exp-icon.svg'
 import SVGGemIcon from '../assets/images/gem-icon.svg'
 import targets from '../stores/targets'
 import { config } from '../utils/config'
 import _ from 'lodash'
-import CounterBadge from './ui/CounterBadge'
 
 const api = config.get('api')
 
@@ -206,7 +205,7 @@ export default ({ showModal }) => {
                         subtitle: '',
                         targets, filter: true
                     }}>
-                        {({ filter }) => (
+                        {() => (
                             <React.Fragment>
                                 <Button options={{
                                     state: 'inactive',
@@ -215,8 +214,8 @@ export default ({ showModal }) => {
                                         showModal([
                                             {
                                                 path: '/',
-                                                title: 'Add Article',
-                                                component: ({ jump, close }) => <AddArticle jump={jump} close={close} />
+                                                title: 'Add Post',
+                                                component: ({ close }) => <FormPost close={close} add />
                                             }
                                         ])
                                     }
@@ -224,57 +223,57 @@ export default ({ showModal }) => {
                                     <FontAwesomeIcon icon={faPlus} />
                                 </Button>
                                 
-                                <Query query={GET_USER_ARTICLES} pseudo={{ height: 256, count: 3 }}>
+                                <Query query={GET_USER_POSTS} pseudo={{ height: 256, count: 3 }}>
                                     {({ data, refetch }) =>
-                                        <Subscription query={SUB_USER_ARTICLES} refetch={refetch}>
+                                        <Subscription query={SUB_USER_POSTS} refetch={refetch}>
                                             {({ subData }) => {
-                                                const articles = ((subData && subData.articles) || data.allUserArticles)
+                                                const posts = ((subData && subData.posts) || data.allUserPosts)
 
-                                                if (articles.length === 0)
+                                                if (posts.length === 0)
                                                     return <Message text="Empty" padding />
 
                                                 return (
                                                     <div className="grid">
-                                                        {articles.map((article, key) => ((state.filters.currentHub === 'all') || (article.hub.id === state.filters.currentHub.id)) ? (
+                                                        {posts.map((post, key) => ((state.filters.currentHub === 'all') || (post.hub.id === state.filters.currentHub.id)) ? (
                                                             <Entry key={key} options={{
                                                                 editable: true,
                                                                 capacious: false,
-                                                                manageOffset: !(article.image && !article.image.path),
+                                                                manageOffset: !(post.preview && !post.preview.path),
                                                                 statusBar: {
                                                                     options: [
-                                                                        { lite: 'Comments', dark: article.comments.length || 0 },
-                                                                        { lite: 'Views', dark: article.views || 0 },
+                                                                        { lite: 'Comments', dark: post.comments.length || 0 },
+                                                                        { lite: 'Views', dark: post.views || 0 },
                                                                         {
-                                                                            lite: <Moment date={new Date(new Date().setTime(article.createdAt))} format="MMM, DD" />,
-                                                                            dark: <Moment date={new Date(new Date().setTime(article.createdAt))} format="h:m" />
+                                                                            lite: <Moment date={new Date(new Date().setTime(post.createdAt))} format="MMM, DD" />,
+                                                                            dark: <Moment date={new Date(new Date().setTime(post.createdAt))} format="h:m" />
                                                                         }
                                                                     ]
                                                                 },
                                                                 handlerView: () => showModal([
                                                                     {
                                                                         path: '/',
-                                                                        title: 'Article',
-                                                                        component: ({ close }) => <ViewArticle article={article} close={close} />
+                                                                        title: 'Post',
+                                                                        component: ({ close }) => <ViewPost document={post} close={close} />
                                                                     }
                                                                 ]),
                                                                 handlerEdit: () => showModal([
                                                                     {
                                                                         path: '/',
-                                                                        title: 'Edit Article',
-                                                                        component: ({ close }) => <EditArticle article={article} close={close} />
+                                                                        title: 'Edit Post',
+                                                                        component: ({ close }) => <FormPost document={post} close={close} edit />
                                                                     }
                                                                 ]),
                                                                 handlerDelete: () => showModal([
                                                                     {
                                                                         path: '/',
-                                                                        title: 'Delete Article',
+                                                                        title: 'Delete Post',
                                                                         component: ({ close }) => <DeleteEntries
-                                                                            entry={article}
-                                                                            query={DELETE_ARTICLES}
+                                                                            entry={post}
+                                                                            query={DELETE_POSTS}
                                                                             handler={async (action, entry, docs) => {
                                                                                 await action({
                                                                                     variables: {
-                                                                                        articles: (entry)
+                                                                                        posts: (entry)
                                                                                             ? [{
                                                                                                 id: entry.id,
                                                                                                 author: entry.author.id
@@ -291,15 +290,15 @@ export default ({ showModal }) => {
                                                                     }
                                                                 ], true)
                                                             }}>
-                                                                {(article.image && article.image.path) && <img
+                                                                {(post.preview && post.preview.path) && <img
                                                                         className="image"
-                                                                        src={(article.image.path).replace('./', `${api}/`)}
+                                                                        src={(post.preview.path).replace('./', `${api}/`)}
                                                                         alt="Article"
                                                                     />
                                                                 }
-                                                                <p className="tag" style={{ background: article.hub.color }}>{article.hub.title}</p>
-                                                                <h2 className="title">{article.title}</h2>
-                                                                <p className="paragraph">{article.description}</p>
+                                                                <p className="tag" style={{ background: post.hub.color }}>{post.hub.title}</p>
+                                                                <h2 className="title">{post.title}</h2>
+                                                                <p className="paragraph">{post.description}</p>
                                                             </Entry>
                                                         ) : null)}
                                                     </div>

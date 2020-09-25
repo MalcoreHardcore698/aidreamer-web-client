@@ -16,7 +16,7 @@ import { ADD_COMMENT, SUB_COMMENTS } from '../../utils/queries'
 
 const api = config.get('api')
 
-export default ({ article }) => {
+export default ({ document }) => {
     const state = useSelector(state => state)
 
     const inputRef = useRef(null)
@@ -27,11 +27,11 @@ export default ({ article }) => {
                 capacious: false,
                 statusBar: {
                     options: [
-                        { lite: 'Comments', dark: article.comments.length || 0 },
-                        { lite: 'Views', dark: article.views || 0 },
+                        { lite: 'Comments', dark: document.comments.length || 0 },
+                        { lite: 'Views', dark: document.views || 0 },
                         {
-                            lite: <Moment date={new Date(new Date().setTime(article.createdAt))} format="MMM, DD" />,
-                            dark: <Moment date={new Date(new Date().setTime(article.createdAt))} format="h:m" />
+                            lite: <Moment date={new Date(new Date().setTime(document.createdAt))} format="MMM, DD" />,
+                            dark: <Moment date={new Date(new Date().setTime(document.createdAt))} format="h:m" />
                         }
                     ],
                     input: (
@@ -51,7 +51,7 @@ export default ({ article }) => {
         
                                                     await action({
                                                         variables: {
-                                                            article: article.id,
+                                                            document: document.id,
                                                             text
                                                         }
                                                     })
@@ -66,9 +66,9 @@ export default ({ article }) => {
                         </React.Fragment>
                     ),
                     body: (
-                        <Subscription query={SUB_COMMENTS} variables={{ id: article.id }}>
+                        <Subscription query={SUB_COMMENTS} variables={{ id: document.id }}>
                             {({ subData }) => {
-                                const comments = (subData && subData.comments) || (article.comments) || []
+                                const comments = (subData && subData.comments) || (document.comments) || []
 
                                 if (comments.length === 0)
                                     return null
@@ -109,15 +109,15 @@ export default ({ article }) => {
                     )
                 }
             }}>
-                {(article.image && article.image.path) && <img
+                {(document.preview && document.preview.path) && <img
                         className="image large"
-                        src={(article.image.path).replace('./', `${api}/`)}
+                        src={(document.preview.path).replace('./', `${api}/`)}
                         alt="Article"
                     />
                 }
-                <p className="tag" style={{ background: article.hub.color }}>{article.hub.title}</p>
-                <p className="title">{article.title}</p>
-                <p className="body">{article.body}</p>
+                <p className="tag" style={{ background: document.hub.color }}>{document.hub.title}</p>
+                <p className="title">{document.title}</p>
+                <p className="body">{document.body}</p>
             </Entry>
         </Container>
     )

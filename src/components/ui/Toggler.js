@@ -36,13 +36,15 @@ export default ({ options }) => {
     return (
         <div className={classes.join(' ')}>
             {targets.filter(t => t).map((target, key) =>
+                (!target.disabled) ?
                 <div
                     key={key}
                     className={classesToggle(target).join(' ')}
                     onClick={() => handlerState(target.type)}
                 >
                     {target.value}
-                </div>    
+                </div>
+                : null
             )}
             {(!targets || targets.length === 0) && <Message text="No Content" />}
         </div>

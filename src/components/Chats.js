@@ -14,7 +14,7 @@ import Unit from './ui/Unit'
 import Avatar from './ui/Avatar'
 import Input from './ui/Input'
 import Message from './ui/Message'
-import ViewAlert from './content/ViewAlert'
+import ViewAlert from './views/Alert'
 import {
     ADD_USER_CHAT_MESSAGE,
     GET_CHAT_MESSAGES,
