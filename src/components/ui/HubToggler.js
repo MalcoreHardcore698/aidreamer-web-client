@@ -53,27 +53,16 @@ export default ({ override, all, slicedFactor=4 }) => {
                     {({ subData }) => {
                         const hubs = ((subData && subData.hubs) || (data && data.allHubs))
 
-                        /*
-                        const sorted = (override) ? 
-                            (hubs.slice(0, slicedIndex)
-                                .find(h => h.id === override.state.id))
-                            ? hubs : [
-                                override.state,
-                                ...hubs.filter(h => h.id !== override.state.id)
-                            ] : hubs
-                        */
-
                         const slicedStarts = hubs.slice(0, slicedIndex)
                         const slicedEnds = hubs.slice(slicedIndex)
 
                         return (
                             <Toggler options={{
-                                state: (override) ? override.state : state.filters.currentHub,
-                                handler: (item) => {
-                                    if (override) {
-                                        override.handler(item)
-                                    }
-                                    else dispatch(setCurrentHub(item))
+                                name: override?.name,
+                                inputRef: override?.inputRef,
+                                initialState: (override) ? override?.initialState : state.filters.currentHub,
+                                onChange: (e) => {
+                                    if (!override) dispatch(setCurrentHub(e))
                                     setHubDropdown(false)
                                 },
                                 targets: [
@@ -82,18 +71,18 @@ export default ({ override, all, slicedFactor=4 }) => {
                                         value: <Row><p>All</p></Row>
                                     }),
                                     ...slicedStarts.map((hub, key) => ({
-                                        type: hub,
-                                        value: (
+                                        value: hub,
+                                        label: (
                                             <Row key={key}>
                                                 <Avatar avatar={{ path: hub.icon.path }} properties={['circle']} />
                                                 <p>{hub.title}</p>
                                             </Row>
                                         )})),
                                     {
-                                        type: 'erase',
+                                        value: 'erase',
                                         disabled: (slicedStarts.length === hubs.length),
                                         classNames: 'dropdown',
-                                        value: (
+                                        label: (
                                             <Container clear sticky>
                                                 <Button options={{
                                                     state: 'inactive',

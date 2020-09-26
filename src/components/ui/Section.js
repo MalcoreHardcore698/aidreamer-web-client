@@ -15,11 +15,14 @@ import Toggler from './Toggler'
 import Row from './Row'
 import '../styles/Section.css'
 
-const Manage = ({ filter, targets, state, handler }) => {
+const Manage = ({ filter, targets }) => {
     return (
         <Row>
             <Search />
-            <Toggler options={{ targets, state, handler }} />
+            <Toggler options={{
+                initialState: targets[0],
+                initialOptions: targets
+            }} />
             {(filter) && (
                  <Button options={{
                     state: 'inactive icon',

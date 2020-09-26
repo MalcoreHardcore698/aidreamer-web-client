@@ -3,52 +3,60 @@ import Query from '../ui/Query'
 import Row from '../ui/Row'
 import Form from '../ui/Form'
 import Input from '../ui/Input'
+import Avatar from '../ui/Avatar'
 import TextArea from '../ui/TextArea'
 import Toggler from '../ui/Toggler'
 import Dropzone from '../ui/Dropzone'
-import HubToggler from '../ui/HubToggler'
-import { GET_ALL_STATUS, GET_ALL_POST_TYPES, ADD_POST, EDIT_POST } from '../../utils/queries'
+import {
+    GET_ALL_STATUS,
+    GET_ALL_HUBS,
+    ADD_POST,
+    EDIT_POST
+} from '../../utils/queries'
 
 export default ({
     document,
     close,
+    type,
     add=false,
     edit=false,
-    editableStatus
+    isTitle,
+    isSubtitle,
+    isDescription,
+    isContent,
+    isHub,
+    isStatus,
+    isPreview
 }) => {
     const [variables, setVariables] = useState({})
 
-    const [hub, setHub] = useState(document?.hub)
-    const [postType, setPostType] = useState(document?.type)
-    const [preview, setPreview] = useState(null)
-    const [status, setStatus] = useState(document?.status)
-
     const variablesCompose = (form, options) => {
-        return {
-            ...options,
+        const vars = {
+            ...options, type,
             title: form.title,
-            subtitle: form.subtitle,
-            description: form.description,
-            content: form.content
+            status: form.status
         }
+        
+        if (form.subtitle) vars.subtitle = form.subtitle
+        if (form.description) vars.description = form.description
+        if (form.content) vars.content = form.content
+        if (form.preview) vars.preview = form.preview
+        if (form.hub) vars.hub = form.hub
+
+        return vars
     }
 
     useEffect(() => {
-        const options = {
-            type: postType
-        }
-        
+        const options = {}
+
         if (edit) options.id = document._id
-        if (hub) options.hub = hub.id
-        if (preview) options.preview = preview
-        if (status) options.status = status
         else options.status = 'PUBLISHED'
 
         setVariables((vars) => ({
             ...vars,
             ...options
         }))
-    }, [hub, preview, status, postType, edit, document])
+    }, [edit, document])
 
     return (
         <Form
@@ -60,96 +68,85 @@ export default ({
             beforeEffect={(form, options) => variablesCompose(form, options)}
             afterEffect={close}
         >
-            {({ elevate, register, loading }) => (
+            {({ register, loading, setValue }) => (
                 <React.Fragment>
-                    <Input options={{
-                        ref: register(),
+                    {(isTitle) && <Input options={{
                         type: 'text',
                         name: 'title',
+                        inputRef: register(),
                         defaultValue: document?.title || '',
                         placeholder: 'Enter title',
                         disabled: loading
-                    }} />
+                    }} />}
 
-                    <Input options={{
-                        ref: register(),
+                    {(isSubtitle && (type === 'ARTICLE')) && <Input options={{
                         type: 'text',
                         name: 'subtitle',
+                        inputRef: register(),
                         defaultValue: document?.subtitle || '',
                         placeholder: 'Enter subtitle',
                         disabled: loading
-                    }} />
+                    }} />}
 
-                    <Input options={{
-                        ref: register(),
+                    {(isDescription && (type === 'ARTICLE')) && <Input options={{
                         type: 'text',
                         name: 'description',
+                        inputRef: register(),
                         defaultValue: document?.description || '',
                         placeholder: 'Enter description',
                         disabled: loading
-                    }} />
+                    }} />}
 
-                    <TextArea options={{
-                        ref: register(),
+                    {(isContent) && <TextArea options={{
                         type: 'text',
                         name: 'content',
+                        inputRef: register(),
                         defaultValue: document?.content || '',
                         placeholder: 'Enter content',
                         disabled: loading
-                    }} />
+                    }} />}
 
-                    <HubToggler override={{
-                        state: hub,
-                        handler: (item) => {
-                            setHub(item)
-                            elevate()
-                        }
-                    }} slicedFactor={2} />
-
-                    {(editableStatus) && <Query query={GET_ALL_STATUS}>
+                    {(isHub) && <Query query={GET_ALL_HUBS} pseudo={{ height: 45, count: 6 }}>
                         {({ data }) => (
                             <Toggler options={{
-                                state: status,
-                                handler: setStatus,
-                                targets: [
-                                    ...data.allStatus.map((item, key) => ({
-                                        type: item,
-                                        value: (
-                                            <Row key={key}>
-                                                <p>{item}</p>
-                                            </Row>
-                                        )}))
-                                ]}}
-                            />
+                                name: 'hub', setValue,
+                                register: register(),
+                                initialSlicedFactor: 2,
+                                initialOptions: data.allHubs.map(hub => ({
+                                    value: hub.id,
+                                    label: (
+                                        <Row key={hub.id}>
+                                            <Avatar avatar={{ path: hub.icon.path }} properties={['circle']} />
+                                            <p>{hub.title}</p>
+                                        </Row>
+                                    )
+                                }))
+                            }} />
                         )}
                     </Query>}
 
-                    <Dropzone options={{
-                        ref: register,
-                        name: 'image',
-                        setImage: setPreview
-                    }} />
-                    
-                    <Query query={GET_ALL_POST_TYPES}>
+                    {(isStatus) && <Query query={GET_ALL_STATUS}>
                         {({ data }) => (
                             <Toggler options={{
-                                state: postType,
-                                handler: (item) => {
-                                    setPostType(item)
-                                    elevate()
-                                },
-                                targets: [
-                                    ...data.allPostTypes.map((item, key) => ({
-                                        type: item,
-                                        value: (
-                                            <Row key={key}>
-                                                <p>{item}</p>
-                                            </Row>
-                                        )}))
-                                ]}}
-                            />
+                                name: 'status', setValue,
+                                register: register(),
+                                initialOptions: data.allStatus.map((item, key) => ({
+                                    value: item,
+                                    label: (
+                                        <Row key={key}>
+                                            <p>{item}</p>
+                                        </Row>
+                                    )}))
+                            }}/>
                         )}
-                    </Query>
+                    </Query>}
+
+                    {(isPreview && (type === 'ARTICLE')) && <Dropzone
+                        options={{
+                            name: 'preview', setValue,
+                            register: register()
+                        }}
+                    />}
                 </React.Fragment>
             )}
         </Form>

@@ -101,7 +101,7 @@ export default (props) => {
             return
         
         return (
-            <div className="status-bar">
+            <div className={`status-bar${(!statusBar.body) ? ' no-body' : ''}`}>
                 {statusBar.options.map((item, key) =>
                     <p key={key}>
                         <span className="lite">{item.lite}</span>

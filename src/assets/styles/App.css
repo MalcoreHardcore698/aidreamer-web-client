@@ -590,6 +590,48 @@ main.chats aside:first-child .loader {
     height: 100vh;
 }
 
+.ui-icon.dots {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.ui-icon.dots span {
+    position: absolute;
+    top: calc(50% - 2.5px);
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--color-graylite);
+    transition: left 150ms ease-in-out, transform 300ms ease-out;
+}
+
+.ui-icon.dots span:nth-child(1) {
+    left: calc(50% - 10.5px);
+}
+
+.ui-icon.dots span:nth-child(2) {
+    left: calc(50% - 2.5px);
+}
+
+.ui-icon.dots span:nth-child(3) {
+    left: calc(50% + 5px);
+}
+
+.ui-icon.dots.active span:nth-child(1),
+.ui-icon.dots.active span:nth-child(3) {
+    z-index: var(--z-eleven);
+    left: calc(50% - 2.5px);
+    background: var(--color-graydark);
+    transform: scale(1.75);
+}
+
+.ui-icon.dots.active span:nth-child(2) {
+    left: calc(50% - 2.5px);
+    transform: scale(5);
+}
+
 .fadeIn {
     animation: fadeIn 100ms ease-in;
 }

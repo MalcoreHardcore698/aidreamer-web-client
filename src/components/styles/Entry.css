@@ -163,6 +163,10 @@
     padding: var(--padding-content);
 }
 
+.wrapper .ui-entry .status-bar.no-body {
+    margin-block-end: -20px;
+}
+
 .ui-entry .status-bar p {
     font-weight: 500;
     margin: 0;

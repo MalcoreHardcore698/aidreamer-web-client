@@ -1,5 +1,5 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import Moment from 'react-moment'
 import Query from './ui/Query'
 import Mutation from './ui/Mutation'
@@ -8,7 +8,7 @@ import Row from './ui/Row'
 import Avatar from './ui/Avatar'
 import Input from './ui/Input'
 import Headline from './ui/Headline'
-import HubToggler from './ui/HubToggler'
+import Toggler from './ui/Toggler'
 import Section from './ui/Section'
 import Message from './ui/Message'
 import Entry from './ui/Entry'
@@ -19,15 +19,16 @@ import { config } from '../utils/config'
 import {
     ADD_COMMENT,
     GET_ALL_POSTS,
+    GET_ALL_HUBS,
     SUB_ALL_POSTS,
 } from '../utils/queries'
+import { setCurrentHub } from '../utils/actions'
 
 const api = config.get('api')
 
 export default ({ showModal }) => {
     const state = useSelector(state => state)
-
-    if (!state.user) return null
+    const dispatch = useDispatch()
     
     return (
         <main className="home">
@@ -41,7 +42,23 @@ export default ({ showModal }) => {
             </aside>
 
             <aside>
-                <HubToggler all />
+                <Query query={GET_ALL_HUBS} pseudo={{ height: 45, count: 6 }}>
+                    {({ data }) => (
+                        <Toggler all options={{
+                            setValue: (_, target) => dispatch(setCurrentHub(target)),
+                            initialSlicedFactor: 4,
+                            initialOptions: data.allHubs.map(hub => ({
+                                value: hub.id,
+                                label: (
+                                    <Row key={hub.id}>
+                                        <Avatar avatar={{ path: hub.icon.path }} properties={['circle']} />
+                                        <p>{hub.title}</p>
+                                    </Row>
+                                )
+                            }))
+                        }} />
+                    )}
+                </Query>
 
                 <Section options={{
                     name: 'articles',
@@ -60,7 +77,7 @@ export default ({ showModal }) => {
                                                 return <Message text="Empty" padding />
 
                                             return (
-                                                posts.map((post, key) => ((state.filters.currentHub === 'all') || (post.hub.id === state.filters.currentHub.id)) ? (
+                                                posts.map((post, key) => ((state.filters.currentHub === 'all') || (post.hub.id === state.filters.currentHub)) ? (
                                                     <Entry key={key} options={{
                                                         capacious: false,
                                                         userBar: {

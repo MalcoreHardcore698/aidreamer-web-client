@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { BrowserRouter as Router } from 'react-router-dom'
-import { AuthContext } from './AuthContext'
+import { AuthContext } from '../context/Auth'
 import { useAuth } from '../hooks/auth.hook'
 import { useQuery } from '@apollo/react-hooks'
 

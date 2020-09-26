@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
@@ -13,7 +13,8 @@ import Frame from './ui/Frame'
 import Headline from './ui/Headline'
 import Message from './ui/Message'
 import Act from './ui/Act'
-import HubToggler from './ui/HubToggler'
+import Dropdown from './ui/Dropdown'
+import List from './ui/List'
 import Button from './ui/Button'
 import Section from './ui/Section'
 import Entry from './ui/Entry'
@@ -26,7 +27,8 @@ import {
     GET_USER_POSTS,
     DELETE_POSTS,
     SUB_USER_ACTS,
-    SUB_USER_POSTS
+    SUB_USER_POSTS,
+    GET_ALL_POST_TYPES
 } from '../utils/queries'
 import SVGExpIcon from '../assets/images/exp-icon.svg'
 import SVGGemIcon from '../assets/images/gem-icon.svg'
@@ -68,6 +70,9 @@ const EntryContent = () => {
 
 export default ({ showModal }) => {
     const state = useSelector(state => state)
+
+    const [postDropdown, setPostDropdown] = useState(false)
+    const [postDropdownLeft, setPostDropdownLeft] = useState(0)
 
     if (!state.user) return null
 
@@ -156,7 +161,7 @@ export default ({ showModal }) => {
             </aside>
 
             <aside className="body">
-                <HubToggler all />
+                {/* <HubToggler all /> */}
 
                 <Row>
                     <Query query={GET_USER_ACTS} pseudo={{ height: 70, count: 3 }}>
@@ -210,18 +215,55 @@ export default ({ showModal }) => {
                                 <Button options={{
                                     state: 'inactive',
                                     classNames: 'stretch',
-                                    handler: () => {
-                                        showModal([
-                                            {
-                                                path: '/',
-                                                title: 'Add Post',
-                                                component: ({ close }) => <FormPost close={close} add />
-                                            }
-                                        ])
+                                    handler: (e) => {
+                                        setPostDropdown(!postDropdown)
+                                        console.log(document.body.offsetWidth, e.target.offsetWidth, e.pageX)
+                                        setPostDropdownLeft(document.body.offsetWidth - e.target.offsetWidth - e.pageX)
                                     }
                                 }}>
                                     <FontAwesomeIcon icon={faPlus} />
                                 </Button>
+
+                                <Query query={GET_ALL_POST_TYPES} pseudo={{ height: 40, count: 1 }}>
+                                    {({ data }) => (
+                                        <Dropdown options={{
+                                            dropdown:
+                                            postDropdown,
+                                            styles: {
+                                                left: -postDropdownLeft,
+                                                right: 'auto',
+                                                marginLeft: -50
+                                            }
+                                        }}>
+                                            <List options={{
+                                                list: data.allPostTypes.map(postType => ({ id: postType, label: postType})),
+                                                handlerItem: (item) => {
+                                                    showModal([
+                                                        {
+                                                            path: '/',
+                                                            title: 'Add Post',
+                                                            component: ({ close }) => <FormPost
+                                                                add
+                                                                type={item.id}
+                                                                close={close}
+                                                                isTitle
+                                                                isSubtitle
+                                                                isDescription
+                                                                isContent
+                                                                isHub
+                                                                isPreview
+                                                            />
+                                                        }
+                                                    ])
+                                                }
+                                            }}>
+                                                {({ item }) => (
+                                                    <div className="name">{item.label}</div>
+                                                )}
+                                            </List>
+                                        </Dropdown>
+                                    )}
+                                </Query>
                                 
                                 <Query query={GET_USER_POSTS} pseudo={{ height: 256, count: 3 }}>
                                     {({ data, refetch }) =>
@@ -296,7 +338,7 @@ export default ({ showModal }) => {
                                                                         alt="Article"
                                                                     />
                                                                 }
-                                                                <p className="tag" style={{ background: post.hub.color }}>{post.hub.title}</p>
+                                                                <p className="tag" style={{ background: post.hub?.color }}>{post.hub?.title}</p>
                                                                 <h2 className="title">{post.title}</h2>
                                                                 <p className="paragraph">{post.description}</p>
                                                             </Entry>

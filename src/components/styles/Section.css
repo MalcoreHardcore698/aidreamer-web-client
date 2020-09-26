@@ -59,6 +59,7 @@
 }
 
 .ui-section > .content {
+    position: relative;
     display: flex;
     flex-direction: column;
     grid-gap: var(--padding-content);

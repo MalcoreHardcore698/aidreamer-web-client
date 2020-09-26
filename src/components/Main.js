@@ -11,7 +11,7 @@ import {
     faBars,
     faCog
 } from '@fortawesome/free-solid-svg-icons'
-import { AuthContext } from './AuthContext'
+import { AuthContext } from '../context/Auth'
 import Navigation from './ui/Navigation'
 import Button from './ui/Button'
 import Modal from './ui/Modal'

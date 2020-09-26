@@ -1,53 +1,39 @@
 import React, { useState } from 'react'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faImage } from '@fortawesome/free-solid-svg-icons'
 import Dropzone from 'react-dropzone-uploader'
-import { config } from '../../utils/config'
 import '../styles/Dropzone.css'
-
-const api = config.get('api')
 
 export default ({ options }) => {
     const [preview, setPreview] = useState('')
 
     const {
-        ref,
         type,
         name,
-        value,
-        styles={},
-        setImage
+        setValue,
+        register,
+        styles={}
     } = options || {}
 
     const classes = [
         'ui-dropzone', type,
-        (preview || value) ? ' with-preview' : ''
+        (preview) ? ' with-preview' : ''
     ]
 
-    const handleChangeStatus = ({ meta, file }, status) => {
+    const handleChangeStatus = ({ file, meta }, status) => {
         if (status === 'done') {
             setPreview(meta.previewUrl)
-            setImage(file)
+            setValue(name, file)
         }
     }
 
     return (
-        <div className={classes.join(' ')} styles={styles}>
-            {(preview || value) && <div className="preview">
-                {(preview) ?
-                    <img src={preview} alt="Preview" />
-                : (value) ?
-                   <img
-                        className="image"
-                        src={(value).replace('./', `${api}/`)}
-                        alt="Article"
-                    />
-                : <FontAwesomeIcon icon={faImage} />}
+        <div className={classes.join(' ')} style={styles}>
+            {(preview) && <div className="preview">
+                <img src={preview} alt="Preview" />
             </div>}
 
             <Dropzone
-                ref={ref}
                 name={name}
+                inputRef={register}
                 maxFiles={1}
                 multiple={false}
                 onChangeStatus={handleChangeStatus}

@@ -9,7 +9,7 @@ import {
     faFlag,
     faQuestion
 } from '@fortawesome/free-solid-svg-icons'
-import { AuthContext } from '../AuthContext'
+import { AuthContext } from '../../context/Auth'
 import Container from '../ui/Container'
 import Row from '../ui/Row'
 import Alert from '../ui/Alert'

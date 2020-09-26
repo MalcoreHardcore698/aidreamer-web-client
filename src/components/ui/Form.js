@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import { useMutation } from '@apollo/react-hooks'
 import { useForm } from 'react-hook-form'
 import Button from '../ui/Button'
@@ -13,31 +13,39 @@ export default ({
     beforeEffect,
     afterEffect
 }) => {
+    const formRef = useRef(null)
     const FormFields = children
 
     const [action, { loading }] = useMutation(query)
     const [disabledSubmit, setDisabledSubmit] = useState(true)
-    const { handleSubmit, register, errors } = useForm()
+
+    const { handleSubmit, watch, register, errors, setValue, getValues } = useForm()
+
+    const methods = {
+        elevate: () => setDisabledSubmit(false),
+        register, loading, errors,
+        watch, setValue, getValues
+    }
 
     const onSubmit = async (form) => {
-        const options = beforeEffect(form, variables)
-        await action({ variables: options })
+        const vars = beforeEffect(form, variables)
+        vars.status = (vars.status) || 'PUBLISHED'
+
+        await action({
+            variables: vars
+        })
+
         if (afterEffect) afterEffect()
     }
 
     return (
-        <form className={`ui-form${(wide) ? ' wide' : ''}`} onSubmit={handleSubmit(onSubmit)}>
-            {<FormFields
-                elevate={() => setDisabledSubmit(false)}
-                register={register}
-                loading={loading}
-                errors={errors}
-            />}
+        <form ref={formRef} className={`ui-form${(wide) ? ' wide' : ''}`} onSubmit={handleSubmit(onSubmit)}>
+            <FormFields {...methods} />
 
             <Button options={{
                 type: 'submit',
                 state: 'inactive',
-                disabled: (edit) ? disabledSubmit : false,
+                disabled: !disabledSubmit,
                 classNames: 'grow'
             }}>
                 <p>{(add) ? 'Add' : 'Save Changes'}</p>
