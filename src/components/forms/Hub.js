@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import Query from '../ui/Query'
 import Row from '../ui/Row'
 import Form from '../ui/Form'
 import Input from '../ui/Input'
 import List from '../ui/List'
 import TextArea from '../ui/TextArea'
+import Message from '../ui/Message'
 import Toggler from '../ui/Toggler'
 import { GET_ALL_STATUS, GET_ALL_ICONS, ADD_HUB, EDIT_HUB } from '../../utils/queries'
 import { config } from '../../utils/config'
@@ -16,122 +17,116 @@ export default ({
     close,
     add=false,
     edit=false,
-    editableStatus
+    isTitle,
+    isDescription,
+    isSlogan,
+    isColor,
+    isIcon,
+    isStatus
 }) => {
-    const [variables, setVariables] = useState({})
-
-    const [image, setImage] = useState(document?.icon)
-    const [status, setStatus] = useState(document?.status)
-
-    const variablesCompose = (form, options) => {
-        return {
-            ...options,
-            ...variables,
+    const variablesCompose = (form) => {
+        const variables = {
             title: form.title,
-            description: form.description,
-            slogan: form.slogan,
-            color: form.color
+            status: form.status || 'PUBLISHED'
         }
-    }
 
-    useEffect(() => {
-        const options = {
-            icon: image.id,
-            status
-        }
-        if (edit) options.id = document._id
-        setVariables((vars) => ({
-            ...vars,
-            ...options
-        }))
-    }, [image, status, edit, document._id])
+        if (edit) variables.id = document._id
+        if (form.description) variables.description = form.description
+        if (form.slogan) variables.slogan = form.slogan
+        if (form.color) variables.color = form.color
+
+        return variables
+    }
 
     return (
         <Form
             add={add}
             edit={edit}
             query={(add) ? ADD_HUB : EDIT_HUB}
-            variables={variables}
-            beforeEffect={(form, options) => variablesCompose(form, options)}
+            variables={(form, options) => variablesCompose(form, options)}
             afterEffect={close}
         >
-            {({ elevate, register, loading }) => (
+            {({ register, loading, setValue }) => (
                 <React.Fragment>
-                    <Input options={{
-                        ref: register({ required: true }),
+                    {(isTitle) && <Input options={{
                         type: 'text',
                         name: 'title',
-                        defaultValue: document.title || '',
+                        inputRef: register({ required: true }),
+                        defaultValue: document?.title || '',
                         placeholder: 'Enter title',
                         disabled: loading
-                    }} />
+                    }} />}
                     
-                    <TextArea options={{
-                        ref: register({ required: true }),
+                    {(isDescription) && <TextArea options={{
                         type: 'text',
                         name: 'description',
-                        defaultValue: document.description || '',
+                        inputRef: register({ required: true }),
+                        defaultValue: document?.description || '',
                         placeholder: 'Enter description',
                         disabled: loading
-                    }} />
+                    }} />}
 
-                    <Input options={{
-                        ref: register({ required: true }),
+                    {(isSlogan) && <Input options={{
                         type: 'text',
                         name: 'slogan',
-                        defaultValue: document.slogan || '',
+                        inputRef: register({ required: true }),
+                        defaultValue: document?.slogan || '',
                         placeholder: 'Enter slogan',
                         disabled: loading
-                    }} />
+                    }} />}
 
-                    <Input options={{
-                        ref: register({ required: true }),
+                    {(isColor) && <Input options={{
                         type: 'color',
-                        name: 'slogan',
-                        defaultValue: document.color || '',
+                        name: 'color',
+                        inputRef: register({ required: true }),
+                        defaultValue: document?.color || '',
                         placeholder: 'Enter color',
                         disabled: loading
-                    }} />
+                    }} />}
 
-                    {(editableStatus) && <Query query={GET_ALL_STATUS}>
-                        {({ data }) => (
-                            <Toggler options={{
-                                state: status,
-                                handler: setStatus,
-                                targets: [
-                                    ...data.allStatus.map((item, key) => ({
-                                        type: item,
-                                        value: (
-                                            <Row key={key}>
-                                                <p>{item}</p>
-                                            </Row>
-                                        )}))
-                                ]}}
-                            />
-                        )}
+                    {(isIcon) && <Query query={GET_ALL_ICONS} pseudo={{ count: 1, height: 45 }}>
+                        {({ data }) => {
+                            const icons = data.allIcons
+
+                            if (icons.length === 0)
+                                return <Message text="No icons found" padding />
+
+                            return (
+                                <List options={{
+                                    type: 'grid',
+                                    name: 'status', setValue,
+                                    register: register(),
+                                    list: data.allIcons
+                                }}>
+                                    {({ item }) => (
+                                        <img
+                                            className="image"
+                                            src={(item.path).replace('./', `${api}/`)}
+                                            alt="Hub"
+                                        />
+                                    )}
+                                </List>
+                            )
+                        }}
                     </Query>}
 
-                    <Query query={GET_ALL_ICONS} pseudo={{ count: 1, height: 45 }}>
+                    {(isStatus) && <Query query={GET_ALL_STATUS}>
                         {({ data }) => (
-                            <List options={{
-                                type: 'grid',
-                                state: image,
-                                list: data.allIcons,
-                                handlerItem: (file) => {
-                                    setImage(file)
-                                    elevate()
-                                }
-                            }}>
-                                {({ item }) => (
-                                    <img
-                                        className="image"
-                                        src={(item.path).replace('./', `${api}/`)}
-                                        alt="Hub"
-                                    />
-                                )}
-                            </List>
+                            <Toggler options={{
+                                name: 'status', setValue,
+                                register: register(),
+                                initialSlicedFactor: 2,
+                                initialOptions: data.allStatus.map((status, index) => ({
+                                    value: status,
+                                    label: (
+                                        <Row key={index}>
+                                            <p>{status}</p>
+                                        </Row>
+                                    )
+                                }))
+                            }}/>
                         )}
-                    </Query>
+                    </Query>}
                 </React.Fragment>
             )}
         </Form>

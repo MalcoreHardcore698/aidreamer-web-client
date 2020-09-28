@@ -71,6 +71,21 @@
     color: var(--color-accent);
 }
 
+.ui-toggler .toggle.active::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    width: calc(100% + 2px);
+    height: calc(100% + 2px);
+    background: white;
+    border-radius: var(--br-main);
+}
+
+.wrapper .ui-toggler .toggle.active::before {
+    display: none;
+}
+
 .wrapper .ui-toggler .toggle.active {
     color: white;
 }

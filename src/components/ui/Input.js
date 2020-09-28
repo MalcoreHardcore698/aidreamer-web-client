@@ -17,7 +17,7 @@ export default ({ options, hidden=false }) => {
         inputRef,
         defaultValue,
         placeholder='Write a message...',
-        autoComplete="Default text",
+        autoComplete="off",
         onChange=() => {},
         onKeyPress=() => {}
     } = options

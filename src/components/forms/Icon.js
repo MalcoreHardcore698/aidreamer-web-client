@@ -27,7 +27,7 @@ export default ({
             ...vars,
             ...options
         }))
-    }, [image, iconType, edit, icon._id])
+    }, [image, iconType, edit, icon])
 
     return (
         <Form

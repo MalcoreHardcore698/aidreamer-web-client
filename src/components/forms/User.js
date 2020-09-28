@@ -6,7 +6,7 @@ import Input from '../ui/Input'
 import Select from '../ui/Select'
 import Checkbox from '../ui/Checkbox'
 import Message from '../ui/Message'
-import { GET_ALL_HUBS, GET_ALL_ROLES, ADD_USER, EDIT_USER } from '../../utils/queries'
+import { GET_ALL_HUBS, GET_ALL_ROLES, REGISTER, EDIT_USER } from '../../utils/queries'
 import { config } from '../../utils/config'
 
 const api = config.get('api')
@@ -21,10 +21,10 @@ export default ({
 
     const [preferences, setPreferences] = useState(document?.preferences)
     const [avatar, setAvatar] = useState(document?.avatar)
-    const [role, setRole] = useState({
-        value: document?.role.id,
-        label: document?.role.name
-    })
+    const [role, setRole] = useState((document) ? {
+        value: document.role.id,
+        label: document.role.name
+    } : null)
 
     const variablesCompose = (form, options) => {
         return {
@@ -37,22 +37,22 @@ export default ({
 
     useEffect(() => {
         const options = {
-            role: role.value,
-            avatar: avatar.id,
-            preferences: preferences.map(p => p.id)
+            role: role?.value,
+            avatar: avatar?.id,
+            preferences: preferences?.map(p => p.id)
         }
         if (edit) options.id = document._id
         setVariables((vars) => ({
             ...vars,
             ...options
         }))
-    }, [role, avatar, preferences, edit, document._id])
+    }, [role, avatar, preferences, edit, document])
 
     return (
         <Form
             add={add}
             edit={edit}
-            query={(add) ? ADD_USER : EDIT_USER}
+            query={(add) ? REGISTER : EDIT_USER}
             variables={variables}
             beforeEffect={(form, options) => variablesCompose(form, options)}
             afterEffect={close}
@@ -64,7 +64,7 @@ export default ({
                         ref: register(),
                         type: 'text',
                         name: 'name',
-                        defaultValue: document.name || '',
+                        defaultValue: document?.name || '',
                         placeholder: 'Enter name',
                         disabled: loading
                     }} />
@@ -73,7 +73,7 @@ export default ({
                         ref: register(),
                         type: 'text',
                         name: 'phone',
-                        defaultValue: document.phone || '',
+                        defaultValue: document?.phone || '',
                         placeholder: 'Enter phone',
                         disabled: loading
                     }} />
@@ -82,7 +82,7 @@ export default ({
                         ref: register(),
                         type: 'text',
                         name: 'email',
-                        defaultValue: document.email || '',
+                        defaultValue: document?.email || '',
                         placeholder: 'Enter email',
                         disabled: loading
                     }} />
@@ -107,7 +107,7 @@ export default ({
                     {(document?.availableAvatars && (document.availableAvatars.length > 0)) ? <List options={{
                         type: 'grid',
                         state: avatar,
-                        list: document.availableAvatars,
+                        list: document?.availableAvatars,
                         handlerItem: (file) => {
                             setAvatar(file)
                             elevate()
@@ -124,17 +124,24 @@ export default ({
 
                     <p className="ui-title">Preferences</p>
                     <Query query={GET_ALL_HUBS} pseudo={{ count: 1, height: 45 }}>
-                        {({ data }) => (
-                            <Checkbox options={{
-                                type: 'grid',
-                                state: preferences,
-                                list: data.allHubs,
-                                handler: (items) => {
-                                    setPreferences(items)
-                                    elevate()
-                                }
-                            }} />
-                        )}
+                        {({ data }) => {
+                            const hubs = data.allHubs
+
+                            if (hubs.length === 0)
+                                return <Message text="No hubs found" padding />
+                                
+                            return (
+                                <Checkbox options={{
+                                    type: 'grid',
+                                    state: preferences,
+                                    list: data.allHubs,
+                                    handler: (items) => {
+                                        setPreferences(items)
+                                        elevate()
+                                    }
+                                }} />
+                            )
+                        }}
                     </Query>
                 </React.Fragment>
             )}

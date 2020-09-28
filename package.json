@@ -24,6 +24,7 @@
     "react-circular-progressbar": "^2.0.3",
     "react-code-blocks": "0.0.8",
     "react-dom": "^16.13.1",
+    "react-dropzone": "^11.2.0",
     "react-dropzone-uploader": "^2.11.0",
     "react-hook-form": "^6.7.2",
     "react-konva": "^16.13.0-6",

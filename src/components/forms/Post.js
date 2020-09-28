@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import Query from '../ui/Query'
 import Row from '../ui/Row'
 import Form from '../ui/Form'
@@ -28,35 +28,22 @@ export default ({
     isStatus,
     isPreview
 }) => {
-    const [variables, setVariables] = useState({})
-
     const variablesCompose = (form, options) => {
-        const vars = {
+        const variables = {
             ...options, type,
             title: form.title,
-            status: form.status
+            status: form.status || 'PUBLISHED'
         }
         
-        if (form.subtitle) vars.subtitle = form.subtitle
-        if (form.description) vars.description = form.description
-        if (form.content) vars.content = form.content
-        if (form.preview) vars.preview = form.preview
-        if (form.hub) vars.hub = form.hub
+        if (edit) variables.id = document._id
+        if (form.subtitle) variables.subtitle = form.subtitle
+        if (form.description) variables.description = form.description
+        if (form.content) variables.content = form.content
+        if (form.preview) variables.preview = form.preview
+        if (form.hub) variables.hub = form.hub
 
-        return vars
+        return variables
     }
-
-    useEffect(() => {
-        const options = {}
-
-        if (edit) options.id = document._id
-        else options.status = 'PUBLISHED'
-
-        setVariables((vars) => ({
-            ...vars,
-            ...options
-        }))
-    }, [edit, document])
 
     return (
         <Form
@@ -64,8 +51,7 @@ export default ({
             add={add}
             edit={edit}
             query={(add) ? ADD_POST : EDIT_POST}
-            variables={variables}
-            beforeEffect={(form, options) => variablesCompose(form, options)}
+            variables={(form, options) => variablesCompose(form, options)}
             afterEffect={close}
         >
             {({ register, loading, setValue }) => (
@@ -143,8 +129,8 @@ export default ({
 
                     {(isPreview && (type === 'ARTICLE')) && <Dropzone
                         options={{
-                            name: 'preview', setValue,
-                            register: register()
+                            name: 'preview',
+                            accept: 'image/*'
                         }}
                     />}
                 </React.Fragment>

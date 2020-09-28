@@ -3,7 +3,7 @@ import Query from '../ui/Query'
 import Form from '../ui/Form'
 import Input from '../ui/Input'
 import List from '../ui/List'
-import { GET_ALL_FLAGS, ADD_LANGUAGE, EDIT_LANGUAGE } from '../../utils/queries'
+import { GET_ALL_ICONS, ADD_LANGUAGE, EDIT_LANGUAGE } from '../../utils/queries'
 import { config } from '../../utils/config'
 
 const api = config.get('api')
@@ -36,7 +36,7 @@ export default ({
             ...vars,
             ...options
         }))
-    }, [flag, edit, document._id])
+    }, [flag, edit, document])
 
     return (
         <Form
@@ -67,7 +67,7 @@ export default ({
                         disabled: loading
                     }} />
 
-                    <Query query={GET_ALL_FLAGS} pseudo={{ count: 1, height: 45 }}>
+                    <Query query={GET_ALL_ICONS} variables={{ type: 'FLAG' }} pseudo={{ count: 1, height: 45 }}>
                         {({ data }) => (
                             <List options={{
                                 type: 'grid',

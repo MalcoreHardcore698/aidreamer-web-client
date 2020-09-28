@@ -20,7 +20,7 @@ const Manage = ({ filter, targets }) => {
         <Row>
             <Search />
             <Toggler options={{
-                initialState: targets[0],
+                initialState: targets[0].value,
                 initialOptions: targets
             }} />
             {(filter) && (

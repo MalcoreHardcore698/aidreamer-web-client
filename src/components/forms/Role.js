@@ -33,7 +33,7 @@ export default ({
             ...vars,
             ...options
         }))
-    }, [permissions, edit, document._id])
+    }, [permissions, edit, document])
 
     return (
         <Form

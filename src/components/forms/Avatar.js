@@ -1,89 +1,97 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import Query from '../ui/Query'
 import Row from '../ui/Row'
 import Form from '../ui/Form'
-import HubToggler from '../ui/HubToggler'
+import Avatar from '../ui/Avatar'
 import Toggler from '../ui/Toggler'
 import Dropzone from '../ui/Dropzone'
-import { GET_ALL_RARITIES, ADD_AVATAR, EDIT_AVATAR } from '../../utils/queries'
+import {
+    GET_ALL_RARITIES,
+    GET_ALL_HUBS,
+    ADD_AVATAR,
+    EDIT_AVATAR
+} from '../../utils/queries'
 
 export default ({
     document,
     close,
+    type,
     add=false,
-    edit=false
+    edit=false,
+    isIcon,
+    isRarity,
+    isHub
 }) => {
-    const [variables, setVariables] = useState({})
-
-    const[hub, setHub] = useState(document?.hub)
-    const[image, setImage] = useState(document?.image)
-    const[rarity, setRarity] = useState(document?.rarity)
-
-    useEffect(() => {
-        const options = {
-            rarity,
-            hub: hub.id,
-            file: image
+    const variablesCompose = (form) => {
+        const variables = {
+            title: form.title,
+            status: form.status || 'PUBLISHED'
         }
-        if (edit) options.id = document._id
-        setVariables((vars) => ({
-            ...vars,
-            ...options
-        }))
-    }, [preview, status, postType, edit, document._id])
+        
+        if (edit) variables.id = document._id
+        if (form.icon) variables.file = form.icon
+        if (form.rarity) variables.rarity = form.rarity
+        if (form.hub) variables.hub = form.hub
+
+        return variables
+    }
 
     return (
         <Form
             add={add}
             edit={edit}
             query={(add) ? ADD_AVATAR : EDIT_AVATAR}
-            variables={variables}
+            variables={(form, options) => variablesCompose(form, options)}
             afterEffect={close}
         >
-            {({ elevate, register }) => (
+            {({ register, setValue }) => (
                 <React.Fragment>
-                    <p className="ui-title">Image</p>
-                    <Dropzone options={{
-                        ref: register,
-                        type: 'icon',
-                        name: 'image',
-                        value: document.path,
-                        setImage: (file) => {
-                            setImage(file)
-                            elevate()
-                        }
-                    }} />
+                    {(isIcon) && <p className="ui-title">Image</p>}
+                    {(isIcon) && <Dropzone
+                        options={{
+                            name: 'icon',
+                            accept: 'image/*'
+                        }}
+                    />}
 
-                    <p className="ui-title">Rarity</p>
-                    <Query query={GET_ALL_RARITIES}>
+                    {(isRarity) && <p className="ui-title">Rarity</p>}
+                    {(isRarity) && <Query query={GET_ALL_RARITIES}>
                         {({ data }) => (
                             <Toggler options={{
-                                state: rarity,
-                                handler: (item) => {
-                                    setRarity(item)
-                                    elevate()
-                                },
-                                targets: [
-                                    ...data.allRarities.map((item, key) => ({
-                                        type: item,
-                                        value: (
-                                            <Row key={key}>
-                                                <p>{item}</p>
-                                            </Row>
-                                        )}))
-                                ]}}
+                                name: 'rarity', setValue,
+                                register: register(),
+                                initialSlicedFactor: 2,
+                                initialOptions: data.allRarities.map((item, key) => ({
+                                    value: item,
+                                    label: (
+                                        <Row key={key}>
+                                            <p>{item}</p>
+                                        </Row>
+                                    )}))
+                                }}
                             />
                         )}
-                    </Query>
+                    </Query>}
                     
-                    <p className="ui-title">Hub</p>
-                    <HubToggler override={{
-                        state: hub,
-                        handler: (item) => {
-                            setHub(item)
-                            elevate()
-                        }
-                    }} />
+                    {(isHub) && <p className="ui-title">Hub</p>}
+                    {(isHub) && <Query query={GET_ALL_HUBS} pseudo={{ height: 45, count: 6 }}>
+                        {({ data }) => (
+                            <Toggler options={{
+                                name: 'hub', setValue,
+                                register: register(),
+                                initialSlicedFactor: 2,
+                                initialOptions: data.allHubs.map(hub => ({
+                                    value: hub.id,
+                                    label: (
+                                        <Row key={hub.id}>
+                                            <Avatar avatar={{ path: hub.icon.path }} properties={['circle']} />
+                                            <p>{hub.title}</p>
+                                        </Row>
+                                    )
+                                }))
+                            }} />
+                        )}
+                    </Query>}
                 </React.Fragment>
             )}
         </Form>

@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { useForm } from 'react-hook-form'
+import React, { useState, useEffect } from 'react'
+// import { useForm } from 'react-hook-form'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
     faImage,
@@ -24,8 +24,7 @@ import {
     GET_ALL_AWARDS,
     GET_ALL_CONDITION_ENUMS,
     GET_ALL_USERS,
-    GET_ALL_ARTICLES,
-    GET_ALL_OFFERS,
+    GET_ALL_POSTS,
     GET_ALL_HUBS,
     GET_ALL_ACTS,
     GET_ALL_STATUS,
@@ -39,8 +38,7 @@ const api = config.get('api')
 
 const AREAS_QUERIES = {
     'USER': GET_ALL_USERS,
-    'ARTICLE': GET_ALL_ARTICLES,
-    'OFFER': GET_ALL_OFFERS,
+    'POST': GET_ALL_POSTS,
     'HUB': GET_ALL_HUBS
 }
 
@@ -811,7 +809,7 @@ export default ({
     const [status, setStatus] = useState(document?.status)
 
     const variablesCompose = (form, options) => {
-        const awards = []
+        let awards = []
         if (actAwards) awards = actAwards
             .map(actAward => ({
                     award: actAward.award.value,
@@ -856,7 +854,7 @@ export default ({
             ...vars,
             ...options
         }))
-    }, [role, avatar, preferences, edit, document._id])
+    }, [status, successor, isSource, edit, document])
 
     return (
         <Form

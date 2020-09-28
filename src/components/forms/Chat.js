@@ -17,10 +17,10 @@ export default ({
 
     const[chatType, setChatType] = useState(document?.type || 'USER_CHAT')
     const[sender, setSender] = useState((document?.type === 'USER_CHAT') ? ({
-        value: chat.members[0].name, label: chat.members[0].name
+        value: document.members[0].name, label: document.members[0].name
     }) : null)
     const[reciever, setReciever] = useState((document?.type === 'USER_CHAT') ? ({
-        value: chat.members[1].name, label: chat.members[1].name
+        value: document.members[1].name, label: document.members[1].name
     }) : null)
     const[members, setMembers] = useState((document?.members) ? document.members.map(member => ({
         value: member.name, label: member.name
@@ -46,7 +46,7 @@ export default ({
             ...vars,
             ...options
         }))
-    }, [members, chatType, edit, document._id])
+    }, [members, chatType, sender, reciever, edit, document])
 
     return (
         <Form
@@ -63,7 +63,7 @@ export default ({
                         ref: register({ required: true }),
                         type: 'text',
                         name: 'title',
-                        defaultValue: chat.title || '',
+                        defaultValue: document.title || '',
                         placeholder: 'Enter title',
                         disabled: loading
                     }} />
@@ -72,7 +72,7 @@ export default ({
                         {({ data }) => (
                             <Toggler options={{
                                 type: 'auto',
-                                state: chat.type || chatType,
+                                state: document.type || chatType,
                                 handler: (item) => {
                                     setChatType(item)
                                     elevate()

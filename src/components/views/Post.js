@@ -29,17 +29,18 @@ export default ({ document }) => {
 
                     return (
                         <Entry options={{
+                            type: document.type,
                             capacious: false,
                             statusBar: {
                                 options: [
-                                    { lite: 'Comments', dark: document.comments.length || 0 },
+                                    (document.type === 'ARTICLE') ? { lite: 'Comments', dark: document.comments.length || 0 } : null,
                                     { lite: 'Views', dark: document.views || 0 },
                                     {
                                         lite: <Moment date={new Date(new Date().setTime(document.createdAt))} format="MMM, DD" />,
                                         dark: <Moment date={new Date(new Date().setTime(document.createdAt))} format="h:m" />
                                     }
                                 ],
-                                input: (
+                                input: (document.type === 'ARTICLE') && (
                                     <React.Fragment>
                                         <Avatar avatar={{ path: state.user.avatar.path }} properties={['circle']} />
                                         <Mutation query={ADD_COMMENT}>
@@ -109,9 +110,14 @@ export default ({ document }) => {
                                     alt="Article"
                                 />
                             }
-                            <p className="tag" style={{ background: document.hub.color }}>{document.hub.title}</p>
-                            <p className="title">{document.title}</p>
-                            <p className="body">{document.body}</p>
+                            <div className="tags">
+                                <p className="tag type">{document.type}</p>
+                                {(document.hub) && <p className="tag" style={{ background: document.hub.color }}>{document.hub.title}</p>}
+                            </div>
+                            {(document.title) && <p className="title">{document.title}</p>}
+                            {/*(document.subtitle) && <p className="body">{document.subtitle}</p>*/}
+                            {(document.description) && <p className="paragraph">{document.description}</p>}
+                            {(document.content) && <p className="body">{document.content}</p>}
                         </Entry>
                     )
                 }}

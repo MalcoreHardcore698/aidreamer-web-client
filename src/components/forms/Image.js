@@ -22,7 +22,7 @@ export default ({
             ...vars,
             ...options
         }))
-    }, [image, edit, document._id])
+    }, [image, edit, document])
 
     return (
         <Form

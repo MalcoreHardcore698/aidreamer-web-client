@@ -298,6 +298,7 @@ main aside {
     grid-gap: var(--grid-gap);
 }
 
+main aside > form > .ui-toggler,
 main aside > .ui-toggler {
     width: 100%;
     max-width: 100%;

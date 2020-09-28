@@ -258,6 +258,12 @@ export const DELETE_USERS = gql`
 `
 
 // BEGIN STATS
+export const GET_USER_COUNT_POSTS = gql`
+    query countUserPosts {
+        countUserPosts
+    }
+`
+
 export const GET_STATS = gql`
     query allStats {
         countUsers

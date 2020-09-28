@@ -9,7 +9,7 @@ import {
     faFlag,
     faQuestion
 } from '@fortawesome/free-solid-svg-icons'
-import { AuthContext } from '../../context/Auth'
+import { AuthContext } from '../context/Auth'
 import Container from '../ui/Container'
 import Row from '../ui/Row'
 import Alert from '../ui/Alert'
@@ -35,6 +35,7 @@ export const SettingsEditProfileContent = ({ jump }) => {
 
     const [disabled, setDisabled] = useState(true)
     const [avatar, setAvatar] = useState('')
+    // eslint-disable-next-line
     const [hubs, setHubs] = useState(state.user.preferences)
 
     const { handleSubmit, register, errors } = useForm()
@@ -76,7 +77,7 @@ export const SettingsEditProfileContent = ({ jump }) => {
             }} />
 
             <p className="ui-title">Avatar</p>
-            <List options={{
+            {(state.user.availableAvatars.length > 0) ? <List options={{
                 type: 'grid',
                 state: avatar || state.user.avatar,
                 list: state.user.availableAvatars,
@@ -93,21 +94,29 @@ export const SettingsEditProfileContent = ({ jump }) => {
                     />
                 )}
             </List>
+            : <Message text="No Available Avatars" padding />}
 
             <p className="ui-title">Preferences</p>
             <Query query={GET_ALL_HUBS} pseudo={{ count: 1, height: 45 }}>
-                {({ data }) => (
-                    <Checkbox options={{
-                        type: 'grid',
-                        state: hubs,
-                        list: data.allHubs,
-                        handler: (items) => {
-                            setHubs(items)
-                            if (items.length > 2)
-                                setDisabled(false)
-                        }
-                    }} />
-                )}
+                {({ data }) => {
+                    const hubs = data.allHubs
+
+                    if (hubs.length === 0)
+                        return <Message text="No hubs found" padding />
+                        
+                    return (
+                        <Checkbox options={{
+                            type: 'grid',
+                            state: hubs,
+                            list: data.allHubs,
+                            handler: (items) => {
+                                setHubs(items)
+                                if (items.length > 2)
+                                    setDisabled(false)
+                            }
+                        }} />
+                    )
+                }}
             </Query>
 
             <Button options={{

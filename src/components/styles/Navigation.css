@@ -12,7 +12,7 @@
 
 .ui-navigation.dashboard {
     flex-direction: column;
-    top: 0;
+    top: 25px;
     left: 25px;
     width: 145px;
     padding: 0;
@@ -43,7 +43,7 @@
 
 .ui-navigation.dashboard .block:last-child {
     display: flex;
-    grid-gap: 10px;
+    grid-gap: 0;
     width: auto;
     margin-bottom: 25px;
 }
@@ -101,6 +101,7 @@
 
 .ui-navigation .block a.active,
 .ui-navigation.dashboard .block a:hover,
+.ui-navigation.dashboard .block .ui-button:hover,
 .ui-navigation.dashboard .block a.active {
     color: var(--color-accent) !important;
 }
@@ -129,7 +130,7 @@
     width: 100%;
 }
 
-.ui-navigation.dashboard .block .links {
+.ui-navigation.dashboard .block {
     background: var(--color-entry);
     box-shadow: var(--bs-entry);
     border-radius: var(--br-main);
@@ -197,10 +198,28 @@
     border-radius: 50%;
 }
 
+.ui-navigation.dashboard .block:first-child {
+    padding: 5px 0;
+}
+
 .ui-navigation.dashboard .block .ui-row {
     display: grid;
     grid-template-columns: 25px 1fr;
     padding: 0 10px;
+    align-content: center;
+}
+
+.ui-navigation.dashboard .block a:first-child {
+    margin-top: -5px;
+}
+
+.ui-navigation.dashboard .block .ui-row .icon:first-child:last-child {
+    font-size: 14px;
+    align-self: center;
+}
+
+.ui-navigation.dashboard .block .ui-row p {
+    font-size: 14px;
 }
 
 .ui-navigation.dashboard .block .ui-row svg {
@@ -208,7 +227,7 @@
     align-self: center;
 }
 
-.ui-navigation:not(.dashboard) .block:last-child .react-ripples:last-child {
+.ui-navigation .block:last-child .react-ripples:last-child {
     display: none !important;
 }
 

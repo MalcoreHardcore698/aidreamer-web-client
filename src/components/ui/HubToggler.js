@@ -1,123 +1,35 @@
-/*
- * COMPONENT: Hub Toggler
- * 
- * MISSION: ...
- *
-**/
-
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { useWindowSize } from '../../hooks/window.size.hook'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEllipsisH } from '@fortawesome/free-solid-svg-icons'
-import Query from './Query'
-import Subscription from './Subscription'
 import Row from './Row'
-import Container from './Container'
+import Query from './Query'
 import Avatar from './Avatar'
-import Button from './Button'
-import Dropdown from './Dropdown'
 import Toggler from './Toggler'
-import List from './List'
-import {
-    GET_ALL_HUBS,
-    SUB_ALL_HUBS
-} from '../../utils/queries'
+import { GET_ALL_HUBS } from '../../utils/queries'
 import { setCurrentHub } from '../../utils/actions'
+import 'moment/locale/ru'
 
-export default ({ override, all, slicedFactor=4 }) => {
+export default () => {
     const state = useSelector(state => state)
     const dispatch = useDispatch()
 
-    const size = useWindowSize()
-
-    const [hubDropdown, setHubDropdown] = useState(false)
-    const [slicedIndex, setSlicedIndex] = useState(slicedFactor)
-
-    useEffect(() => {
-        if (size.width <= 580) {
-            setSlicedIndex((slicedFactor === 2) ? 1 : 0)
-        } else if (size.width <= 768) {
-            setSlicedIndex((slicedFactor < 3) ? slicedFactor : slicedFactor - 2)
-        } else if (size.width <= 998) {
-            setSlicedIndex((slicedFactor === 0) ? slicedFactor : slicedFactor - 1)
-        } else {
-            setSlicedIndex(slicedFactor)
-        }
-    }, [size.width, slicedFactor])
-
     return (
-        <Query query={GET_ALL_HUBS} variables={{ status: 'PUBLISHED' }} pseudo={{ height: 45, count: 6 }}>
-            {({ data, refetch }) => (data.allHubs.length > 1) && (
-                <Subscription query={SUB_ALL_HUBS} variables={{ status: 'PUBLISHED' }} refetch={refetch}>
-                    {({ subData }) => {
-                        const hubs = ((subData && subData.hubs) || (data && data.allHubs))
-
-                        const slicedStarts = hubs.slice(0, slicedIndex)
-                        const slicedEnds = hubs.slice(slicedIndex)
-
-                        return (
-                            <Toggler options={{
-                                name: override?.name,
-                                inputRef: override?.inputRef,
-                                initialState: (override) ? override?.initialState : state.filters.currentHub,
-                                onChange: (e) => {
-                                    if (!override) dispatch(setCurrentHub(e))
-                                    setHubDropdown(false)
-                                },
-                                targets: [
-                                    (all) && ({
-                                        type: 'all',
-                                        value: <Row><p>All</p></Row>
-                                    }),
-                                    ...slicedStarts.map((hub, key) => ({
-                                        value: hub,
-                                        label: (
-                                            <Row key={key}>
-                                                <Avatar avatar={{ path: hub.icon.path }} properties={['circle']} />
-                                                <p>{hub.title}</p>
-                                            </Row>
-                                        )})),
-                                    {
-                                        value: 'erase',
-                                        disabled: (slicedStarts.length === hubs.length),
-                                        classNames: 'dropdown',
-                                        label: (
-                                            <Container clear sticky>
-                                                <Button options={{
-                                                    state: 'inactive',
-                                                    handler: () => setHubDropdown(!hubDropdown)
-                                                }}>
-                                                    <FontAwesomeIcon icon={faEllipsisH} />
-                                                </Button>
-
-                                                <Dropdown options={{ dropdown: hubDropdown, styles: { right: 0 } }}>
-                                                    <List options={{
-                                                        list: slicedEnds.map(h => ({ id: h.id, label: h.title})),
-                                                        state: (override) ? override.state : state.filters.currentHub,
-                                                        handlerItem: (item) => {
-                                                            if (override) {
-                                                                override.handler(item)
-                                                            }
-                                                            else dispatch(setCurrentHub(item))
-                                                            setHubDropdown(false)
-                                                        }
-                                                    }}>
-                                                        {({ item }) => (
-                                                            <React.Fragment>
-                                                                <p className="name">{item.label}</p>
-                                                            </React.Fragment>
-                                                        )}
-                                                    </List>
-                                                </Dropdown>
-                                            </Container>
-                                        )
-                                    }
-                                ]}}
-                            />
+        <Query query={GET_ALL_HUBS} pseudo={{ height: 45, count: 6 }}>
+            {({ data }) => (
+                <Toggler all options={{
+                    name: 'hub',
+                    setValue: (_, target) => dispatch(setCurrentHub(target)),
+                    initialState: state.filters.currentHub,
+                    initialSlicedFactor: 4,
+                    initialOptions: data.allHubs.map(hub => ({
+                        value: hub.id,
+                        label: (
+                            <Row key={hub.id}>
+                                <Avatar avatar={{ path: hub.icon.path }} properties={['circle']} />
+                                <p>{hub.title}</p>
+                            </Row>
                         )
-                    }}
-                </Subscription>
+                    }))
+                }} />
             )}
         </Query>
     )
